@@ -9,13 +9,8 @@ const { titulo = 'En 30 segundos' } = Astro.props;
 </aside>
 
 <style>
-  .rapida {
-    margin: var(--e-5) 0; padding: var(--e-4);
-    background: var(--color-superficie);
-    border-top: 6px solid var(--color-texto);
-    border-radius: 0 0 var(--radio) var(--radio);
-  }
-  .rapida :global(ul) { margin: var(--e-2) 0 0; padding-left: 1.2em; }
-  .rapida :global(li) { margin-bottom: var(--e-2); }
+  .rapida { margin: var(--s-4) 0; padding: var(--s-4); background: var(--band); border-radius: calc(var(--r-card) * 0.7); }
+  .rapida :global(ul) { margin: var(--s-2) 0 0; padding-left: 1.2em; }
+  .rapida :global(li) { margin-bottom: var(--s-2); }
   .rapida :global(li:last-child) { margin-bottom: 0; }
 </style>

@@ -1,0 +1,89 @@
+---
+// Una parada del camino: criatura grande + tarjeta blanca + objetos secundarios.
+// Uso en MDX:
+//   <Parada escena="jugable" etiqueta="Escena jugable" titulo="Pruébalo tú"> ...texto... </Parada>
+import Criatura from '../criaturas/Criatura.astro';
+import Objetos from './Objetos.astro';
+import { escenas, type Escena, type NombreCriatura } from './composiciones';
+
+interface Props {
+  escena: Escena;
+  etiqueta: string;
+  titulo?: string;
+  /** El Gancho usa h1; el resto h2. */
+  nivel?: 'h1' | 'h2';
+  criatura?: NombreCriatura;
+}
+const { escena, etiqueta, titulo, nivel = 'h2', criatura } = Astro.props;
+const comp = escenas[escena];
+const id = `parada-${escena}`;
+const Titulo = nivel;
+---
+<section class:list={['parada', `parada--${escena}`, `parada--${comp.lado}`]} data-parada={escena} aria-labelledby={titulo ? `${id}-titulo` : undefined} aria-label={titulo ? undefined : etiqueta}>
+  <div class="parada__criatura" data-ancla>
+    <Criatura nombre={criatura ?? comp.criatura} />
+    <Objetos lista={comp.objetos} id={escena} />
+  </div>
+  <div class="parada__tarjeta tarjeta">
+    <p class="etiqueta etiqueta--banda parada__etiqueta">{etiqueta}</p>
+    {titulo && <Titulo id={`${id}-titulo`} class="parada__titulo"><Fragment set:html={titulo} /></Titulo>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .parada {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: 100%;
+    max-width: calc(var(--container) + 2 * var(--gutter));
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .parada__etiqueta { margin-bottom: var(--s-3); }
+  .parada__titulo { font-size: var(--t-card); }
+  .parada__tarjeta { position: relative; z-index: 3; min-width: 0; }
+  .parada__tarjeta :global(> p:not(.etiqueta)) { max-width: var(--measure); }
+  .parada__criatura { position: relative; z-index: 2; }
+
+  /* La parada inactiva baja a 35 % (nunca a 0). Solo con animación activa. */
+  /* El fondo blanco de la tarjeta se mantiene opaco: solo se atenúa su contenido. */
+  :global(.modulo[data-animado]) .parada__tarjeta > :global(*),
+  :global(.modulo[data-animado]) .parada__criatura {
+    transition: opacity 400ms var(--ease);
+  }
+  :global(.modulo[data-animado]) .parada:not([data-activa]) .parada__tarjeta > :global(*),
+  :global(.modulo[data-animado]) .parada:not([data-activa]) .parada__criatura { opacity: 0.35; }
+
+  /* ===================== MÓVIL (composición propia) =====================
+     Una columna; la criatura (60-90 % del ancho) va arriba, alineada a su lado,
+     y la tarjeta debajo. Máximo una criatura y tres objetos por escena. */
+  .parada { grid-template-columns: minmax(0, 1fr); padding-block: 9svh 4svh; gap: var(--s-3); }
+  .parada__criatura { width: 76vw; max-width: 30rem; }
+  .parada--izq .parada__criatura { justify-self: start; margin-left: -2vw; }
+  .parada--der .parada__criatura { justify-self: end; margin-right: -2vw; }
+  .parada--gancho .parada__criatura { width: 70vw; }
+  .parada--gancho { padding-top: 4svh; }
+
+  /* ===================== COMPUTADOR (composición propia) =====================
+     Dos columnas en 1080 px: criatura y tarjeta alternan lados alrededor del camino.
+     La criatura baja hacia la sección vecina (solapamiento). */
+  @media (min-width: 52rem) {
+    .parada {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      column-gap: clamp(2rem, 5vw, 5rem);
+      padding-block: 16vh 10vh;
+    }
+    .parada__criatura { width: clamp(280px, 40vw, 500px); margin: 0; top: 9vh; }
+    .parada--izq .parada__criatura { grid-column: 1; grid-row: 1; justify-self: center; margin-left: 0; }
+    .parada--izq .parada__tarjeta { grid-column: 2; grid-row: 1; }
+    .parada--der .parada__criatura { grid-column: 2; grid-row: 1; justify-self: center; margin-right: 0; }
+    .parada--der .parada__tarjeta { grid-column: 1; grid-row: 1; }
+
+    .parada--gancho { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); padding-top: 8vh; }
+    .parada--gancho .parada__criatura { width: clamp(300px, 36vw, 520px); top: 14vh; }
+    .parada--gancho .parada__titulo { font-size: clamp(2.875rem, 1.6rem + 3.4vw, 5rem); }
+  }
+</style>

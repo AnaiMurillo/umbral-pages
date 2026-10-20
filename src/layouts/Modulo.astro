@@ -1,8 +1,8 @@
 ---
-// Plantilla de módulo explorable. Secuencia fija de cinco escenas:
-//   1. Gancho      → titular, bajada y pregunta (del frontmatter)
-//   2. Escena jugable, 3. Revelación, 4. Evidencia → en el cuerpo MDX
-//   5. Qué hacer   → automático: brief completo, otro módulo, compartir
+// Plantilla de módulo (DESIGN.md §7): cinco escenas como paradas del camino grueso.
+//   1. Gancho      → frontmatter (titulo, bajada, pregunta)
+//   2. Escena jugable, 3. Revelación, 4. Evidencia → <Parada> en el cuerpo MDX
+//   5. Qué hacer   → frontmatter (recomendaciones) + remate con llamado a la acción
 import type { CollectionEntry } from 'astro:content';
 import { getCollection, getEntry } from 'astro:content';
 import Base from './Base.astro';
@@ -11,6 +11,9 @@ import InterruptorEvidencia from '../components/evidencia/InterruptorEvidencia.a
 import TarjetaFuente from '../components/evidencia/TarjetaFuente.astro';
 import BotonEstatico from '../components/scroll/BotonEstatico.astro';
 import Compartir from '../components/editorial/Compartir.astro';
+import Camino from '../components/camino/Camino.astro';
+import Parada from '../components/camino/Parada.astro';
+import Remate from '../components/camino/Remate.astro';
 
 interface Props { modulo: CollectionEntry<'modulos'> }
 const { modulo } = Astro.props;
@@ -18,96 +21,99 @@ const d = modulo.data;
 const pilar = await getEntry(d.pilar);
 const otros = (await getCollection('modulos')).filter((m) => m.id !== modulo.id).slice(0, 2);
 const tipos: Record<string, string> = { dato: 'Dato', paper: 'Paper', caso: 'Caso', comunicado: 'Comunicado oficial', prensa: 'Prensa' };
+
+// *palabra* en el titular → resaltado rosa (DESIGN §2). Se escapa el resto del texto.
+const escapar = (t: string) => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+const titular = escapar(d.titulo).replace(/\*(.+?)\*/g, '<span class="resaltado-titular">$1</span>');
+const tituloPlano = d.titulo.replace(/\*/g, '');
 ---
-<Base titulo={d.titulo} descripcion={d.bajada}>
+<Base titulo={tituloPlano} descripcion={d.bajada}>
   <BarraProgreso />
 
-  <article class="modulo">
+  <article class="modulo" data-modulo-camino data-color={d.color}>
+    <Camino />
+
     <!-- 1. GANCHO -->
-    <header class="gancho lectura">
-      <p class="etiqueta"><a href={`/pilares#${pilar?.id}`}>{pilar?.data.nombre}</a></p>
-      {d.ejemplo && <p class="aviso-ejemplo">Módulo de ejemplo con texto de relleno y datos inventados. Sirve para probar la plantilla.</p>}
-      <h1>{d.titulo}</h1>
-      <p class="gancho__bajada">{d.bajada}</p>
-      <p class="gancho__pregunta">{d.pregunta}</p>
-      <div class="gancho__controles">
+    <Parada escena="gancho" etiqueta={pilar?.data.nombre ?? 'Módulo'} titulo={titular} nivel="h1">
+      {d.ejemplo && <p class="aviso-ejemplo">Módulo de ejemplo: texto de relleno y datos inventados para probar la plantilla.</p>}
+      <p class="modulo__bajada">{d.bajada}</p>
+      <p class="modulo__pregunta">{d.pregunta}</p>
+      <div class="modulo__controles">
         <InterruptorEvidencia />
         <BotonEstatico />
       </div>
-    </header>
+    </Parada>
 
     <!-- 2 a 4. ESCENA JUGABLE, REVELACIÓN Y EVIDENCIA (MDX) -->
-    <div class="cuerpo">
-      <slot />
-    </div>
+    <slot />
 
     <!-- 5. QUÉ HACER -->
-    <section class="que-hacer lectura" aria-labelledby="que-hacer-titulo">
-      <h2 id="que-hacer-titulo">Qué hacer con esto</h2>
+    <Parada escena="que-hacer" etiqueta="Qué hacer" titulo="Qué hacer con esto">
       {d.recomendaciones.length > 0 && (
-        <ul class="que-hacer__lista">
+        <ul class="modulo__recomendaciones">
           {d.recomendaciones.map((r) => <li>{r}</li>)}
         </ul>
       )}
-      <div class="que-hacer__acciones">
-        {d.brief && <a class="boton boton--lleno" href={`/investigacion/${d.brief}`}>Leer el brief completo</a>}
-        {otros.map((m) => <a class="boton" href={`/modulos/${m.id}`}>Probar: {m.data.titulo}</a>)}
-        {otros.length === 0 && <a class="boton" href="/pilares">Explorar los pilares</a>}
-        <Compartir titulo={d.titulo} />
-      </div>
-    </section>
+    </Parada>
 
-    <!-- FUENTES -->
-    {d.fuentes.length > 0 && (
-      <section id="fuentes" class="fuentes lectura" aria-labelledby="fuentes-titulo">
-        <h2 id="fuentes-titulo">Fuentes</h2>
-        <ol>
-          {d.fuentes.map((f) => (
-            <li id={`fuente-${f.id}`}>
-              <span class="etiqueta">{tipos[f.tipo]}{f.latam && ' · Colombia / LatAm'}</span><br />
-              {f.url ? <a href={f.url} target="_blank" rel="noopener">{f.titulo}</a> : f.titulo}
-              {(f.autor || f.anio) && <span class="fuentes__meta">. {[f.autor, f.anio].filter(Boolean).join(', ')}</span>}
-            </li>
-          ))}
-        </ol>
-      </section>
-    )}
+    <Remate>
+      <p class="etiqueta etiqueta--banda">Sigue el camino</p>
+      <div class="modulo__acciones">
+        {d.brief && <a class="boton" href={`/investigacion/${d.brief}`}>Leer el brief completo</a>}
+        {otros.map((m) => <a class="boton boton--claro" href={`/modulos/${m.id}`}>Probar: {m.data.titulo.replace(/\*/g, '')}</a>)}
+        {otros.length === 0 && <a class="boton boton--claro" href="/pilares">Explorar los pilares</a>}
+        <Compartir titulo={tituloPlano} />
+      </div>
+    </Remate>
   </article>
+
+  {d.fuentes.length > 0 && (
+    <section id="fuentes" class="fuentes lectura" aria-labelledby="fuentes-titulo">
+      <h2 id="fuentes-titulo">Fuentes</h2>
+      <ol>
+        {d.fuentes.map((f) => (
+          <li id={`fuente-${f.id}`}>
+            <span class="etiqueta">{tipos[f.tipo]}{f.latam && ' · Colombia / LatAm'}</span><br />
+            {f.url ? <a href={f.url} target="_blank" rel="noopener">{f.titulo}</a> : f.titulo}
+            {(f.autor || f.anio) && <span class="fuentes__meta">. {[f.autor, f.anio].filter(Boolean).join(', ')}</span>}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
 
   <TarjetaFuente fuentes={d.fuentes} />
 </Base>
 
 <style>
-  .gancho { padding-top: var(--e-6); }
-  .gancho h1 { font-size: var(--t-xxl); margin-top: var(--e-3); }
-  .gancho__bajada { font-size: var(--t-l); color: var(--color-texto-suave); }
-  .gancho__pregunta {
-    font-size: var(--t-l);
-    background: var(--color-destacado);
-    padding: var(--e-3) var(--e-4);
-    border-radius: var(--radio);
-    border-left: 6px solid var(--color-texto);
+  .modulo { position: relative; overflow-x: clip; padding-bottom: 0; }
+
+  .modulo__bajada { font-size: var(--t-lead); color: var(--muted); }
+  .modulo__pregunta {
+    font-size: var(--t-lead);
+    background: var(--rosa);
+    color: var(--on-color);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-card);
   }
-  .gancho__controles { display: flex; flex-wrap: wrap; gap: var(--e-2); margin-top: var(--e-4); }
+  .modulo__controles { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
+  .modulo__recomendaciones { padding-left: 1.2em; margin: 0; }
+  .modulo__recomendaciones li { margin-bottom: var(--s-2); }
+  .modulo__acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-2); margin-top: var(--s-4); }
 
-  /* Texto del MDX en columna de lectura; las escenas pueden ser más anchas */
-  .cuerpo > :global(*:not(section)) {
-    max-width: var(--ancho-lectura);
-    margin-inline: auto;
+  :global(.resaltado-titular) {
+    background: var(--rosa);
+    color: var(--on-color);
+    padding: 0 0.12em;
+    border-radius: 0.18em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
-  .cuerpo { padding-inline: var(--gutter); }
-  .cuerpo > :global(section:not([data-escena-fija])) { max-width: var(--ancho-lectura); margin-inline: auto; }
-  .cuerpo :global([data-escena-fija]) { padding-inline: 0; }
-  .cuerpo :global(h2) { margin-top: var(--e-6); }
 
-  .que-hacer { margin-top: var(--e-7); }
-  .que-hacer__lista { padding-left: 1.2em; }
-  .que-hacer__lista li { margin-bottom: var(--e-2); }
-  .que-hacer__acciones { display: flex; flex-wrap: wrap; gap: var(--e-2); margin-top: var(--e-4); }
-
-  .fuentes { margin-top: var(--e-6); font-size: var(--t-s); }
+  .fuentes { margin-top: var(--s-6); font-size: var(--t-small); }
   .fuentes ol { padding-left: 1.4em; }
-  .fuentes li { margin-bottom: var(--e-3); scroll-margin-top: 5rem; }
-  .fuentes li:target { background: var(--color-destacado); outline: 6px solid var(--color-destacado); border-radius: 2px; }
-  .fuentes__meta { color: var(--color-texto-suave); }
+  .fuentes li { margin-bottom: var(--s-3); scroll-margin-top: 6rem; }
+  .fuentes li:target { background: var(--mantequilla); color: var(--on-color); outline: 6px solid var(--mantequilla); border-radius: 2px; }
+  .fuentes li:target .etiqueta { color: var(--on-color); }
+  .fuentes__meta { color: var(--muted); }
 </style>

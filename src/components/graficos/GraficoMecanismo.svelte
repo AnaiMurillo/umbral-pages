@@ -24,8 +24,9 @@
     pregunta: string;
     opciones: [string, string];  // opción 0 = respuestaSi, opción 1 = respuestaNo
     nota: string;                // origen de los datos (visible siempre)
+    respuestas?: string[];       // respuesta inmediata por opción
   }
-  let { titulo, mecanismo, respuestaSi, respuestaNo, total = 100, valorCon, valorSin, pasos, pregunta, opciones, nota }: Props = $props();
+  let { titulo, mecanismo, respuestaSi, respuestaNo, total = 100, valorCon, valorSin, pasos, pregunta, opciones, nota, respuestas = [] }: Props = $props();
 
   let raiz: HTMLElement;
   let paso = $state(0);
@@ -119,7 +120,7 @@
 
   {#if mostrarDecision}
     <div class="grafico__decision">
-      <DecisionForzada {pregunta} opciones={opciones} alDecidir={(r) => (miRespuesta = r.opcion)} />
+      <DecisionForzada {pregunta} opciones={opciones} {respuestas} alDecidir={(r) => (miRespuesta = r.opcion)} />
     </div>
   {/if}
 
@@ -139,52 +140,37 @@
 </div>
 
 <style>
-  .grafico {
-    height: 100%;
-    display: flex; flex-direction: column; gap: var(--e-2);
-    background: var(--color-dato);
-    border: var(--borde); border-radius: var(--radio);
-    padding: var(--e-3);
-    overflow: auto;
-  }
-  .grafico--estatico { height: auto; overflow: visible; }
-  .grafico__titulo { font-family: var(--fuente-titular); font-size: var(--t-m); margin: 0; }
+  .grafico { display: flex; flex-direction: column; gap: var(--s-3); }
+  .grafico__titulo { font-family: var(--font-title); font-weight: 700; font-size: var(--t-lead); margin: 0; letter-spacing: -0.01em; }
 
-  .grafico__control { display: flex; flex-wrap: wrap; align-items: center; gap: var(--e-2); font-size: var(--t-s); }
+  .grafico__control { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); font-size: var(--t-small); }
   .chip {
-    min-height: 36px; padding: 0 var(--e-3);
-    border: 2px solid var(--color-texto); border-radius: 999px;
-    background: var(--color-superficie); cursor: pointer;
+    min-height: 44px; padding: 0 var(--s-3);
+    border: 1.5px solid var(--outline); border-radius: var(--r-pill);
+    background: var(--surface); color: var(--fg); cursor: pointer;
   }
-  .chip[aria-pressed='true'] { background: var(--color-invertido); color: var(--color-texto-inv); }
+  .chip[aria-pressed='true'] { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
 
-  .grafico__lienzo { flex: 1; min-height: 0; display: flex; align-items: center; gap: var(--e-3); }
-  .grafico__lienzo svg { height: 100%; max-height: 22rem; width: auto; max-width: 70%; flex: none; }
-  .grafico--estatico .grafico__lienzo svg { height: auto; width: min(18rem, 60%); }
-  circle {
-    fill: var(--color-superficie);
-    stroke: var(--color-texto); stroke-width: 1.5;
-    transition: fill var(--dur-media) var(--curva);
+  .grafico__lienzo {
+    display: flex; align-items: center; gap: var(--s-4);
+    background: var(--band); border-radius: calc(var(--r-card) * 0.7); padding: var(--s-3) var(--s-4);
   }
-  circle.si { fill: var(--color-texto); }
-  .grafico__cifra { font-size: var(--t-s); margin: 0; }
-  .grafico__cifra strong { display: block; font-family: var(--fuente-titular); font-size: var(--t-xxl); line-height: 1; }
-
-  .grafico__leyenda { display: flex; flex-wrap: wrap; align-items: center; gap: var(--e-1) var(--e-2); font-size: var(--t-xs); margin: 0; }
-  .punto { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 50%; border: 1.5px solid var(--color-texto); background: var(--color-superficie); }
-  .punto--si { background: var(--color-texto); }
-  .punto--tu { background: var(--color-destacado); border-width: 3px; }
-
-  .grafico__decision { margin-top: var(--e-1); }
-
-  .grafico__tabla { border-collapse: collapse; font-size: var(--t-s); background: var(--color-superficie); }
-  .grafico__tabla th, .grafico__tabla td { border: 1px solid var(--color-linea); padding: var(--e-1) var(--e-2); text-align: left; }
-
-  .grafico__nota { font-size: var(--t-xs); color: var(--color-texto-suave); margin: 0; }
-
-  @media (max-width: 52rem) {
-    .grafico { padding: var(--e-2) var(--e-3); }
-    .grafico__lienzo svg { max-width: 55%; }
-    .grafico__cifra strong { font-size: var(--t-xl); }
+  .grafico__lienzo svg { width: min(15rem, 58%); height: auto; flex: none; }
+  circle { fill: var(--surface); stroke: var(--fg); stroke-width: 1.5; transition: fill 400ms var(--ease); }
+  circle.si { fill: var(--fg); }
+  .grafico__cifra { font-size: var(--t-small); margin: 0; }
+  .grafico__cifra strong {
+    display: block; font-family: var(--font-title); font-weight: 800; font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem);
+    line-height: 1; letter-spacing: -0.04em;
   }
+
+  .grafico__leyenda { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-2); font-size: var(--t-label); margin: 0; }
+  .punto { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 50%; border: 1.5px solid var(--fg); background: var(--surface); }
+  .punto--si { background: var(--fg); }
+  .punto--tu { background: var(--a2); border-color: var(--a2); }
+
+  .grafico__decision { border-top: 1.5px solid var(--outline); padding-top: var(--s-3); }
+  .grafico__tabla { border-collapse: collapse; font-size: var(--t-small); width: 100%; }
+  .grafico__tabla th, .grafico__tabla td { border: 1px solid var(--outline); padding: var(--s-1) var(--s-2); text-align: left; }
+  .grafico__nota { font-size: var(--t-label); color: var(--muted); margin: 0; }
 </style>

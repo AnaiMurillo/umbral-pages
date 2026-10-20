@@ -1,6 +1,5 @@
 ---
-// Interruptor de modo evidencia: resalta cada afirmación y muestra su fuente al clic.
-// Se recuerda en este navegador (solo localmente).
+// Interruptor de modo evidencia: resalta cada afirmación; su fuente se abre al clic.
 ---
 <button type="button" class="interruptor" data-interruptor-evidencia aria-pressed="false">
   <span class="interruptor__pista" aria-hidden="true"><span class="interruptor__punto"></span></span>
@@ -9,32 +8,30 @@
 
 <style>
   .interruptor {
-    display: inline-flex; align-items: center; gap: var(--e-2);
-    min-height: 44px; padding: var(--e-2) var(--e-3) var(--e-2) var(--e-2);
-    border: 2px solid var(--color-texto); border-radius: 999px;
-    background: var(--color-superficie); cursor: pointer;
-    font-size: var(--t-s);
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    min-height: 44px; padding: 0.4rem 1.1rem 0.4rem 0.5rem;
+    border: 1.5px solid var(--outline); border-radius: var(--r-pill);
+    background: var(--surface); color: var(--fg); cursor: pointer;
+    font-size: var(--t-small);
   }
   .interruptor__pista {
-    width: 2.4rem; height: 1.4rem; border-radius: 999px;
-    border: 2px solid var(--color-texto); background: var(--color-fondo);
-    position: relative; flex: none;
+    width: 2.6rem; height: 1.5rem; border-radius: var(--r-pill);
+    background: var(--band); position: relative; flex: none;
   }
   .interruptor__punto {
-    position: absolute; top: 2px; left: 2px;
-    width: calc(1.4rem - 8px); height: calc(1.4rem - 8px); border-radius: 50%;
-    background: var(--color-texto);
-    transition: transform var(--dur-rapida) var(--curva);
+    position: absolute; top: 3px; left: 3px;
+    width: calc(1.5rem - 6px); height: calc(1.5rem - 6px); border-radius: 50%;
+    background: var(--fg); transition: transform var(--dur) var(--ease);
   }
-  .interruptor[aria-pressed='true'] { background: var(--color-destacado); }
-  .interruptor[aria-pressed='true'] .interruptor__punto { transform: translateX(1rem); }
+  .interruptor[aria-pressed='true'] { background: var(--highlight); color: var(--on-color); border-color: var(--on-color); }
+  .interruptor[aria-pressed='true'] .interruptor__pista { background: var(--blanco); }
+  .interruptor[aria-pressed='true'] .interruptor__punto { transform: translateX(1.1rem); background: var(--tinta); }
 </style>
 
 <script>
   const raiz = document.documentElement;
   document.querySelectorAll<HTMLButtonElement>('[data-interruptor-evidencia]').forEach((boton) => {
-    const pintar = () => boton.setAttribute('aria-pressed', String(raiz.hasAttribute('data-evidencia')));
-    pintar();
+    boton.setAttribute('aria-pressed', String(raiz.hasAttribute('data-evidencia')));
     boton.addEventListener('click', () => {
       const activo = !raiz.hasAttribute('data-evidencia');
       raiz.toggleAttribute('data-evidencia', activo);

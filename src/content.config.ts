@@ -35,6 +35,7 @@ const modulos = defineCollection({
     teaser: z.string(),
     fecha: z.coerce.date(),
     ejemplo: z.boolean().default(false),
+    color: z.enum(['celeste', 'rosa']).default('celeste'), // color del camino
     brief: z.string().optional(), // slug del research brief completo
     recomendaciones: z.array(z.string()).default([]),
     fuentes: z.array(fuente).default([]),

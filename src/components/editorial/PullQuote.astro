@@ -14,10 +14,13 @@ const { quien, contexto, fuente } = Astro.props;
 </figure>
 
 <style>
-  .cita { margin: var(--e-6) 0; padding: 0 0 0 var(--e-4); border-left: 6px solid var(--color-destacado); }
+  /* Pull quote con resaltado mantequilla (DESIGN §7). */
+  .cita { margin: var(--s-5) 0; padding: 0; }
   blockquote {
-    margin: 0; font-family: var(--fuente-titular); font-size: var(--t-xl); line-height: 1.15;
+    margin: 0; font-family: var(--font-title); font-weight: 700;
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.2rem); line-height: 1.12; letter-spacing: -0.02em;
   }
-  blockquote :global(p) { margin: 0; }
-  figcaption { margin-top: var(--e-3); font-size: var(--t-s); color: var(--color-texto-suave); }
+  blockquote :global(p) { margin: 0; display: inline; background: var(--highlight); color: var(--on-color);
+    padding: 0 0.15em; border-radius: 0.15em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  figcaption { margin-top: var(--s-3); font-size: var(--t-small); color: var(--muted); }
 </style>

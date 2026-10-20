@@ -17,9 +17,9 @@ const { titulo, resumen, meta, ejemplo } = Astro.props;
 </Base>
 
 <style>
-  .documento { padding-top: var(--e-6); }
-  .documento h1 { font-size: var(--t-xl); }
-  .documento__resumen { font-size: var(--t-l); color: var(--color-texto-suave); border-bottom: var(--borde); padding-bottom: var(--e-4); }
-  .documento__cuerpo :global(h2) { font-size: var(--t-l); margin-top: var(--e-5); }
-  .documento__cuerpo :global(li) { margin-bottom: var(--e-2); }
+  .documento { padding-top: var(--s-6); }
+  .documento h1 { font-size: var(--t-card); }
+  .documento__resumen { font-size: var(--t-lead); color: var(--muted); border-bottom: var(--border); padding-bottom: var(--s-4); }
+  .documento__cuerpo :global(h2) { font-size: var(--t-lead); margin-top: var(--s-5); }
+  .documento__cuerpo :global(li) { margin-bottom: var(--s-2); }
 </style>

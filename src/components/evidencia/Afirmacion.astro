@@ -1,8 +1,6 @@
 ---
-// Una afirmación con respaldo. Uso en MDX:
-//   <Afirmacion fuente="id-de-la-fuente">texto de la afirmación</Afirmacion>
-// La fuente se define en el frontmatter del módulo (lista "fuentes").
-// Siempre se puede abrir con clic o teclado; el modo evidencia además la resalta.
+// Afirmación con respaldo: <Afirmacion fuente="id">texto</Afirmacion>
+// Siempre se abre con clic o teclado; el modo evidencia además la resalta.
 interface Props { fuente: string }
 const { fuente } = Astro.props;
 ---
@@ -13,31 +11,27 @@ const { fuente } = Astro.props;
     all: unset;
     display: inline;
     cursor: pointer;
-    text-decoration: underline dotted;
-    text-decoration-color: var(--color-texto-suave);
+    text-decoration: underline dotted 2px;
+    text-decoration-color: var(--muted);
     text-underline-offset: 0.25em;
-    border-radius: 3px;
+    border-radius: 0.2em;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
-    transition: background var(--dur-rapida);
   }
-  .afirmacion:hover { background: var(--color-dato); }
-  .afirmacion:focus-visible { outline: 3px solid var(--color-texto); outline-offset: 2px; }
-
+  @media (hover: hover) { .afirmacion:hover { background: var(--band); } }
+  .afirmacion:focus-visible { outline: 3px solid var(--fg); outline-offset: 2px; }
   .afirmacion__marca {
-    font-size: 0.7em; vertical-align: super; line-height: 0;
-    margin-left: 0.1em; color: var(--color-texto-suave);
+    font-size: 0.7em; vertical-align: super; line-height: 0; margin-left: 0.1em; color: var(--muted);
   }
   .afirmacion__marca::before { content: attr(data-n); }
 
-  /* Modo evidencia activo: cada afirmación se ilumina y muestra su número de fuente */
+  /* Modo evidencia: resaltado mantequilla con texto tinta (también en oscuro) */
   :global(html[data-evidencia]) .afirmacion {
-    background: var(--color-destacado);
+    background: var(--highlight);
+    color: var(--on-color);
     text-decoration: none;
-    box-shadow: 0 0 0 2px var(--color-destacado);
+    box-shadow: none;
+    padding: 0 0.1em;
   }
-  :global(html[data-evidencia]) .afirmacion__marca {
-    color: var(--color-texto);
-    font-weight: 700;
-  }
+  :global(html[data-evidencia]) .afirmacion__marca { color: var(--on-color); font-weight: 700; }
 </style>

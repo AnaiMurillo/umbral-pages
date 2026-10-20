@@ -1,25 +1,87 @@
 ---
 import Base from '../layouts/Base.astro';
-import HeroFijado from '../components/inicio/HeroFijado.astro';
+import Cerebro from '../components/inicio/Cerebro.astro';
 import MapaPilares from '../components/inicio/MapaPilares.astro';
 
 // Manifiesto: texto de relleno hasta que Isabel lo redacte.
 const frases = [
   '[Relleno] Cada interfaz es un umbral: lo cruzamos sin darnos cuenta.',
   '[Relleno] Aquí no se cuenta cómo nos comportamos frente a la tecnología: se prueba.',
-  '[Relleno] Investigación desde Latinoamérica, para leer con el scroll.',
 ];
 ---
 <Base>
-  <HeroFijado frases={frases} />
+  <section class="hero contenedor" aria-labelledby="hero-titulo">
+    <div class="hero__texto">
+      <p class="etiqueta etiqueta--banda">Behavioral HCI · Human-Centered AI · LatAm</p>
+      <h1 id="hero-titulo" class="hero__titulo">Lo que <span class="resaltado-rosa">hacemos</span> frente a una pantalla, explicado con el scroll.</h1>
+      {frases.map((f) => <p class="hero__frase">{f}</p>)}
+      <a class="boton" href="#mapa-titulo">Explorar los pilares</a>
+    </div>
+    <div class="hero__cerebro">
+      <Cerebro />
+    </div>
+  </section>
+
+  <!-- Trazo de entrada al mapa: dibujado por scroll (GSAP, solo en el Inicio) -->
+  <div class="trazo" aria-hidden="true">
+    <svg viewBox="0 0 1200 260" preserveAspectRatio="none" class="trazo__svg">
+      <path data-trazo-inicio d="M-40 40 C 260 40, 320 220, 620 200 S 980 60, 1240 160" pathLength="1" />
+    </svg>
+  </div>
+
   <MapaPilares />
+
   <section class="lectura cierre" data-reveal>
     <p class="etiqueta">Para fundaciones, empresas y medios</p>
     <h2>[Relleno] ¿Investigamos juntos?</h2>
     <p>[Relleno] Una línea que invita a colaborar.</p>
-    <a class="boton boton--lleno" href="/colabora">Colabora</a>
+    <a class="boton" href="/colabora">Colabora</a>
   </section>
 </Base>
+
 <style>
-  .cierre { padding-block: var(--e-6); }
+  .hero {
+    display: grid; gap: var(--s-4); align-items: center;
+    padding-block: var(--s-5) var(--s-4);
+  }
+  .hero__titulo { font-size: clamp(2.875rem, 1.5rem + 4vw, 5.5rem); margin-top: var(--s-3); }
+  .hero__frase { font-size: var(--t-lead); color: var(--muted); max-width: 34rem; }
+  .hero__cerebro { order: -1; width: min(100%, 26rem); justify-self: center; }
+  .resaltado-rosa {
+    background: var(--rosa); color: var(--on-color);
+    padding: 0 0.1em; border-radius: 0.16em;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  @media (min-width: 52rem) {
+    .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); min-height: calc(100svh - 4rem); padding-block: var(--s-5); }
+    .hero__cerebro { order: 0; width: 100%; }
+  }
+
+  .trazo { position: relative; height: clamp(120px, 18vw, 240px); margin-bottom: calc(-1 * clamp(80px, 10vw, 160px)); overflow: hidden; }
+  .trazo__svg { width: 100%; height: 100%; overflow: visible; }
+  .trazo path {
+    fill: none; stroke: var(--path); stroke-linecap: round;
+    stroke-width: clamp(56px, 9vw, 120px);
+    vector-effect: non-scaling-stroke;
+  }
+
+  .cierre { padding-block: var(--s-6); }
 </style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+
+  const trazo = document.querySelector<SVGPathElement>('[data-trazo-inicio]');
+  const quieto = document.documentElement.hasAttribute('data-estatico');
+  if (trazo && !quieto) {
+    gsap.matchMedia().add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(trazo, { strokeDasharray: '1 1', strokeDashoffset: 1 }, {
+        strokeDashoffset: 0,
+        ease: 'none',
+        scrollTrigger: { trigger: trazo.closest('.trazo'), start: 'top 90%', end: 'bottom 35%', scrub: 0.5 },
+      });
+    });
+  }
+</script>

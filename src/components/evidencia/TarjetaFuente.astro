@@ -22,25 +22,23 @@ const { fuentes } = Astro.props;
   .tarjeta {
     margin: 0; inset: auto;
     width: min(24rem, calc(100vw - 2rem));
-    background: var(--color-superficie); color: var(--color-texto);
-    border: 2px solid var(--color-texto); border-radius: var(--radio);
-    box-shadow: 6px 6px 0 var(--color-texto);
-    padding: var(--e-4); padding-right: var(--e-5);
+    background: var(--surface); color: var(--fg);
+    border: 1.5px solid var(--outline); border-radius: var(--r-card);
+    padding: var(--s-4); padding-right: var(--s-5);
   }
   .tarjeta::backdrop { background: transparent; }
-  .tarjeta p { margin: 0 0 var(--e-2); }
-  .tarjeta__titulo { font-size: var(--t-m); font-weight: 700; }
-  .tarjeta__meta { color: var(--color-texto-suave); font-size: var(--t-s); }
-  .tarjeta__acciones { display: flex; flex-wrap: wrap; gap: var(--e-3); font-size: var(--t-s); margin-top: var(--e-3) !important; }
+  .tarjeta p { margin: 0 0 var(--s-2); }
+  .tarjeta__titulo { font-size: var(--t-body); font-weight: 700; }
+  .tarjeta__meta { color: var(--muted); font-size: var(--t-small); }
+  .tarjeta__acciones { display: flex; flex-wrap: wrap; gap: var(--s-3); font-size: var(--t-small); margin-top: var(--s-3) !important; }
+  .tarjeta__acciones a { min-height: 44px; display: inline-flex; align-items: center; }
   .tarjeta__cerrar {
-    position: absolute; top: var(--e-2); right: var(--e-2);
-    width: 36px; height: 36px; border: 0; background: none; font-size: 1.5rem; cursor: pointer; border-radius: 50%;
+    position: absolute; top: var(--s-2); right: var(--s-2);
+    width: 44px; height: 44px; border: 0; background: none; font-size: 1.5rem; cursor: pointer; border-radius: 50%; color: var(--fg);
   }
-  .tarjeta__cerrar:hover { background: var(--color-dato); }
-
-  /* Móvil: hoja inferior */
+  @media (hover: hover) { .tarjeta__cerrar:hover { background: var(--band); } }
   @media (max-width: 40rem) {
-    .tarjeta { position: fixed; left: 1rem; right: 1rem; bottom: 1rem; top: auto; width: auto; }
+    .tarjeta { position: fixed; left: 1rem; right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom)); top: auto; width: auto; }
   }
 </style>
 
@@ -102,8 +100,11 @@ const { fuentes } = Astro.props;
   tarjeta?.addEventListener('toggle', (e) => {
     if ((e as ToggleEvent).newState === 'closed') origen?.focus();
   });
-  // Cerrar al hacer scroll largo, para que no quede flotando lejos de su afirmación
+  // Cerrar tras un scroll largo (más de 200 px desde que se abrió), para que no quede
+  // flotando lejos de su afirmación. El desplazamiento al enfocar con teclado no la cierra.
+  let yApertura = 0;
+  tarjeta?.addEventListener('toggle', (e) => { if ((e as ToggleEvent).newState === 'open') yApertura = scrollY; });
   addEventListener('scroll', () => {
-    if (tarjeta?.matches(':popover-open') && matchMedia('(min-width: 40.01rem)').matches) tarjeta.hidePopover();
+    if (tarjeta?.matches(':popover-open') && Math.abs(scrollY - yApertura) > 200 && matchMedia('(min-width: 40.01rem)').matches) tarjeta.hidePopover();
   }, { passive: true });
 </script>

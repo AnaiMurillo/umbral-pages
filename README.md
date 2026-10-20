@@ -2,7 +2,7 @@
 
 Plataforma de investigación en Behavioral HCI y Human-Centered AI para Latinoamérica, hecha de artículos interactivos.
 
-Sitio estático con **Astro** y componentes interactivos en **Svelte**. Gráficos con **D3**, pasos con **Scrollama** y el hero del Inicio con **GSAP ScrollTrigger**. Se publica en **Cloudflare Workers** (archivos estáticos).
+Sitio estático con **Astro** y componentes interactivos en **Svelte**. El camino grueso y el Inicio usan **GSAP ScrollTrigger**; la parada activa, **Scrollama**; lo demás, CSS. Fuentes locales (Bricolage Grotesque y Questrial). Diseño: `docs/DESIGN.md`. Accesibilidad: `docs/ACCESIBILIDAD.md`. Se publica en **Cloudflare Workers** (archivos estáticos).
 
 ## Editar contenido (sin tocar código)
 
@@ -18,22 +18,26 @@ Sitio estático con **Astro** y componentes interactivos en **Svelte**. Gráfico
 
 ### Componentes que puedes usar en el texto de un módulo
 
+El diseño sigue `docs/DESIGN.md`. Cada módulo es un **camino grueso** con cinco paradas: Gancho y Qué hacer salen del frontmatter; las tres del medio se escriben en el MDX:
+
 ```mdx
+<Parada escena="jugable" etiqueta="Escena jugable" titulo="Pruébalo tú">
+  Texto de la tarjeta, gráficos y decisión.
+</Parada>
+<Parada escena="revelacion" etiqueta="El hallazgo" titulo={frontmatter.hallazgo}>...</Parada>
+<Parada escena="evidencia" etiqueta="La evidencia" titulo="...">...</Parada>
+
 <Afirmacion fuente="id-de-fuente">una afirmación importante</Afirmacion>
-
-<EscenaFija etiqueta="Nombre de la escena">
-  <GraficoMecanismo slot="grafico" client:visible ... />
-  <Paso>Texto del paso 1</Paso>
-  <Paso>Texto del paso 2</Paso>
-</EscenaFija>
-
-<Revelacion hallazgo={frontmatter.hallazgo}>Respaldo breve</Revelacion>
 <PullQuote quien="Nombre" contexto="cargo" fuente="id">Cita</PullQuote>
 <Llamada titulo="Dato de Colombia" tipo="dato">...</Llamada>   (tipo: dato | ojo)
 <LecturaRapida>- punto 1 - punto 2</LecturaRapida>
 <Acordeon titulo="Comunicado oficial" meta="Entidad · fecha">...</Acordeon>
 <PublicacionX url="https://x.com/..." autor="@cuenta" fecha="2026">Texto</PublicacionX>
 ```
+
+- `color: celeste | rosa` en el frontmatter elige el color del camino.
+- En el titular, `*palabra*` se resalta en rosa.
+- Las criaturas, sus objetos y la composición de computador y móvil están en `src/components/camino/composiciones.ts`.
 
 Cada `<Afirmacion>` debe apuntar a un `id` de la lista `fuentes` del mismo archivo. Si no existe, la consola del navegador avisa.
 
@@ -59,6 +63,4 @@ Versión estática de cualquier página: agrega `?estatico=1` a la URL (`?estati
 
 ## Pendientes
 
-- `--umbral-negro` en `src/styles/tokens.css` es provisional (`#1A1A1A`): reemplazar por el código exacto de Wix.
-- Aether: si se puede usar fuera de Wix, poner los archivos en `public/fonts/` y declararla con `@font-face`. Mientras tanto se usa Archivo Black.
 - El correo de `colabora.astro` es de relleno.

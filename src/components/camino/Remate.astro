@@ -1,0 +1,44 @@
+---
+// Cierre del camino: colinas y nubes hechas con semicírculos (DESIGN.md §5b).
+// El camino termina en [data-remate-ancla]. El llamado a la acción va encima.
+---
+<section class="remate" aria-label="Siguiente paso">
+  <div class="remate__cta contenedor">
+    <slot />
+  </div>
+  <div class="remate__paisaje" aria-hidden="true">
+    <span class="remate__ancla" data-remate-ancla></span>
+    <svg class="remate__svg remate__svg--pc" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice">
+      <g data-pieza-remate><circle cx="1010" cy="70" r="46" fill="var(--a3)" /></g>
+      <g data-pieza-remate fill="var(--surface)">
+        <path d="M150 120 a34 34 0 0 1 68 0 a26 26 0 0 1 52 0 Z" /><path d="M820 96 a28 28 0 0 1 56 0 a22 22 0 0 1 44 0 Z" />
+      </g>
+      <g data-pieza-remate><path d="M40 300 A250 250 0 0 1 540 300 Z" fill="var(--a4)" /></g>
+      <g data-pieza-remate><path d="M640 300 A290 290 0 0 1 1220 300 Z" fill="var(--a1)" /></g>
+      <g data-pieza-remate><path d="M440 300 A150 150 0 0 1 740 300 Z" fill="var(--a2)" /></g>
+      <g data-pieza-remate><path d="M-60 300 A120 120 0 0 1 180 300 Z" fill="var(--a3)" /></g>
+    </svg>
+    <svg class="remate__svg remate__svg--movil" viewBox="0 0 400 220" preserveAspectRatio="xMidYMax slice">
+      <g data-pieza-remate><circle cx="350" cy="70" r="24" fill="var(--a3)" /></g>
+      <g data-pieza-remate><path d="M40 70 a22 22 0 0 1 44 0 a16 16 0 0 1 32 0 Z" fill="var(--surface)" /></g>
+      <g data-pieza-remate><path d="M-40 220 A150 150 0 0 1 260 220 Z" fill="var(--a4)" /></g>
+      <g data-pieza-remate><path d="M190 220 A130 130 0 0 1 450 220 Z" fill="var(--a1)" /></g>
+      <g data-pieza-remate><path d="M130 220 A70 70 0 0 1 270 220 Z" fill="var(--a2)" /></g>
+    </svg>
+  </div>
+</section>
+
+<style>
+  .remate { position: relative; z-index: 1; padding-top: 12vh; }
+  .remate__cta { position: relative; z-index: 3; display: grid; justify-items: center; text-align: center; }
+  .remate__paisaje { position: relative; margin-top: -2rem; height: clamp(180px, 26vw, 300px); }
+  .remate__ancla { position: absolute; left: 50%; top: 42%; width: 1px; height: 1px; }
+  .remate__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .remate__svg :global([data-pieza-remate]) { transform-box: fill-box; transform-origin: 50% 100%; }
+  .remate__svg--movil { display: none; }
+  @media (max-width: 51.99rem) {
+    .remate__svg--pc { display: none; }
+    .remate__svg--movil { display: block; }
+    .remate__paisaje { height: 200px; margin-top: var(--s-4); }
+  }
+</style>

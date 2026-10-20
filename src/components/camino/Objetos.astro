@@ -1,0 +1,72 @@
+---
+// Objetos secundarios de una parada: estrellas, círculos, notas, flechas y estelas.
+// Se colocan relativos a la caja de la criatura. Decorativos (aria-hidden).
+import type { Objeto } from './composiciones';
+
+interface Props { lista: Objeto[]; id: string }
+const { lista, id } = Astro.props;
+const color = (c: Objeto['color']) => (c === 'line' ? 'var(--line)' : `var(--${c})`);
+---
+{lista.map((o, i) => {
+  const estilo = [
+    `--x:${o.pc.x}%`, `--y:${o.pc.y}%`, `--giro:${o.pc.giro ?? 0}deg`, `--tam:${o.tam}px`,
+    o.movil ? `--xm:${o.movil.x}%` : '', o.movil ? `--ym:${o.movil.y}%` : '', o.movil ? `--girom:${o.movil.giro ?? 0}deg` : '',
+  ].filter(Boolean).join(';');
+  const mascara = `estela-${id}-${i}`;
+  return (
+    <span
+      class:list={['objeto', `objeto--${o.tipo}`, { 'objeto--solo-pc': !o.movil }]}
+      style={estilo}
+      data-parallax={o.parallax ?? undefined}
+      aria-hidden="true"
+    >
+      {o.tipo === 'estrella' && (
+        <svg viewBox="0 0 24 24"><path d="M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z" fill={color(o.color)} /></svg>
+      )}
+      {o.tipo === 'circulo' && (
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill={color(o.color)} /></svg>
+      )}
+      {o.tipo === 'nota' && (
+        <svg viewBox="0 0 24 30">
+          <circle cx="7" cy="23" r="7" fill={color(o.color)} />
+          <rect x="11" y="2" width="3.5" height="22" rx="1.75" fill={color(o.color)} />
+          <rect x="11" y="1" width="12" height="6" rx="3" fill={color(o.color)} />
+        </svg>
+      )}
+      {o.tipo === 'flecha' && (
+        <svg viewBox="0 0 80 44" fill="none" stroke={color(o.color)} stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 38 Q30 4 72 14" /><path d="M60 5 L73 14 L61 25" />
+        </svg>
+      )}
+      {o.tipo === 'estela' && (
+        <svg viewBox="0 0 260 80" fill="none">
+          <defs>
+            <mask id={mascara} maskUnits="userSpaceOnUse" x="-10" y="-10" width="280" height="100">
+              <path data-estela-mascara d="M4 60 C50 4 100 90 150 40 S230 6 256 44" stroke="#fff" stroke-width="12" stroke-linecap="round" pathLength="1" />
+            </mask>
+          </defs>
+          <path d="M4 60 C50 4 100 90 150 40 S230 6 256 44" stroke={color(o.color)} stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 11" mask={`url(#${mascara})`} />
+        </svg>
+      )}
+    </span>
+  );
+})}
+
+<style>
+  .objeto {
+    position: absolute;
+    left: var(--x); top: var(--y);
+    width: var(--tam);
+    rotate: var(--giro);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .objeto svg { width: 100%; height: auto; overflow: visible; }
+  .objeto--estela { z-index: 0; }
+
+  @media (max-width: 51.99rem) {
+    .objeto { left: var(--xm); top: var(--ym); rotate: var(--girom); width: calc(var(--tam) * 0.8); }
+    .objeto--estela { width: min(calc(var(--tam) * 0.7), 60vw); }
+    .objeto--solo-pc { display: none; }
+  }
+</style>

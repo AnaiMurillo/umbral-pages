@@ -7,11 +7,17 @@
     opciones: string[];
     medirTiempo?: boolean;
     permitirCambio?: boolean;
+    /** Respuesta inmediata que se muestra tras elegir cada opción (mismo orden que opciones). */
+    respuestas?: string[];
     alDecidir?: (r: { opcion: number; ms: number | null; cambios: number }) => void;
   }
-  let { pregunta, opciones, medirTiempo = true, permitirCambio = true, alDecidir }: Props = $props();
+  let { pregunta, opciones, medirTiempo = true, permitirCambio = true, respuestas = [], alDecidir }: Props = $props();
 
-  let fase = $state<'espera' | 'eligiendo' | 'decidido'>(medirTiempo ? 'espera' : 'eligiendo');
+  import { onMount } from 'svelte';
+  // Respuesta inmediata (DESIGN §7): las opciones se ven de una vez. El tiempo de
+  // reacción se mide desde que las opciones aparecen en pantalla por primera vez.
+  let fase = $state<'eligiendo' | 'decidido'>('eligiendo');
+  let caja: HTMLFieldSetElement;
   let elegida = $state<number | null>(null);
   let ms = $state<number | null>(null);
   let cambios = $state(0);
@@ -20,28 +26,29 @@
 
   const segundos = $derived(ms === null ? '' : (ms / 1000).toLocaleString('es-CO', { maximumFractionDigits: 1, minimumFractionDigits: 1 }));
 
-  function empezar() {
-    fase = 'eligiendo';
-    inicio = performance.now();
-    queueMicrotask(() => primeraOpcion?.focus());
-  }
+  onMount(() => {
+    if (!medirTiempo) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !inicio) { inicio = performance.now(); io.disconnect(); }
+    }, { threshold: 0.6 });
+    io.observe(caja);
+    return () => io.disconnect();
+  });
 
   function elegir(i: number) {
     if (fase === 'decidido' && elegida !== i) cambios += 1;
-    if (fase === 'eligiendo' && medirTiempo) ms = Math.round(performance.now() - inicio);
+    if (fase === 'eligiendo' && medirTiempo && inicio) ms = Math.round(performance.now() - inicio);
     elegida = i;
     fase = 'decidido';
     alDecidir?.({ opcion: i, ms, cambios });
   }
 </script>
 
-<fieldset class="decision" class:decision--decidido={fase === 'decidido'}>
+<fieldset class="decision" class:decision--decidido={fase === 'decidido'} bind:this={caja}>
   <legend class="decision__pregunta">{pregunta}</legend>
 
-  {#if fase === 'espera'}
-    <p class="decision__ayuda">Cuando pulses, mediremos cuánto tardas en decidir. No se guarda nada.</p>
-    <button type="button" class="boton boton--lleno" onclick={empezar}>Estoy listo</button>
-  {:else}
+  {#if medirTiempo}<p class="decision__ayuda">Medimos cuánto tardas en decidir. No se guarda nada.</p>{/if}
+  {#if true}
     <div class="decision__opciones">
       {#each opciones as opcion, i}
         {#if i === 0}
@@ -68,23 +75,24 @@
     {#if fase === 'decidido' && elegida !== null}
       {`Elegiste «${opciones[elegida]}»`}{#if ms !== null}{` en ${segundos} s`}{/if}.
       {#if cambios > 0}{` Cambiaste de opinión ${cambios} ${cambios === 1 ? 'vez' : 'veces'}.`}{/if}
+      {#if respuestas[elegida]}<span class="decision__respuesta">{respuestas[elegida]}</span>{/if}
     {/if}
   </p>
 </fieldset>
 
 <style>
   .decision {
-    border: 2px solid var(--color-texto);
-    border-radius: var(--radio);
-    background: var(--color-superficie);
-    padding: var(--e-3) var(--e-4) var(--e-2);
-    margin: 0;
-    min-width: 0;
+    border: 0; margin: 0; padding: 0; min-width: 0;
   }
-  .decision__pregunta { font-weight: 700; padding: 0 var(--e-2); }
-  .decision__ayuda { font-size: var(--t-s); color: var(--color-texto-suave); margin: var(--e-2) 0 var(--e-3); }
-  .decision__opciones { display: flex; flex-wrap: wrap; gap: var(--e-2); margin-top: var(--e-2); }
-  .decision__opcion[aria-pressed='true'] { background: var(--color-invertido); color: var(--color-texto-inv); }
+  .decision__pregunta { font-family: var(--font-title); font-weight: 700; font-size: var(--t-lead); letter-spacing: -0.01em; padding: 0; margin-bottom: var(--s-2); }
+  .decision__ayuda { font-size: var(--t-small); color: var(--muted); margin: 0 0 var(--s-3); }
+  .decision__opciones { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .decision__opcion { background: var(--surface); color: var(--fg); border-color: var(--outline); }
+  .decision__opcion[aria-pressed='true'] { background: var(--a4); color: var(--on-color); border-color: var(--on-color); }
   .decision__opcion:disabled { opacity: 0.45; cursor: not-allowed; }
-  .decision__resultado { min-height: 1.6em; margin: var(--e-2) 0 0; font-size: var(--t-s); }
+  .decision__resultado { min-height: 1.6em; margin: var(--s-3) 0 0; font-size: var(--t-small); }
+  .decision__respuesta {
+    display: block; margin-top: var(--s-2); padding: var(--s-2) var(--s-3);
+    background: var(--highlight); color: var(--on-color); border-radius: 14px; font-size: var(--t-body);
+  }
 </style>

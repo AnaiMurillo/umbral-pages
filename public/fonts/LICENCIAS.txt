@@ -1,0 +1,2 @@
+Bricolage Grotesque y Questrial: SIL Open Font License 1.1 (https://openfontlicense.org).
+Archivos tomados de Fontsource (npm), subconjuntos latin y latin-ext.

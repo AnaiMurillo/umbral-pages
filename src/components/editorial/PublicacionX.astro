@@ -10,18 +10,18 @@ const { url, autor, fecha } = Astro.props;
     <slot />
     <p class="publicacion__autor">— {autor}{fecha && `, ${fecha}`} · <a href={url} target="_blank" rel="noopener">ver en X ↗</a></p>
   </blockquote>
-  <button type="button" class="boton publicacion__cargar">Ver publicación original</button>
+  <button type="button" class="boton boton--claro publicacion__cargar">Ver publicación original</button>
   <figcaption class="publicacion__nota">Al cargarla, X puede registrar tu visita.</figcaption>
 </figure>
 
 <style>
-  .publicacion { margin: var(--e-5) 0; }
+  .publicacion { margin: var(--s-4) 0; }
   .twitter-tweet {
-    margin: 0 0 var(--e-3); padding: var(--e-4);
-    background: var(--color-superficie); border: var(--borde); border-radius: var(--radio);
+    margin: 0 0 var(--s-3); padding: var(--s-4);
+    background: var(--surface); border: 1.5px solid var(--outline); border-radius: calc(var(--r-card) * 0.7);
   }
-  .publicacion__autor { margin: var(--e-3) 0 0; font-size: var(--t-s); color: var(--color-texto-suave); }
-  .publicacion__nota { font-size: var(--t-xs); color: var(--color-texto-suave); margin-top: var(--e-2); }
+  .publicacion__autor { margin: var(--s-3) 0 0; font-size: var(--t-small); color: var(--muted); }
+  .publicacion__nota { font-size: var(--t-label); color: var(--muted); margin-top: var(--s-2); }
 </style>
 
 <script>

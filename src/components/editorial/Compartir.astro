@@ -3,7 +3,7 @@
 interface Props { titulo: string }
 const { titulo } = Astro.props;
 ---
-<button type="button" class="boton" data-compartir={titulo}>Compartir</button>
+<button type="button" class="boton boton--claro" data-compartir={titulo}>Compartir</button>
 <span class="visualmente-oculto" aria-live="polite" data-compartir-aviso></span>
 
 <script>

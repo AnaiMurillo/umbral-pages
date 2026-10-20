@@ -1,0 +1,22 @@
+---
+// Envoltorio de criatura: SVG inline, decorativo (aria-hidden).
+// Base de la criatura = borde inferior del viewBox: ahí se apoya en el camino.
+import Pregunta from './Pregunta.astro';
+import Sello from './Sello.astro';
+import Ojo from './Ojo.astro';
+import Pila from './Pila.astro';
+import Saltarin from './Saltarin.astro';
+
+const criaturas = { pregunta: Pregunta, sello: Sello, ojo: Ojo, pila: Pila, saltarin: Saltarin };
+
+interface Props { nombre: keyof typeof criaturas }
+const Forma = criaturas[Astro.props.nombre];
+---
+<svg class="criatura" viewBox="0 0 400 320" aria-hidden="true" focusable="false" data-criatura={Astro.props.nombre}>
+  <Forma />
+</svg>
+
+<style>
+  .criatura { width: 100%; height: auto; overflow: visible; display: block; }
+  .criatura :global([data-pieza]) { transform-box: fill-box; transform-origin: center; }
+</style>

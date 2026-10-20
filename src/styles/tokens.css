@@ -1,62 +1,112 @@
 /* ==========================================================
-   Umbral — tokens de marca
-   Paleta tomada del kit de Wix. Cambia aquí y cambia en todo el sitio.
+   Umbral — tokens de diseño (fuente de verdad: docs/DESIGN.md)
+   Paleta ampliada aprobada + tokens semánticos + modo oscuro.
+   Los componentes usan SOLO los tokens semánticos (sección 2).
    ========================================================== */
+
 :root {
-  /* Kit de marca */
-  --umbral-celeste: #D6F7FF;
-  --umbral-rosa:    #FFCFE9;
-  --umbral-gris:    #464746;
-  --umbral-crema:   #FCFCF0;
-  --umbral-negro:   #1A1A1A; /* PROVISIONAL: reemplazar por el código exacto de Wix */
-  --umbral-blanco:  #FFFFFF;
+  /* ---------- Paleta (sección 2) ---------- */
+  --crema:       #FCFCF0;
+  --celeste:     #D6F7FF;
+  --rosa:        #FFCFE9;
+  --gris:        #464746;
+  --tinta:       #1F2120;
+  --celeste-v:   #7CCBE8;
+  --rosa-v:      #FF8DC7;
+  --mantequilla: #FFE27A;
+  --menta:       #BDEBCB;
+  --blanco:      #FFFFFF;
 
-  /* Usos (roles). Los componentes usan estos, no los colores directos.
-     Contraste AA verificado: negro y gris pasan sobre crema, celeste, rosa y blanco
-     (mínimo 6.8:1). El blanco NUNCA va como texto sobre pasteles. */
-  --color-fondo:        var(--umbral-crema);
-  --color-superficie:   var(--umbral-blanco);
-  --color-texto:        var(--umbral-negro);
-  --color-texto-suave:  var(--umbral-gris);
-  --color-linea:        var(--umbral-gris);
-  --color-dato:         var(--umbral-celeste);
-  --color-destacado:    var(--umbral-rosa);
-  --color-invertido:    var(--umbral-negro);
-  --color-texto-inv:    var(--umbral-crema);
+  /* ---------- Tokens semánticos: modo claro ---------- */
+  --bg:       var(--crema);     /* fondo de página */
+  --band:     var(--celeste);   /* bandas, etiquetas, fondos suaves */
+  --surface:  var(--blanco);    /* tarjetas */
+  --fg:       var(--tinta);     /* texto principal */
+  --muted:    var(--gris);      /* texto secundario */
+  --line:     var(--tinta);     /* líneas finas y estelas sobre el fondo */
+  --outline:  var(--tinta);     /* borde de tarjetas */
+  --a1: var(--celeste-v);       /* formas principales */
+  --a2: var(--rosa-v);
+  --a3: var(--mantequilla);
+  --a4: var(--menta);
+  --path: var(--celeste-v);     /* camino grueso; un módulo puede pedir rosa con data-color="rosa" */
+  --on-color: var(--tinta);     /* texto sobre cualquier pastel o color vivo: SIEMPRE tinta */
+  --btn-bg: var(--tinta);
+  --btn-fg: var(--crema);
+  --highlight: var(--mantequilla);
+  color-scheme: light;
 
-  /* Tipografía
-     Titulares: Aether (pendiente de licencia fuera de Wix).
-     Mientras tanto se usa Archivo Black, de carácter grueso parecido. */
-  --fuente-titular: 'Aether', 'Archivo Black', 'Arial Black', system-ui, sans-serif;
-  --fuente-cuerpo:  'Questrial', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* ---------- Tipografía (sección 3) ---------- */
+  --font-title: 'Bricolage Grotesque', 'Arial Black', system-ui, sans-serif;
+  --font-body:  'Questrial', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --t-label: 0.8125rem;                                   /* 13px */
+  --t-small: 0.9375rem;
+  --t-body:  1.0625rem;                                   /* 17px */
+  --t-lead:  1.1875rem;                                   /* 19px */
+  --t-card:  clamp(1.75rem, 1.3rem + 1.6vw, 2.625rem);    /* 28 a 42px */
+  --t-hero:  clamp(2.875rem, 1.6rem + 5.6vw, 6.5rem);     /* 46 a 104px */
+  --title-tracking: -0.03em;
+  --title-leading: 1.02;
 
-  /* Escala tipográfica fluida (móvil → escritorio) */
-  --t-xs:   0.8125rem;
-  --t-s:    0.9375rem;
-  --t-m:    clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-  --t-l:    clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-  --t-xl:   clamp(1.6rem, 1.3rem + 1.4vw, 2.4rem);
-  --t-xxl:  clamp(2.2rem, 1.6rem + 3vw, 4.2rem);
-  --t-hero: clamp(3.2rem, 1.5rem + 9vw, 10rem);
+  /* ---------- Layout y formas (sección 4) ---------- */
+  --container: 1080px;
+  --gutter: max(16px, env(safe-area-inset-left), env(safe-area-inset-right), 4vw);
+  --measure: 65ch;
+  --r-card: 28px;
+  --r-band: 36px;
+  --r-pill: 999px;
+  --border: 1.5px solid var(--outline);
+  --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 1rem; --s-4: 1.5rem; --s-5: 2.5rem; --s-6: 4rem; --s-7: 6rem;
 
-  /* Espaciado */
-  --e-1: 0.25rem;
-  --e-2: 0.5rem;
-  --e-3: 1rem;
-  --e-4: 1.5rem;
-  --e-5: 2.5rem;
-  --e-6: 4rem;
-  --e-7: 6rem;
-
-  /* Layout */
-  --ancho-lectura: 38rem;
-  --ancho-amplio:  72rem;
-  --gutter: clamp(1rem, 4vw, 2.5rem);
-  --radio: 0.75rem;
-  --borde: 1.5px solid var(--color-linea);
-
-  /* Movimiento */
-  --dur-rapida: 160ms;
-  --dur-media: 400ms;
-  --curva: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 220ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
+
+/* ---------- Modo oscuro (sección 2) ----------
+   Sigue al sistema, salvo que la persona elija un modo con el botón. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #181A19;
+    --band: #252928;
+    --surface: #252928;
+    --fg: #F3F3E6;
+    --muted: #B5B8AE;
+    --line: #F3F3E6;
+    --outline: #B5B8AE;
+    --path: var(--crema);
+    --btn-bg: var(--crema);
+    --btn-fg: var(--tinta);
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #181A19;
+  --band: #252928;
+  --surface: #252928;
+  --fg: #F3F3E6;
+  --muted: #B5B8AE;
+  --line: #F3F3E6;
+  --outline: #B5B8AE;
+  --path: var(--crema);
+  --btn-bg: var(--crema);
+  --btn-fg: var(--tinta);
+  color-scheme: dark;
+}
+
+/* Color del camino por módulo: <article data-color="rosa"> (por defecto celeste).
+   En modo oscuro el camino siempre es crema. */
+[data-color='rosa'] { --path: var(--rosa-v); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-color] { --path: var(--crema); }
+}
+:root[data-theme='dark'] [data-color] { --path: var(--crema); }
+
+/* Colores de criatura: nunca el mismo que el camino, para que no se fundan con la cinta.
+   --cr1 ocupa el lugar del rosa vivo y --cr2 el del celeste vivo. */
+:root { --cr1: var(--rosa-v); --cr2: var(--celeste-v); }
+[data-color='celeste'] { --cr2: var(--menta); }
+[data-color='rosa']    { --cr1: var(--menta); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-color] { --cr1: var(--rosa-v); --cr2: var(--celeste-v); }
+}
+:root[data-theme='dark'] [data-color] { --cr1: var(--rosa-v); --cr2: var(--celeste-v); }

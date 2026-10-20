@@ -9,12 +9,11 @@ const { titulo, tipo = 'dato' } = Astro.props;
 </aside>
 
 <style>
-  .llamada {
-    margin: var(--e-5) 0; padding: var(--e-4);
-    border-radius: var(--radio); border: var(--borde);
-  }
-  .llamada--dato { background: var(--color-dato); }
-  .llamada--ojo  { background: var(--color-destacado); }
-  .llamada__titulo { font-family: var(--fuente-titular); font-size: var(--t-m); margin-bottom: var(--e-2); }
+  /* Llamada: banda suave. tipo "dato" = celeste, "ojo" = rosa. Texto siempre tinta. */
+  .llamada { margin: var(--s-4) 0; padding: var(--s-4); border-radius: calc(var(--r-card) * 0.7); color: var(--on-color); }
+  .llamada--dato { background: var(--celeste); }
+  .llamada--ojo  { background: var(--rosa); }
+  .llamada :global(a), .llamada :global(.afirmacion__marca) { color: var(--on-color); }
+  .llamada__titulo { font-family: var(--font-title); font-weight: 700; font-size: var(--t-lead); margin-bottom: var(--s-2); }
   .llamada :global(p:last-child) { margin-bottom: 0; }
 </style>
