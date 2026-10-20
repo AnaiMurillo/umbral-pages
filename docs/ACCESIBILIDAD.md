@@ -4,14 +4,14 @@
 **Método:** escaneo automático axe-core 4 (reglas WCAG 2.0/2.1 A y AA + buenas prácticas), recorrido con teclado, medición de objetivos táctiles, zoom al 200 % (720px), cálculo de contraste de la paleta. No se probó con lectores de pantalla reales (VoiceOver/NVDA): queda pendiente.
 
 ### Resumen
-**Hallazgos:** 6 | **Críticos:** 1 | **Mayores:** 2 | **Menores:** 3 · Corregidos: 5 · Pendiente de decisión: 1
+**Hallazgos:** 6 | **Críticos:** 1 | **Mayores:** 2 | **Menores:** 3 · Corregidos: 5 · Mejorado parcialmente: 1
 
 ### Hallazgos
 
 #### Perceptible
 | # | Hallazgo | Criterio | Severidad | Estado |
 |---|---|---|---|---|
-| 1 | Las paradas inactivas bajan a 35 % de opacidad (DESIGN §8). Mientras están atenuadas, el texto queda cerca de 2,4:1. | 1.4.3 Contraste | 🟡 Mayor | **Decisión pendiente.** El texto vuelve a 100 % al llegar a la zona de lectura, y con movimiento reducido o "Ver sin animación" nunca se atenúa. Opción: subir a 55 % (≈4,6:1), que cumple AA incluso atenuado. |
+| 1 | Las paradas inactivas se atenúan mientras no están en la zona de lectura. Con 35 % el texto quedaba en 2,1:1. | 1.4.3 Contraste | 🟡 Mayor | **Mejorado a 55 %** (decisión de Isabel). Atenuado: texto principal 3,7:1 y títulos ≥3:1 (pasan como texto grande); texto secundario 2,8:1 (no pasa). Pasaría todo desde 75 % (texto principal desde 62 %). El texto vuelve a 100 % al llegar a la zona de lectura, y con movimiento reducido o "Ver sin animación" nunca se atenúa. |
 | 2 | El texto secundario `#464746` no pasa AA sobre el fondo oscuro. | 1.4.3 | 🔴 Crítico (prevenido) | Corregido antes de construir: en oscuro se usa `--muted: #B5B8AE` (8,7:1). |
 
 #### Operable
@@ -58,5 +58,5 @@ Orden: saltar al contenido → logo → menú → tema → modo evidencia → ve
 - **Sin JavaScript:** el camino no se dibuja (es decorativo) y todo el contenido se lee.
 
 ### Prioridades
-1. **Decidir la opacidad de las paradas inactivas** (hallazgo 1): 35 % según DESIGN, o 55 % para cumplir AA también mientras están atenuadas.
+1. **Opacidad de las paradas inactivas** (hallazgo 1): ahora 55 %. Para cumplir AA también con el texto secundario atenuado haría falta 75 %.
 2. **Probar con VoiceOver (iPhone) y NVDA o TalkBack** antes de publicar el primer módulo real.

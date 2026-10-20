@@ -47,14 +47,14 @@ const Titulo = nivel;
   .parada__tarjeta :global(> p:not(.etiqueta)) { max-width: var(--measure); }
   .parada__criatura { position: relative; z-index: 2; }
 
-  /* La parada inactiva baja a 35 % (nunca a 0). Solo con animación activa. */
+  /* La parada inactiva baja a 55 % (nunca a 0). Solo con animación activa. */
   /* El fondo blanco de la tarjeta se mantiene opaco: solo se atenúa su contenido. */
   :global(.modulo[data-animado]) .parada__tarjeta > :global(*),
   :global(.modulo[data-animado]) .parada__criatura {
     transition: opacity 400ms var(--ease);
   }
   :global(.modulo[data-animado]) .parada:not([data-activa]) .parada__tarjeta > :global(*),
-  :global(.modulo[data-animado]) .parada:not([data-activa]) .parada__criatura { opacity: 0.35; }
+  :global(.modulo[data-animado]) .parada:not([data-activa]) .parada__criatura { opacity: 0.55; }
 
   /* ===================== MÓVIL (composición propia) =====================
      Una columna; la criatura (60-90 % del ancho) va arriba, alineada a su lado,

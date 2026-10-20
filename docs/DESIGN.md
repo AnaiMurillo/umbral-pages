@@ -107,7 +107,7 @@ Plantilla de módulo, 5 escenas: Gancho · Escena jugable · Revelación · Evid
 - Contraste AA mínimo. Foco visible de 3px en todos los controles.
 - Los gráficos y criaturas son decorativos (`aria-hidden`) salvo el cerebro, que lleva descripción.
 - Objetivos táctiles de al menos 44px.
-- Contenido completo visible sin scroll de activación (la parada inactiva baja a 35% de opacidad, nunca a 0).
+- Contenido completo visible sin scroll de activación (la parada inactiva baja a 55% de opacidad, nunca a 0; subido desde 35% el 2026-10-20 por contraste, ver docs/ACCESIBILIDAD.md).
 
 ## 9. Prohibido
 
