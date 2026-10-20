@@ -4,7 +4,7 @@
 ---
 <section class="remate" aria-label="Siguiente paso">
   <div class="remate__cta contenedor">
-    <slot />
+    <div class="remate__tarjeta tarjeta"><slot /></div>
   </div>
   <div class="remate__paisaje" aria-hidden="true">
     <span class="remate__ancla" data-remate-ancla></span>
@@ -31,6 +31,9 @@
 <style>
   .remate { position: relative; z-index: 1; padding-top: 12vh; }
   .remate__cta { position: relative; z-index: 3; display: grid; justify-items: center; text-align: center; }
+  /* Tarjeta: el texto nunca queda sobre la cinta (en oscuro el camino es crema). */
+  .remate__tarjeta { width: min(100%, 40rem); display: grid; justify-items: center; gap: var(--s-2); }
+  .remate__tarjeta :global(h2) { margin: 0; }
   .remate__paisaje { position: relative; margin-top: -2rem; height: clamp(180px, 26vw, 300px); }
   .remate__ancla { position: absolute; left: 50%; top: 42%; width: 1px; height: 1px; }
   .remate__svg { position: absolute; inset: 0; width: 100%; height: 100%; }

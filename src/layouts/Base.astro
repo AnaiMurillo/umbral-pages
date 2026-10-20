@@ -1,6 +1,5 @@
 ---
 import '../styles/base.css';
-import BotonTema from '../components/BotonTema.astro';
 
 interface Props {
   titulo?: string;
@@ -27,13 +26,13 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{tituloCompleto}</title>
     <meta name="description" content={descripcion} />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FCFCF0" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#181A19" />
+    <meta name="theme-color" content="#FCFCF0" />
+    <meta name="color-scheme" content="light only" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/questrial-latin.woff2" as="font" type="font/woff2" crossorigin />
     <script is:inline>
-      // Antes de pintar: JS disponible, tema elegido, versión estática y modo evidencia.
+      // Antes de pintar: JS disponible, versión estática y modo evidencia.
       (function () {
         var d = document.documentElement;
         d.setAttribute('data-js', '');
@@ -43,8 +42,6 @@ const nav = [
           if (q.has('estatico')) localStorage.setItem('umbral-estatico', q.get('estatico') === '0' ? '0' : '1');
           if (localStorage.getItem('umbral-estatico') === '1') d.setAttribute('data-estatico', '');
           if (localStorage.getItem('umbral-evidencia') === '1') d.setAttribute('data-evidencia', '');
-          var t = q.get('tema') || localStorage.getItem('umbral-tema');
-          if (t === 'claro' || t === 'oscuro') d.setAttribute('data-theme', t === 'claro' ? 'light' : 'dark');
         } catch (e) {}
       })();
     </script>
@@ -61,7 +58,6 @@ const nav = [
             ))}
           </ul>
         </nav>
-        <BotonTema />
       </div>
     </header>
 

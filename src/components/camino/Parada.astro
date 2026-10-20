@@ -4,22 +4,25 @@
 //   <Parada escena="jugable" etiqueta="Escena jugable" titulo="Pruébalo tú"> ...texto... </Parada>
 import Criatura from '../criaturas/Criatura.astro';
 import Objetos from './Objetos.astro';
-import { escenas, type Escena, type NombreCriatura } from './composiciones';
+import { paradas, type Escena, type Pilar, type NombreCriatura } from './composiciones';
 
 interface Props {
-  escena: Escena;
+  /** Escena del módulo o pilar (camino del Inicio). */
+  escena: Escena | Pilar;
+  /** id de la sección (para enlazar, p. ej. /#confianza). */
+  id?: string;
   etiqueta: string;
   titulo?: string;
   /** El Gancho usa h1; el resto h2. */
   nivel?: 'h1' | 'h2';
   criatura?: NombreCriatura;
 }
-const { escena, etiqueta, titulo, nivel = 'h2', criatura } = Astro.props;
-const comp = escenas[escena];
+const { escena, etiqueta, titulo, nivel = 'h2', criatura, id: idSeccion } = Astro.props;
+const comp = paradas[escena];
 const id = `parada-${escena}`;
 const Titulo = nivel;
 ---
-<section class:list={['parada', `parada--${escena}`, `parada--${comp.lado}`]} data-parada={escena} aria-labelledby={titulo ? `${id}-titulo` : undefined} aria-label={titulo ? undefined : etiqueta}>
+<section id={idSeccion} class:list={['parada', `parada--${escena}`, `parada--${comp.lado}`]} data-parada={escena} aria-labelledby={titulo ? `${id}-titulo` : undefined} aria-label={titulo ? undefined : etiqueta}>
   <div class="parada__criatura" data-ancla>
     <Criatura nombre={criatura ?? comp.criatura} />
     <Objetos lista={comp.objetos} id={escena} />

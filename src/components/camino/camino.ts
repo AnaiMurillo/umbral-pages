@@ -25,7 +25,9 @@ const quieto = () =>
 function puntosDePaso(modulo: HTMLElement, comp: ComposicionCamino, anchoCinta: number): Punto[] {
   const caja = modulo.getBoundingClientRect();
   const W = caja.width;
-  const puntos: Punto[] = [{ x: comp.inicio.x * W, y: comp.inicio.y, lado: comp.inicio.x > 0.5 ? 1 : -1 }];
+  // Un camino puede pedir otro punto de entrada en computador: data-inicio-x="0.92"
+  const inicioX = W >= 832 && modulo.dataset.inicioX ? Number(modulo.dataset.inicioX) : comp.inicio.x;
+  const puntos: Punto[] = [{ x: inicioX * W, y: comp.inicio.y, lado: inicioX > 0.5 ? 1 : -1 }];
 
   modulo.querySelectorAll<HTMLElement>('[data-parada] [data-ancla]').forEach((ancla) => {
     const svg = ancla.querySelector('svg') ?? ancla;

@@ -9,6 +9,7 @@ const pilares = defineCollection({
     nombre: z.string(),
     mecanismo: z.string(),
     teaser: z.string(),
+    descripcion: z.string().optional(), // se muestra en la parada del pilar en el Inicio
     orden: z.number(),
   }),
 });

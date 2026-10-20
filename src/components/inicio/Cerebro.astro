@@ -7,24 +7,13 @@
     class="cerebro__lienzo"
     data-cerebro
     role="img"
-    aria-label="Un cerebro hecho de cientos de puntos de colores que se agrupan y se unen con líneas finas. Representa el enfoque analítico de Umbral."
+    aria-label="Un cerebro de perfil dibujado con cientos de puntos de colores unidos por líneas finas; una onda de actividad lo recorre. Representa el enfoque analítico de Umbral."
   ></canvas>
-  <button type="button" class="cerebro__pausa" data-cerebro-pausa aria-pressed="false" hidden>
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.5" fill="currentColor" /><rect x="14" y="5" width="4" height="14" rx="1.5" fill="currentColor" /></svg>
-    <span data-cerebro-pausa-texto>Pausar animación</span>
-  </button>
 </figure>
 
 <style>
-  .cerebro { margin: 0; width: 100%; display: grid; justify-items: center; gap: var(--s-2); }
-  .cerebro__pausa {
-    display: inline-flex; align-items: center; gap: var(--s-2);
-    min-height: 44px; padding: 0 var(--s-3);
-    border: 1.5px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface); color: var(--fg); font-size: var(--t-small); cursor: pointer;
-  }
-  .cerebro__pausa[hidden] { display: none; }
-  .cerebro__lienzo { display: block; width: 100%; aspect-ratio: 5 / 4; }
+  .cerebro { margin: 0; width: 100%; }
+  .cerebro__lienzo { display: block; width: 100%; aspect-ratio: 4 / 3; }
 </style>
 
 <script>

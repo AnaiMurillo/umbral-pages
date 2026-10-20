@@ -4,34 +4,39 @@
     "nombre": "Confianza",
     "mecanismo": "Qué señales nos hacen creerle a una interfaz",
     "teaser": "[Relleno] Le creemos a la pantalla antes de leerla.",
-    "orden": 1
+    "orden": 1,
+    "descripcion": "[Relleno] Dos o tres frases que explican el mecanismo: qué señales de una interfaz (sellos, logos, tono, diseño) nos llevan a creerle, y por qué eso importa en Colombia y LatAm."
   },
   {
     "id": "persuasion",
     "nombre": "Persuasión",
     "mecanismo": "Cómo el diseño empuja decisiones",
     "teaser": "[Relleno] El botón ya decidió por ti.",
-    "orden": 2
+    "orden": 2,
+    "descripcion": "[Relleno] Dos o tres frases sobre cómo el diseño empuja decisiones: botones por defecto, urgencia, prueba social. Qué se ha medido y dónde."
   },
   {
     "id": "comprension",
     "nombre": "Comprensión",
     "mecanismo": "Qué entendemos, y qué creemos entender",
     "teaser": "[Relleno] Aceptaste los términos. ¿Cuáles?",
-    "orden": 3
+    "orden": 3,
+    "descripcion": "[Relleno] Dos o tres frases sobre la distancia entre lo que entendemos y lo que creemos entender: términos y condiciones, explicaciones de la IA, letra pequeña."
   },
   {
     "id": "atencion",
     "nombre": "Atención",
     "mecanismo": "Quién controla hacia dónde miramos",
     "teaser": "[Relleno] Este scroll no tiene fondo.",
-    "orden": 4
+    "orden": 4,
+    "descripcion": "[Relleno] Dos o tres frases sobre quién controla hacia dónde miramos: notificaciones, scroll infinito, diseño que retiene."
   },
   {
     "id": "identidad-digital",
     "nombre": "Identidad digital",
     "mecanismo": "Quiénes somos para un sistema",
     "teaser": "[Relleno] El algoritmo ya tiene una versión de ti.",
-    "orden": 5
+    "orden": 5,
+    "descripcion": "[Relleno] Dos o tres frases sobre quiénes somos para un sistema: perfiles, recomendaciones y la versión de nosotros que construye un algoritmo."
   }
 ]

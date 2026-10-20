@@ -31,8 +31,9 @@ Tokens semánticos: `--bg`, `--band`, `--surface`, `--fg`, `--muted`, `--line`, 
 Reglas:
 - Texto siempre en `--tinta` o `--gris`. Nunca texto blanco sobre pasteles ni sobre colores vivos.
 - Un solo color vivo dominante por escena; los demás en apoyo.
-- Modo oscuro obligatorio: fondo `#181A19`, superficie `#252928`, texto `#F3F3E6`, texto secundario `#B5B8AE` (el gris `#464746` no pasa AA sobre fondo oscuro), camino en crema. Las formas mantienen sus colores.
-- Cualquier texto sobre un color pastel o vivo usa `--tinta`, también en modo oscuro.
+- Solo modo claro. El modo oscuro se probó y se descartó (decisión de Isabel, 2026-10-20). La página declara `color-scheme: light`.
+- Cualquier texto sobre un color pastel o vivo usa `--tinta`.
+- Las criaturas nunca usan el color del camino de su módulo (tokens `--cr1` y `--cr2`), para no fundirse con la cinta.
 - Negro y blanco definidos por Umbral (no dependen de Wix): el negro es `--tinta` `#1F2120` y el blanco es `--blanco` `#FFFFFF`.
 
 ## 3. Tipografía
@@ -57,7 +58,7 @@ No hay ilustración propia: todo se arma con círculos, semicírculos, arcos y c
 - Estilo de recorte de papel: colores planos, **sin contorno**. La tinta solo se usa en detalles pequeños (ojos, boca, líneas finas).
 - Tamaño grande: en computador cada criatura mide entre 280 y 560px de ancho; en móvil, entre 60% y 90% del ancho de pantalla.
 - Cada criatura se arma con 5 a 8 formas, en dos o tres colores vivos. Cada pilar puede tener su propia combinación.
-- Se dibujan en SVG inline con tokens de color, para que cambien con la paleta y el modo oscuro.
+- Se dibujan en SVG inline con tokens de color, para que cambien con la paleta.
 - El prototipo aprobado sirve solo como referencia de color y tipografía. Sus criaturas pequeñas y con contorno no son el nivel que se busca.
 
 ## 5b. El camino grueso (elemento principal de cada módulo)
@@ -91,7 +92,7 @@ Principios: scrollytelling sí, scrolljacking no. El scroll nunca cambia de velo
 | Línea de estela y objetos secundarios | Que cada idea tiene detalles | Scroll, con parallax | Máximo 3 objetos por escena | Dibujados y fijos |
 | Entrada de parada (tarjeta y criatura) | Una idea por pantalla | Cuando el punto llega a la parada | Criatura sobre la tarjeta | Todo visible |
 | Formas que se arman | Que la idea se construye | Ligadas al scroll cuando el camino llega a la parada (`ease: none`, ver 5b) | Igual | Formas ya armadas |
-| Cerebro de partículas | El enfoque analítico de Umbral | Ambiente, solo en Inicio e Identidad digital | 260 partículas (420 en computador), pausa fuera de pantalla | Imagen fija |
+| Cerebro de partículas | El enfoque analítico de Umbral | Ambiente continuo, solo en Inicio e Identidad digital. Cerebro de perfil con contorno, circunvoluciones, cerebelo y tronco; una onda de actividad lo recorre. Sin botón de pausa (decisión de Isabel). | 260 partículas (420 en computador), se detiene solo fuera de pantalla | Imagen fija |
 
 Producción: GSAP con ScrollTrigger solo en el Inicio y en el camino grueso de los módulos (camino, criaturas, estelas y parallax), con trazo dibujado por scroll y `ease: none`. La activación de paradas usa Scrollama; las apariciones simples, CSS `view()`. Sin Lenis.
 
@@ -117,7 +118,11 @@ Sombras, degradados, texto blanco sobre pasteles, scrolljacking, más de un efec
 
 - Playwright en modo móvil (`--mobile`) y computador, con capturas de cada escena.
 - Auditoría de accesibilidad y de guías de interfaz al terminar cada módulo.
-- Pruebas con `prefers-reduced-motion` activado y con modo oscuro.
+- Pruebas con `prefers-reduced-motion` activado.
+
+## 10b. Inicio
+
+El Inicio usa el mismo camino grueso de los módulos: después del hero con el cerebro, una parada por pilar (criatura del mecanismo, descripción y módulos) y un remate con el llamado a colaborar. `/pilares` muestra el mismo camino.
 
 ## 11. Pendientes
 

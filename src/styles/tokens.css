@@ -1,6 +1,6 @@
 /* ==========================================================
    Umbral — tokens de diseño (fuente de verdad: docs/DESIGN.md)
-   Paleta ampliada aprobada + tokens semánticos + modo oscuro.
+   Paleta ampliada aprobada + tokens semánticos. Solo modo claro (decisión 2026-10-20).
    Los componentes usan SOLO los tokens semánticos (sección 2).
    ========================================================== */
 
@@ -17,7 +17,7 @@
   --menta:       #BDEBCB;
   --blanco:      #FFFFFF;
 
-  /* ---------- Tokens semánticos: modo claro ---------- */
+  /* ---------- Tokens semánticos ---------- */
   --bg:       var(--crema);     /* fondo de página */
   --band:     var(--celeste);   /* bandas, etiquetas, fondos suaves */
   --surface:  var(--blanco);    /* tarjetas */
@@ -62,51 +62,11 @@
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* ---------- Modo oscuro (sección 2) ----------
-   Sigue al sistema, salvo que la persona elija un modo con el botón. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg: #181A19;
-    --band: #252928;
-    --surface: #252928;
-    --fg: #F3F3E6;
-    --muted: #B5B8AE;
-    --line: #F3F3E6;
-    --outline: #B5B8AE;
-    --path: var(--crema);
-    --btn-bg: var(--crema);
-    --btn-fg: var(--tinta);
-    color-scheme: dark;
-  }
-}
-:root[data-theme='dark'] {
-  --bg: #181A19;
-  --band: #252928;
-  --surface: #252928;
-  --fg: #F3F3E6;
-  --muted: #B5B8AE;
-  --line: #F3F3E6;
-  --outline: #B5B8AE;
-  --path: var(--crema);
-  --btn-bg: var(--crema);
-  --btn-fg: var(--tinta);
-  color-scheme: dark;
-}
-
-/* Color del camino por módulo: <article data-color="rosa"> (por defecto celeste).
-   En modo oscuro el camino siempre es crema. */
+/* Color del camino por módulo: <article data-color="rosa"> (por defecto celeste). */
 [data-color='rosa'] { --path: var(--rosa-v); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) [data-color] { --path: var(--crema); }
-}
-:root[data-theme='dark'] [data-color] { --path: var(--crema); }
 
 /* Colores de criatura: nunca el mismo que el camino, para que no se fundan con la cinta.
    --cr1 ocupa el lugar del rosa vivo y --cr2 el del celeste vivo. */
 :root { --cr1: var(--rosa-v); --cr2: var(--celeste-v); }
 [data-color='celeste'] { --cr2: var(--menta); }
 [data-color='rosa']    { --cr1: var(--menta); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) [data-color] { --cr1: var(--rosa-v); --cr2: var(--celeste-v); }
-}
-:root[data-theme='dark'] [data-color] { --cr1: var(--rosa-v); --cr2: var(--celeste-v); }

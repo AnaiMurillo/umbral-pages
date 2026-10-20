@@ -6,8 +6,10 @@ import Sello from './Sello.astro';
 import Ojo from './Ojo.astro';
 import Pila from './Pila.astro';
 import Saltarin from './Saltarin.astro';
+import Empujon from './Empujon.astro';
+import Doble from './Doble.astro';
 
-const criaturas = { pregunta: Pregunta, sello: Sello, ojo: Ojo, pila: Pila, saltarin: Saltarin };
+const criaturas = { pregunta: Pregunta, sello: Sello, ojo: Ojo, pila: Pila, saltarin: Saltarin, empujon: Empujon, doble: Doble };
 
 interface Props { nombre: keyof typeof criaturas }
 const Forma = criaturas[Astro.props.nombre];

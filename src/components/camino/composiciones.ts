@@ -5,7 +5,8 @@
 // ==========================================================
 
 export type Escena = 'gancho' | 'jugable' | 'revelacion' | 'evidencia' | 'que-hacer';
-export type NombreCriatura = 'pregunta' | 'sello' | 'ojo' | 'pila' | 'saltarin';
+export type NombreCriatura = 'pregunta' | 'sello' | 'ojo' | 'pila' | 'saltarin' | 'empujon' | 'doble';
+export type Pilar = 'confianza' | 'persuasion' | 'comprension' | 'atencion' | 'identidad-digital';
 
 /** Cómo se traza la cinta en cada formato. */
 export interface ComposicionCamino {
@@ -121,3 +122,66 @@ export const escenas: Record<Escena, ComposicionEscena> = {
     ],
   },
 };
+
+// ----------------------------------------------------------
+// Camino de los pilares (Inicio y /pilares): una parada por pilar.
+// Cada criatura representa el mecanismo del pilar.
+// ----------------------------------------------------------
+export const pilares: Record<Pilar, ComposicionEscena> = {
+  confianza: {
+    criatura: 'sello',
+    lado: 'der',
+    objetos: [
+      { tipo: 'estrella', color: 'a3', tam: 52, pc: { x: -8, y: 2 }, movil: { x: 2, y: -6 }, parallax: 0.7 },
+      { tipo: 'circulo', color: 'a4', tam: 38, pc: { x: 102, y: 20 }, movil: { x: 88, y: 4 }, parallax: 0.4 },
+      { tipo: 'estela', color: 'line', tam: 300, pc: { x: -62, y: 70, giro: -8 } },
+      { tipo: 'flecha', color: 'line', tam: 88, pc: { x: 90, y: -14, giro: 10 }, movil: { x: 70, y: -16, giro: 10 } },
+      { tipo: 'circulo', color: 'a3', tam: 18, pc: { x: 34, y: -12 }, parallax: 1 },
+    ],
+  },
+  persuasion: {
+    criatura: 'empujon',
+    lado: 'izq',
+    objetos: [
+      { tipo: 'flecha', color: 'line', tam: 96, pc: { x: 96, y: 6, giro: 0 }, movil: { x: 74, y: -10, giro: 0 } },
+      { tipo: 'circulo', color: 'a4', tam: 44, pc: { x: -10, y: 8 }, movil: { x: 2, y: -2 }, parallax: 0.5 },
+      { tipo: 'estela', color: 'line', tam: 320, pc: { x: 60, y: 74, giro: 6 }, movil: { x: 30, y: 86, giro: 4 } },
+      { tipo: 'estrella', color: 'a3', tam: 30, pc: { x: 26, y: -10 }, parallax: 0.9 },
+      { tipo: 'circulo', color: 'a3', tam: 18, pc: { x: 86, y: -8 }, parallax: 1 },
+    ],
+  },
+  comprension: {
+    criatura: 'pila',
+    lado: 'der',
+    objetos: [
+      { tipo: 'nota', color: 'a3', tam: 48, pc: { x: -10, y: 4 }, movil: { x: 2, y: -6 }, parallax: 0.6 },
+      { tipo: 'circulo', color: 'a4', tam: 34, pc: { x: 102, y: 10 }, movil: { x: 90, y: 0 }, parallax: 0.4 },
+      { tipo: 'estela', color: 'line', tam: 280, pc: { x: -58, y: 66, giro: -12 }, movil: { x: 10, y: 88, giro: -4 } },
+      { tipo: 'estrella', color: 'a3', tam: 28, pc: { x: 40, y: -14 }, parallax: 0.9 },
+    ],
+  },
+  atencion: {
+    criatura: 'ojo',
+    lado: 'izq',
+    objetos: [
+      { tipo: 'estrella', color: 'a3', tam: 62, pc: { x: 100, y: 18 }, movil: { x: 86, y: 4 }, parallax: 0.5 },
+      { tipo: 'estrella', color: 'a4', tam: 32, pc: { x: -12, y: 4 }, movil: { x: 0, y: -6 }, parallax: 0.8 },
+      { tipo: 'estela', color: 'line', tam: 300, pc: { x: 64, y: 70, giro: 10 } },
+      { tipo: 'circulo', color: 'a3', tam: 22, pc: { x: -6, y: 62 }, movil: { x: 4, y: 64 }, parallax: 0.3 },
+      { tipo: 'flecha', color: 'line', tam: 84, pc: { x: 94, y: -12, giro: 160 } },
+    ],
+  },
+  'identidad-digital': {
+    criatura: 'doble',
+    lado: 'der',
+    objetos: [
+      { tipo: 'circulo', color: 'a4', tam: 42, pc: { x: -8, y: 10 }, movil: { x: 2, y: -4 }, parallax: 0.6 },
+      { tipo: 'estrella', color: 'a3', tam: 40, pc: { x: 100, y: -6 }, movil: { x: 86, y: -8 }, parallax: 0.7 },
+      { tipo: 'estela', color: 'line', tam: 300, pc: { x: -60, y: 72, giro: -6 }, movil: { x: 20, y: 88, giro: -4 } },
+      { tipo: 'nota', color: 'a4', tam: 34, pc: { x: 40, y: -14 }, parallax: 0.9 },
+    ],
+  },
+};
+
+/** Todas las paradas posibles: escenas de módulo y pilares. */
+export const paradas: Record<Escena | Pilar, ComposicionEscena> = { ...escenas, ...pilares };

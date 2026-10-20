@@ -1,0 +1,97 @@
+---
+// Camino de los pilares: la misma interfaz de los módulos (camino grueso que se dibuja
+// con el scroll), con una parada por pilar. Cada parada muestra la criatura del
+// mecanismo, su descripción y sus módulos. Termina en un remate con llamado a colaborar.
+import { getCollection } from 'astro:content';
+import Camino from '../camino/Camino.astro';
+import Parada from '../camino/Parada.astro';
+import Remate from '../camino/Remate.astro';
+import type { Pilar } from '../camino/composiciones';
+
+interface Props {
+  titulo?: string;
+  /** h1 en /pilares; h2 en el Inicio (el h1 es el del hero). */
+  nivel?: 'h1' | 'h2';
+}
+const { titulo = 'Cinco pilares, cinco mecanismos', nivel = 'h2' } = Astro.props;
+const Titulo = nivel;
+const NivelParada = nivel === 'h1' ? 'h2' : 'h3';
+
+const pilares = (await getCollection('pilares')).sort((a, b) => a.data.orden - b.data.orden);
+const modulos = await getCollection('modulos');
+const limpio = (t: string) => t.replace(/\*/g, '');
+---
+<div class="pilares" data-modulo-camino data-color="celeste" data-inicio-x="0.94">
+  <Camino />
+
+  <header class="pilares__intro contenedor">
+    <p class="etiqueta etiqueta--banda">El mapa</p>
+    <Titulo id="mapa-titulo" class="pilares__titulo">{titulo}</Titulo>
+    <p class="pilares__bajada">Cada pilar agrupa un mecanismo de comportamiento, no una industria. Baja y recorre el camino.</p>
+  </header>
+
+  {pilares.map((p) => {
+    const suyos = modulos.filter((m) => m.data.pilar.id === p.id);
+    return (
+      <Parada escena={p.id as Pilar} id={p.id} etiqueta={`Pilar 0${p.data.orden}`} titulo={p.data.nombre} nivel={NivelParada}>
+        <p class="pilar__mecanismo">{p.data.mecanismo}</p>
+        {p.data.descripcion && <p class="pilar__descripcion">{p.data.descripcion}</p>}
+        <p class="pilar__teaser">{p.data.teaser}</p>
+        {suyos.length > 0 ? (
+          <ul class="pilar__modulos" aria-label={`Módulos de ${p.data.nombre}`}>
+            {suyos.map((m) => (
+              <li>
+                <a class="pilar__modulo" href={`/modulos/${m.id}`}>
+                  <span class="pilar__modulo-titulo">{limpio(m.data.titulo)}</span>
+                  <span class="etiqueta">{m.data.ejemplo ? 'Módulo de ejemplo' : 'Módulo'} · Recorrer →</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="pilar__pronto"><span class="etiqueta">Próximamente</span><br />El primer módulo de este pilar está en preparación.</p>
+        )}
+      </Parada>
+    );
+  })}
+
+  <Remate>
+    <p class="etiqueta etiqueta--banda">Para fundaciones, empresas y medios</p>
+    <h2 class="pilares__cierre">[Relleno] ¿Investigamos juntos?</h2>
+    <div class="pilares__acciones">
+      <a class="boton" href="/colabora">Colabora</a>
+      <a class="boton boton--claro" href="/investigacion">Ver la investigación</a>
+    </div>
+  </Remate>
+</div>
+
+<style>
+  .pilares { position: relative; overflow-x: clip; }
+  .pilares__intro { position: relative; z-index: 1; padding-top: var(--s-6); }
+  .pilares__titulo { font-size: var(--t-card); }
+  .pilares__bajada { color: var(--muted); max-width: 32rem; font-size: var(--t-lead); }
+  .pilares :global(.parada) { scroll-margin-top: 5rem; }
+
+  .pilar__mecanismo { font-size: var(--t-lead); }
+  .pilar__descripcion { color: var(--muted); }
+  .pilar__teaser {
+    display: inline;
+    background: var(--highlight); color: var(--on-color);
+    padding: 0.1em 0.3em; border-radius: 0.25em;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  .pilar__modulos { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-2); }
+  .pilar__modulo {
+    display: grid; gap: var(--s-1);
+    min-height: 44px; padding: var(--s-3) var(--s-4);
+    border: 1.5px solid var(--outline); border-radius: calc(var(--r-card) * 0.7);
+    background: var(--surface); text-decoration: none;
+    transition: background var(--dur) var(--ease);
+  }
+  @media (hover: hover) { .pilar__modulo:hover { background: var(--band); } }
+  .pilar__modulo-titulo { font-family: var(--font-title); font-weight: 700; font-size: var(--t-lead); line-height: 1.15; letter-spacing: -0.01em; }
+  .pilar__pronto { margin: var(--s-4) 0 0; padding-top: var(--s-3); border-top: 1.5px solid var(--outline); color: var(--muted); }
+
+  .pilares__cierre { font-size: var(--t-card); margin-top: var(--s-3); }
+  .pilares__acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-2); }
+</style>
