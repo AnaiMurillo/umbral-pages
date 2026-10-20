@@ -50,7 +50,8 @@ Versión estática de cualquier página: agrega `?estatico=1` a la URL (`?estati
 
 ## Publicación (Cloudflare)
 
-- Configuración: `wrangler.jsonc` (Workers con archivos estáticos, carpeta `dist/`).
+- Configuración: `wrangler.jsonc` (Workers con archivos estáticos, carpeta `dist/`). Wrangler ejecuta `npm run build` antes de publicar.
+- Versión de Node: `.node-version` (Astro 7 exige 22.22 o superior).
 - Con el repositorio conectado en **Workers Builds**:
   - cada push a `main` publica producción;
   - cada otra rama o pull request crea una **vista previa** con su propia URL.

@@ -3,7 +3,9 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "umbral-pages", // debe coincidir con el nombre del Worker en Cloudflare
-  "compatibility_date": "2026-10-20",
+  "compatibility_date": "2026-10-01",
+  // Genera dist/ antes de publicar, aunque el panel de Cloudflare no tenga comando de build.
+  "build": { "command": "npm run build" },
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page"
