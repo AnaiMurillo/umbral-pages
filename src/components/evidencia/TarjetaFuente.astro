@@ -1,0 +1,109 @@
+---
+// Tarjeta flotante única por página. Se llena con la fuente de la afirmación que se abrió.
+// Recibe la lista de fuentes del módulo y la numera en orden.
+interface Fuente { id: string; titulo: string; autor?: string; anio?: string | number; tipo: string; url?: string; latam: boolean }
+interface Props { fuentes: Fuente[] }
+const { fuentes } = Astro.props;
+---
+<div id="tarjeta-fuente" class="tarjeta" popover role="dialog" aria-labelledby="tarjeta-fuente-titulo">
+  <p class="etiqueta" data-t-tipo></p>
+  <p id="tarjeta-fuente-titulo" class="tarjeta__titulo" data-t-titulo></p>
+  <p class="tarjeta__meta" data-t-meta></p>
+  <p class="tarjeta__acciones">
+    <a data-t-url target="_blank" rel="noopener">Abrir fuente ↗</a>
+    <a data-t-lista href="#fuentes">Ver todas las fuentes</a>
+  </p>
+  <button type="button" class="tarjeta__cerrar" popovertarget="tarjeta-fuente" popovertargetaction="hide" aria-label="Cerrar">×</button>
+</div>
+<p id="anuncio-evidencia" class="visualmente-oculto" aria-live="polite"></p>
+<script type="application/json" id="datos-fuentes" set:html={JSON.stringify(fuentes)} />
+
+<style>
+  .tarjeta {
+    margin: 0; inset: auto;
+    width: min(24rem, calc(100vw - 2rem));
+    background: var(--color-superficie); color: var(--color-texto);
+    border: 2px solid var(--color-texto); border-radius: var(--radio);
+    box-shadow: 6px 6px 0 var(--color-texto);
+    padding: var(--e-4); padding-right: var(--e-5);
+  }
+  .tarjeta::backdrop { background: transparent; }
+  .tarjeta p { margin: 0 0 var(--e-2); }
+  .tarjeta__titulo { font-size: var(--t-m); font-weight: 700; }
+  .tarjeta__meta { color: var(--color-texto-suave); font-size: var(--t-s); }
+  .tarjeta__acciones { display: flex; flex-wrap: wrap; gap: var(--e-3); font-size: var(--t-s); margin-top: var(--e-3) !important; }
+  .tarjeta__cerrar {
+    position: absolute; top: var(--e-2); right: var(--e-2);
+    width: 36px; height: 36px; border: 0; background: none; font-size: 1.5rem; cursor: pointer; border-radius: 50%;
+  }
+  .tarjeta__cerrar:hover { background: var(--color-dato); }
+
+  /* Móvil: hoja inferior */
+  @media (max-width: 40rem) {
+    .tarjeta { position: fixed; left: 1rem; right: 1rem; bottom: 1rem; top: auto; width: auto; }
+  }
+</style>
+
+<script>
+  type Fuente = { id: string; titulo: string; autor?: string; anio?: string | number; tipo: string; url?: string; latam: boolean };
+  const datos = document.getElementById('datos-fuentes');
+  const fuentes: Fuente[] = datos ? JSON.parse(datos.textContent || '[]') : [];
+  const indice = new Map(fuentes.map((f, i) => [f.id, { ...f, n: i + 1 }]));
+  const tarjeta = document.getElementById('tarjeta-fuente') as HTMLElement | null;
+  const soportaPopover = !!tarjeta && 'showPopover' in tarjeta;
+  const tipos: Record<string, string> = { dato: 'Dato', paper: 'Paper', caso: 'Caso', comunicado: 'Comunicado oficial', prensa: 'Prensa' };
+
+  // Numerar cada afirmación según su fuente
+  document.querySelectorAll<HTMLElement>('[data-afirmacion]').forEach((el) => {
+    const f = indice.get(el.dataset.afirmacion || '');
+    const marca = el.querySelector<HTMLElement>('.afirmacion__marca');
+    if (marca) marca.dataset.n = f ? String(f.n) : '?';
+    if (!f) console.warn(`[Umbral] Afirmación sin fuente definida: "${el.dataset.afirmacion}"`);
+  });
+
+  let origen: HTMLElement | null = null;
+
+  document.addEventListener('click', (e) => {
+    const el = (e.target as HTMLElement).closest<HTMLElement>('[data-afirmacion]');
+    if (!el || !tarjeta) return;
+    const f = indice.get(el.dataset.afirmacion || '');
+    if (!f) return;
+
+    if (!soportaPopover) { location.hash = `fuente-${f.id}`; return; }
+
+    const q = <T extends HTMLElement>(s: string) => tarjeta.querySelector<T>(s)!;
+    q('[data-t-tipo]').textContent = `Fuente ${f.n} · ${tipos[f.tipo] ?? f.tipo}${f.latam ? ' · Colombia / LatAm' : ''}`;
+    q('[data-t-titulo]').textContent = f.titulo;
+    q('[data-t-meta]').textContent = [f.autor, f.anio].filter(Boolean).join(', ');
+    const enlace = q<HTMLAnchorElement>('[data-t-url]');
+    enlace.hidden = !f.url;
+    if (f.url) enlace.href = f.url;
+    q<HTMLAnchorElement>('[data-t-lista]').href = `#fuente-${f.id}`;
+
+    origen = el;
+    tarjeta.showPopover();
+
+    // Escritorio: junto a la afirmación
+    if (matchMedia('(min-width: 40.01rem)').matches) {
+      const r = el.getBoundingClientRect();
+      const ancho = tarjeta.offsetWidth, alto = tarjeta.offsetHeight;
+      const left = Math.min(Math.max(16, r.left), innerWidth - ancho - 16);
+      const top = r.bottom + 12 + alto < innerHeight ? r.bottom + 12 : Math.max(16, r.top - alto - 12);
+      tarjeta.style.position = 'fixed';
+      tarjeta.style.left = `${left}px`;
+      tarjeta.style.top = `${top}px`;
+    } else {
+      tarjeta.style.left = tarjeta.style.top = '';
+    }
+    q<HTMLElement>('.tarjeta__cerrar').focus();
+  });
+
+  // Al cerrar, el foco vuelve a la afirmación
+  tarjeta?.addEventListener('toggle', (e) => {
+    if ((e as ToggleEvent).newState === 'closed') origen?.focus();
+  });
+  // Cerrar al hacer scroll largo, para que no quede flotando lejos de su afirmación
+  addEventListener('scroll', () => {
+    if (tarjeta?.matches(':popover-open') && matchMedia('(min-width: 40.01rem)').matches) tarjeta.hidePopover();
+  }, { passive: true });
+</script>

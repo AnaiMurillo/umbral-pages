@@ -1,0 +1,25 @@
+---
+// Layout sobrio para Investigación: sin efectos, solo lectura y barra de progreso.
+import Base from './Base.astro';
+import BarraProgreso from '../components/scroll/BarraProgreso.astro';
+interface Props { titulo: string; resumen?: string; meta?: string; ejemplo?: boolean }
+const { titulo, resumen, meta, ejemplo } = Astro.props;
+---
+<Base titulo={titulo} descripcion={resumen}>
+  <BarraProgreso />
+  <article class="lectura documento">
+    <p class="etiqueta">Investigación{meta && ` · ${meta}`}</p>
+    {ejemplo && <p class="aviso-ejemplo">Brief de ejemplo con texto de relleno.</p>}
+    <h1>{titulo}</h1>
+    {resumen && <p class="documento__resumen">{resumen}</p>}
+    <div class="documento__cuerpo"><slot /></div>
+  </article>
+</Base>
+
+<style>
+  .documento { padding-top: var(--e-6); }
+  .documento h1 { font-size: var(--t-xl); }
+  .documento__resumen { font-size: var(--t-l); color: var(--color-texto-suave); border-bottom: var(--borde); padding-bottom: var(--e-4); }
+  .documento__cuerpo :global(h2) { font-size: var(--t-l); margin-top: var(--e-5); }
+  .documento__cuerpo :global(li) { margin-bottom: var(--e-2); }
+</style>

@@ -1,0 +1,43 @@
+---
+// Una afirmación con respaldo. Uso en MDX:
+//   <Afirmacion fuente="id-de-la-fuente">texto de la afirmación</Afirmacion>
+// La fuente se define en el frontmatter del módulo (lista "fuentes").
+// Siempre se puede abrir con clic o teclado; el modo evidencia además la resalta.
+interface Props { fuente: string }
+const { fuente } = Astro.props;
+---
+<button type="button" class="afirmacion" data-afirmacion={fuente} aria-haspopup="dialog"><slot /><span class="afirmacion__marca" aria-hidden="true"></span><span class="visualmente-oculto"> (ver fuente)</span></button>
+
+<style>
+  .afirmacion {
+    all: unset;
+    display: inline;
+    cursor: pointer;
+    text-decoration: underline dotted;
+    text-decoration-color: var(--color-texto-suave);
+    text-underline-offset: 0.25em;
+    border-radius: 3px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    transition: background var(--dur-rapida);
+  }
+  .afirmacion:hover { background: var(--color-dato); }
+  .afirmacion:focus-visible { outline: 3px solid var(--color-texto); outline-offset: 2px; }
+
+  .afirmacion__marca {
+    font-size: 0.7em; vertical-align: super; line-height: 0;
+    margin-left: 0.1em; color: var(--color-texto-suave);
+  }
+  .afirmacion__marca::before { content: attr(data-n); }
+
+  /* Modo evidencia activo: cada afirmación se ilumina y muestra su número de fuente */
+  :global(html[data-evidencia]) .afirmacion {
+    background: var(--color-destacado);
+    text-decoration: none;
+    box-shadow: 0 0 0 2px var(--color-destacado);
+  }
+  :global(html[data-evidencia]) .afirmacion__marca {
+    color: var(--color-texto);
+    font-weight: 700;
+  }
+</style>

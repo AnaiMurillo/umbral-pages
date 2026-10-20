@@ -1,0 +1,21 @@
+---
+// Bloque de lectura rápida: lo esencial en 3 a 5 puntos para quien llega sin contexto.
+interface Props { titulo?: string }
+const { titulo = 'En 30 segundos' } = Astro.props;
+---
+<aside class="rapida" aria-label={titulo}>
+  <p class="etiqueta">{titulo}</p>
+  <slot />
+</aside>
+
+<style>
+  .rapida {
+    margin: var(--e-5) 0; padding: var(--e-4);
+    background: var(--color-superficie);
+    border-top: 6px solid var(--color-texto);
+    border-radius: 0 0 var(--radio) var(--radio);
+  }
+  .rapida :global(ul) { margin: var(--e-2) 0 0; padding-left: 1.2em; }
+  .rapida :global(li) { margin-bottom: var(--e-2); }
+  .rapida :global(li:last-child) { margin-bottom: 0; }
+</style>

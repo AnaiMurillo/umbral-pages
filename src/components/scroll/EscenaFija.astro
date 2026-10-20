@@ -1,0 +1,96 @@
+---
+// Gráfico fijo con pasos (sticky graphic) — el CONTENEDOR.
+// Piezas separadas:
+//   - slot "grafico": cualquier componente (Svelte) que escucha el evento "umbral:paso".
+//   - slot por defecto: los <Paso> escritos en el MDX.
+// El scroll nunca se altera: Scrollama solo observa qué paso está en pantalla.
+//
+// Versión estática (movimiento reducido, ?estatico, o sin JS): el gráfico deja
+// de estar fijo, muestra su estado de resumen y los pasos se leen como texto normal.
+interface Props {
+  etiqueta: string;   // nombre accesible de la escena
+  lado?: 'derecha' | 'izquierda';
+}
+const { etiqueta, lado = 'derecha' } = Astro.props;
+---
+<section class={`escena escena--${lado}`} data-escena-fija aria-label={etiqueta}>
+  <div class="escena__grafico">
+    <slot name="grafico" />
+  </div>
+  <div class="escena__pasos">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .escena {
+    position: relative;
+    display: grid;
+    gap: var(--e-4);
+    margin-block: var(--e-6);
+    width: 100%;
+    max-width: var(--ancho-amplio);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Móvil: el gráfico queda fijo arriba y los pasos pasan por encima */
+  .escena__grafico {
+    position: sticky;
+    top: 0.5rem;
+    z-index: 1;
+    height: min(calc(100svh - 1rem), 46rem);
+  }
+  /* Los pasos van por encima del gráfico, pero sus espacios vacíos dejan pasar
+     los toques: así se puede usar el gráfico aunque haya un paso encima. */
+  .escena__pasos { position: relative; z-index: 2; pointer-events: none; }
+  .escena__pasos :global(.paso__caja) { pointer-events: auto; }
+
+  @media (min-width: 52rem) {
+    .escena { grid-template-columns: minmax(0, 1fr) minmax(0, 22rem); align-items: start; gap: var(--e-6); }
+    .escena--izquierda { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); }
+    .escena--izquierda .escena__grafico { order: 2; }
+    .escena__grafico { top: calc(3.5rem + 8svh); height: calc(84svh - 3.5rem); }
+  }
+
+  /* ---------- Versión estática ---------- */
+  :global(html[data-estatico]) .escena__grafico,
+  :global(html:not([data-js])) .escena__grafico { position: relative; top: 0; height: auto; }
+  @media (prefers-reduced-motion: reduce) {
+    .escena__grafico { position: relative; top: 0; height: auto; }
+  }
+</style>
+
+<script>
+  import scrollama from 'scrollama';
+
+  document.documentElement.setAttribute('data-js', '');
+
+  const estatico = () =>
+    document.documentElement.hasAttribute('data-estatico') ||
+    matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-escena-fija]').forEach((escena) => {
+    const pasos = escena.querySelectorAll<HTMLElement>('[data-paso]');
+    if (!pasos.length) return;
+
+    const avisar = (indice: number, direccion: 'up' | 'down') => {
+      pasos.forEach((p, i) => p.toggleAttribute('data-activo', i === indice));
+      escena.dataset.paso = String(indice);
+      escena.dispatchEvent(new CustomEvent('umbral:paso', { detail: { indice, direccion } }));
+    };
+
+    if (estatico()) {
+      escena.dataset.modo = 'estatico';
+      escena.dispatchEvent(new CustomEvent('umbral:estatico'));
+      return;
+    }
+
+    const scroller = scrollama();
+    scroller
+      .setup({ step: Array.from(pasos), offset: 0.6 })
+      .onStepEnter(({ index, direction }) => avisar(index, direction));
+
+    window.addEventListener('resize', () => scroller.resize());
+  });
+</script>

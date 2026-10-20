@@ -1,0 +1,122 @@
+---
+# ─────────────────────────────────────────────────────────────
+# MÓDULO DE EJEMPLO — sirve para probar la plantilla.
+# Todo el texto es relleno y los números son inventados.
+# Para crear un módulo nuevo: copia este archivo, cambia el nombre
+# del archivo (será la URL) y edita los campos y el texto.
+# ─────────────────────────────────────────────────────────────
+
+# 1. GANCHO
+titulo: "[Relleno] ¿Le creerías a este mensaje si tuviera un sello?"
+bajada: "[Relleno] Una bajada de una o dos líneas que plantea el fenómeno sin explicarlo todavía."
+pregunta: "[Relleno] Una pregunta que genera fricción: ¿qué te hizo confiar la última vez que tu banco te escribió?"
+pilar: confianza
+teaser: "[Relleno] Un sello cambia lo que crees, no lo que sabes."
+
+# 3. REVELACIÓN (una sola frase)
+hallazgo: "[Relleno] El hallazgo del módulo, explicado en una sola frase que se entiende sin contexto."
+
+fecha: 2026-10-20
+ejemplo: true
+# brief: nombre-del-archivo-en-investigacion   ← activa el botón "Leer el brief completo"
+brief: brief-ejemplo
+
+# 5. QUÉ HACER
+recomendaciones:
+  - "[Relleno] Recomendación concreta para equipos de diseño."
+  - "[Relleno] Recomendación para fundaciones o sector social."
+  - "[Relleno] Recomendación para quien usa la app."
+
+# FUENTES — cada afirmación del texto apunta a una de estas por su id.
+# tipo: dato | paper | caso | comunicado | prensa   ·   latam: true si es de Colombia o LatAm
+fuentes:
+  - id: ejemplo-paper
+    titulo: "[Fuente de ejemplo] Título del paper"
+    autor: "Autora, A."
+    anio: 2026
+    tipo: paper
+  - id: ejemplo-dato-co
+    titulo: "[Fuente de ejemplo] Encuesta o dato de Colombia"
+    autor: "Entidad"
+    anio: 2026
+    tipo: dato
+    latam: true
+  - id: ejemplo-comunicado
+    titulo: "[Fuente de ejemplo] Comunicado oficial"
+    anio: 2026
+    tipo: comunicado
+    latam: true
+---
+import GraficoMecanismo from '../../components/graficos/GraficoMecanismo.svelte';
+
+<LecturaRapida>
+- [Relleno] Qué fenómeno investiga este módulo, en una línea.
+- [Relleno] Qué vas a poder probar tú mismo.
+- [Relleno] Por qué importa en Colombia y LatAm.
+</LecturaRapida>
+
+[Relleno] Párrafo de entrada. Plantea el contexto del caso con una <Afirmacion fuente="ejemplo-dato-co">afirmación respaldada por un dato de Colombia</Afirmacion>. Activa el **modo evidencia** arriba para ver cómo se resaltan.
+
+## Pruébalo tú
+
+<EscenaFija etiqueta="Escena jugable: el efecto del sello en la confianza">
+  <GraficoMecanismo
+    slot="grafico"
+    client:visible
+    titulo="100 personas reciben el mismo mensaje"
+    mecanismo="Sello de verificación"
+    respuestaSi="confía"
+    respuestaNo="no confía"
+    valorCon={72}
+    valorSin={41}
+    pasos={[
+      { mecanismo: null },
+      { mecanismo: 'con' },
+      { mecanismo: 'sin' },
+      { mecanismo: 'con', decision: true }
+    ]}
+    pregunta="[Relleno] ¿Abrirías el enlace de este mensaje?"
+    opciones={['Sí, lo abro', 'No, lo ignoro']}
+    nota="Datos de ejemplo, inventados para probar la plantilla."
+  />
+
+  <Paso>
+    [Relleno] **Paso 1.** Cien personas reciben el mismo mensaje. Todavía no hay nada que las distinga.
+  </Paso>
+
+  <Paso>
+    [Relleno] **Paso 2.** Ahora el mensaje lleva un sello de verificación. Mira cuántas personas pasan a confiar.
+  </Paso>
+
+  <Paso>
+    [Relleno] **Paso 3.** Quitamos el sello. El mensaje es idéntico. Usa el interruptor del gráfico para comparar.
+  </Paso>
+
+  <Paso>
+    [Relleno] **Paso 4.** Tu turno. Decide rápido: medimos cuánto tardas, pero nada sale de tu navegador.
+  </Paso>
+</EscenaFija>
+
+<Revelacion hallazgo={frontmatter.hallazgo}>
+  [Relleno] Una o dos frases de respaldo que conectan el hallazgo con <Afirmacion fuente="ejemplo-paper">lo que dice la literatura</Afirmacion>.
+</Revelacion>
+
+## La evidencia
+
+[Relleno] Párrafo con <Afirmacion fuente="ejemplo-paper">otra afirmación importante</Afirmacion> y su contexto.
+
+<PullQuote quien="[Relleno] Nombre" contexto="cargo o rol" fuente="ejemplo-comunicado">
+  [Relleno] Una cita textual corta que genera contraste.
+</PullQuote>
+
+<Llamada titulo="Dato de Colombia" tipo="dato">
+  [Relleno] Un dato local destacado, con <Afirmacion fuente="ejemplo-dato-co">su fuente a un clic</Afirmacion>.
+</Llamada>
+
+<Acordeon titulo="[Relleno] Comunicado oficial completo" meta="Entidad · fecha">
+  [Relleno] Texto completo del comunicado, para quien quiera leerlo entero sin interrumpir el relato.
+</Acordeon>
+
+<PublicacionX url="https://x.com/" autor="[Relleno] @cuenta" fecha="2026">
+  [Relleno] Texto de una publicación real, citada aquí para que se lea aunque no se cargue X.
+</PublicacionX>

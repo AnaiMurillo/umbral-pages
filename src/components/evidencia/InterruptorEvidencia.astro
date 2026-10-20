@@ -1,0 +1,49 @@
+---
+// Interruptor de modo evidencia: resalta cada afirmación y muestra su fuente al clic.
+// Se recuerda en este navegador (solo localmente).
+---
+<button type="button" class="interruptor" data-interruptor-evidencia aria-pressed="false">
+  <span class="interruptor__pista" aria-hidden="true"><span class="interruptor__punto"></span></span>
+  <span>Modo evidencia</span>
+</button>
+
+<style>
+  .interruptor {
+    display: inline-flex; align-items: center; gap: var(--e-2);
+    min-height: 44px; padding: var(--e-2) var(--e-3) var(--e-2) var(--e-2);
+    border: 2px solid var(--color-texto); border-radius: 999px;
+    background: var(--color-superficie); cursor: pointer;
+    font-size: var(--t-s);
+  }
+  .interruptor__pista {
+    width: 2.4rem; height: 1.4rem; border-radius: 999px;
+    border: 2px solid var(--color-texto); background: var(--color-fondo);
+    position: relative; flex: none;
+  }
+  .interruptor__punto {
+    position: absolute; top: 2px; left: 2px;
+    width: calc(1.4rem - 8px); height: calc(1.4rem - 8px); border-radius: 50%;
+    background: var(--color-texto);
+    transition: transform var(--dur-rapida) var(--curva);
+  }
+  .interruptor[aria-pressed='true'] { background: var(--color-destacado); }
+  .interruptor[aria-pressed='true'] .interruptor__punto { transform: translateX(1rem); }
+</style>
+
+<script>
+  const raiz = document.documentElement;
+  document.querySelectorAll<HTMLButtonElement>('[data-interruptor-evidencia]').forEach((boton) => {
+    const pintar = () => boton.setAttribute('aria-pressed', String(raiz.hasAttribute('data-evidencia')));
+    pintar();
+    boton.addEventListener('click', () => {
+      const activo = !raiz.hasAttribute('data-evidencia');
+      raiz.toggleAttribute('data-evidencia', activo);
+      try { localStorage.setItem('umbral-evidencia', activo ? '1' : '0'); } catch {}
+      document.querySelectorAll('[data-interruptor-evidencia]').forEach((b) => b.setAttribute('aria-pressed', String(activo)));
+      const anuncio = document.getElementById('anuncio-evidencia');
+      if (anuncio) anuncio.textContent = activo
+        ? 'Modo evidencia activado. Cada afirmación resaltada abre su fuente.'
+        : 'Modo evidencia desactivado.';
+    });
+  });
+</script>

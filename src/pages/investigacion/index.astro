@@ -1,0 +1,29 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+const briefs = (await getCollection('investigacion')).sort((a, b) => +b.data.fecha - +a.data.fecha);
+const conPilar = await Promise.all(briefs.map(async (b) => ({ b, pilar: await getEntry(b.data.pilar) })));
+---
+<Base titulo="Investigación" descripcion="Research briefs completos para audiencia académica y técnica.">
+  <section class="lectura pagina">
+    <h1>Investigación</h1>
+    <p class="pagina__bajada">Los research briefs completos detrás de cada módulo. Lectura limpia, con método y referencias.</p>
+    <ul class="lista">
+      {conPilar.map(({ b, pilar }) => (
+        <li>
+          <span class="etiqueta">{pilar?.data.nombre}{b.data.ejemplo && ' · ejemplo'}</span>
+          <h2><a href={`/investigacion/${b.id}`}>{b.data.titulo}</a></h2>
+          <p>{b.data.resumen}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+<style>
+  .pagina { padding-top: var(--e-6); }
+  .pagina__bajada { font-size: var(--t-l); color: var(--color-texto-suave); }
+  .lista { list-style: none; padding: 0; margin: var(--e-5) 0 0; }
+  .lista li { border-top: var(--borde); padding-block: var(--e-4); }
+  .lista h2 { font-size: var(--t-l); margin: var(--e-2) 0; }
+  .lista p { margin: 0; color: var(--color-texto-suave); }
+</style>

@@ -1,0 +1,23 @@
+---
+// Cita destacada. "quien" y "contexto" son opcionales; "fuente" enlaza a una fuente del módulo.
+interface Props { quien?: string; contexto?: string; fuente?: string }
+const { quien, contexto, fuente } = Astro.props;
+---
+<figure class="cita" data-reveal>
+  <blockquote><slot /></blockquote>
+  {(quien || contexto) && (
+    <figcaption>
+      {quien && <strong>{quien}</strong>}{quien && contexto && ', '}{contexto}
+      {fuente && <> · <a href={`#fuente-${fuente}`}>fuente</a></>}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .cita { margin: var(--e-6) 0; padding: 0 0 0 var(--e-4); border-left: 6px solid var(--color-destacado); }
+  blockquote {
+    margin: 0; font-family: var(--fuente-titular); font-size: var(--t-xl); line-height: 1.15;
+  }
+  blockquote :global(p) { margin: 0; }
+  figcaption { margin-top: var(--e-3); font-size: var(--t-s); color: var(--color-texto-suave); }
+</style>

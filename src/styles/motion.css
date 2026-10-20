@@ -1,0 +1,38 @@
+/* ==========================================================
+   Movimiento
+   Regla: si la persona pide menos movimiento, o activa la versión
+   estática, todo el contenido aparece completo y quieto.
+   ========================================================== */
+
+/* Aparición al entrar (scroll-triggered reveal).
+   Usa CSS scroll-driven animations, que corren fuera del hilo principal.
+   Sin soporte del navegador: el bloque simplemente se ve, sin animación. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-estatico]) [data-reveal] {
+      animation: umbral-aparecer linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+@keyframes umbral-aparecer {
+  from { opacity: 0; transform: translateY(1.5rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Movimiento reducido: apagar transiciones y animaciones globales. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+html[data-estatico] *,
+html[data-estatico] *::before,
+html[data-estatico] *::after {
+  animation: none !important;
+  transition: none !important;
+}

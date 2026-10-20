@@ -1,0 +1,20 @@
+---
+// Llamada de atención. tipo: "dato" (celeste) o "ojo" (rosa).
+interface Props { titulo?: string; tipo?: 'dato' | 'ojo' }
+const { titulo, tipo = 'dato' } = Astro.props;
+---
+<aside class={`llamada llamada--${tipo}`} data-reveal>
+  {titulo && <p class="llamada__titulo">{titulo}</p>}
+  <slot />
+</aside>
+
+<style>
+  .llamada {
+    margin: var(--e-5) 0; padding: var(--e-4);
+    border-radius: var(--radio); border: var(--borde);
+  }
+  .llamada--dato { background: var(--color-dato); }
+  .llamada--ojo  { background: var(--color-destacado); }
+  .llamada__titulo { font-family: var(--fuente-titular); font-size: var(--t-m); margin-bottom: var(--e-2); }
+  .llamada :global(p:last-child) { margin-bottom: 0; }
+</style>

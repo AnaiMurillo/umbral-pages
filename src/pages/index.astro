@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import HeroFijado from '../components/inicio/HeroFijado.astro';
+import MapaPilares from '../components/inicio/MapaPilares.astro';
+
+// Manifiesto: texto de relleno hasta que Isabel lo redacte.
+const frases = [
+  '[Relleno] Cada interfaz es un umbral: lo cruzamos sin darnos cuenta.',
+  '[Relleno] Aquí no se cuenta cómo nos comportamos frente a la tecnología: se prueba.',
+  '[Relleno] Investigación desde Latinoamérica, para leer con el scroll.',
+];
+---
+<Base>
+  <HeroFijado frases={frases} />
+  <MapaPilares />
+  <section class="lectura cierre" data-reveal>
+    <p class="etiqueta">Para fundaciones, empresas y medios</p>
+    <h2>[Relleno] ¿Investigamos juntos?</h2>
+    <p>[Relleno] Una línea que invita a colaborar.</p>
+    <a class="boton boton--lleno" href="/colabora">Colabora</a>
+  </section>
+</Base>
+<style>
+  .cierre { padding-block: var(--e-6); }
+</style>

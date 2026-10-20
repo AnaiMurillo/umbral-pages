@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base titulo="Colabora" descripcion="Contacto para fundaciones, empresas y medios.">
+  <section class="lectura pagina">
+    <h1>Contacto y colabora</h1>
+    <p>[Relleno] Una entrada para fundaciones, empresas y medios. Qué tipo de colaboraciones buscas y cómo escribir.</p>
+    <ul class="audiencias">
+      <li><strong>Fundaciones y sector social.</strong> [Relleno]</li>
+      <li><strong>Empresas y tecnología.</strong> [Relleno]</li>
+      <li><strong>Medios.</strong> [Relleno]</li>
+    </ul>
+    <p><a class="boton boton--lleno" href="mailto:correo@ejemplo.com">Escríbeme</a></p>
+    <p class="etiqueta">El correo es de relleno. Cámbialo en src/pages/colabora.astro</p>
+  </section>
+</Base>
+<style>
+  .pagina { padding-top: var(--e-6); }
+  .audiencias { padding-left: 1.2em; }
+  .audiencias li { margin-bottom: var(--e-3); }
+</style>

@@ -1,0 +1,32 @@
+{
+  "name": "umbral",
+  "version": "1.0.0",
+  "description": "Umbral: investigación interactiva en Behavioral HCI y Human-Centered AI para Latinoamérica",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "cf:preview": "npm run build && wrangler preview",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.0",
+    "@astrojs/svelte": "^9.1.0",
+    "@fontsource/archivo-black": "^5.3.0",
+    "@fontsource/questrial": "^5.3.0",
+    "astro": "^7.4.1",
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
+    "gsap": "^3.15.0",
+    "scrollama": "^3.2.0",
+    "svelte": "^5.57.2"
+  },
+  "devDependencies": {
+    "wrangler": "^4.151.2"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.22.0"
+  }
+}

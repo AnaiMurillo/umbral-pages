@@ -1,0 +1,112 @@
+---
+import '../styles/base.css';
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+}
+const {
+  titulo,
+  descripcion = 'Umbral: investigación en Behavioral HCI y Human-Centered AI para Latinoamérica, hecha de artículos interactivos.',
+} = Astro.props;
+
+const tituloCompleto = titulo ? `${titulo} · Umbral` : 'Umbral';
+const ruta = Astro.url.pathname.replace(/\/$/, '') || '/';
+const nav = [
+  { href: '/pilares', texto: 'Pilares' },
+  { href: '/investigacion', texto: 'Investigación' },
+  { href: '/sobre-mi', texto: 'Sobre mí' },
+  { href: '/colabora', texto: 'Colabora' },
+];
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descripcion} />
+    <meta name="theme-color" content="#FCFCF0" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      // Versión estática: se activa con ?estatico o desde el botón del módulo,
+      // y se recuerda en este navegador. Se aplica antes de pintar para evitar parpadeos.
+      (function () {
+        document.documentElement.setAttribute('data-js', '');
+        try {
+          var q = new URLSearchParams(location.search);
+          if (q.has('estatico') && q.get('estatico') !== '0') document.documentElement.setAttribute('data-estatico', '');
+          if (q.has('estatico')) localStorage.setItem('umbral-estatico', q.get('estatico') === '0' ? '0' : '1');
+          if (localStorage.getItem('umbral-estatico') === '1') document.documentElement.setAttribute('data-estatico', '');
+          if (localStorage.getItem('umbral-evidencia') === '1') document.documentElement.setAttribute('data-evidencia', '');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    <header class="cabecera">
+      <div class="contenedor cabecera__fila">
+        <a class="logo" href="/" aria-label="Umbral, inicio">UMBRAL</a>
+        <nav aria-label="Principal">
+          <ul>
+            {nav.map((n) => (
+              <li>
+                <a href={n.href} aria-current={ruta.startsWith(n.href) ? 'page' : undefined}>{n.texto}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="contenido">
+      <slot />
+    </main>
+
+    <footer class="pie">
+      <div class="contenedor pie__fila">
+        <p><strong class="logo">UMBRAL</strong><br />Behavioral HCI y Human-Centered AI para Latinoamérica.</p>
+        <p class="pie__nota">Este sitio no recoge datos de lectores. Las simulaciones corren solo en tu navegador.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .cabecera {
+    position: relative; z-index: 50;
+    background: color-mix(in srgb, var(--color-fondo) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-linea) 25%, transparent);
+  }
+  .cabecera__fila {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--e-3); min-height: 3.5rem; flex-wrap: wrap;
+  }
+  .logo {
+    font-family: var(--fuente-titular);
+    font-size: 1.15rem; letter-spacing: 0.08em; text-decoration: none;
+  }
+  nav ul {
+    display: flex; flex-wrap: wrap; gap: var(--e-1) var(--e-4);
+    list-style: none; margin: 0; padding: 0; font-size: var(--t-s);
+  }
+  nav a { text-decoration: none; padding-block: var(--e-2); display: inline-block; }
+  nav a:hover, nav a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 2px; }
+
+  .pie { margin-top: var(--e-7); background: var(--color-invertido); color: var(--color-texto-inv); }
+  .pie__fila {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--e-4);
+    padding-block: var(--e-5); font-size: var(--t-s);
+  }
+  .pie__nota { max-width: 26rem; opacity: 0.85; }
+
+  @media (min-width: 52rem) {
+    .cabecera { position: sticky; top: 0; }
+  }
+  @media (max-width: 30rem) {
+    .cabecera__fila { padding-block: var(--e-2); }
+    nav ul { gap: 0 var(--e-3); }
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Lectura from '../../layouts/Lectura.astro';
+
+export async function getStaticPaths() {
+  const briefs = await getCollection('investigacion');
+  return briefs.map((brief) => ({ params: { slug: brief.id }, props: { brief } }));
+}
+const { brief } = Astro.props;
+const { Content } = await render(brief);
+const pilar = await getEntry(brief.data.pilar);
+const fecha = brief.data.fecha.toLocaleDateString('es-CO', { year: 'numeric', month: 'long', timeZone: 'UTC' });
+---
+<Lectura titulo={brief.data.titulo} resumen={brief.data.resumen} meta={`${pilar?.data.nombre} · ${fecha}`} ejemplo={brief.data.ejemplo}>
+  <Content />
+</Lectura>

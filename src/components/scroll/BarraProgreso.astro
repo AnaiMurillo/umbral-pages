@@ -1,0 +1,40 @@
+---
+// Barra de progreso de lectura (módulos e investigación).
+// Usa CSS scroll() cuando el navegador lo permite; si no, un listener pasivo.
+---
+<div class="progreso" aria-hidden="true"><span class="progreso__barra" data-progreso></span></div>
+
+<style>
+  .progreso {
+    position: fixed; left: 0; right: 0; top: 0; height: 4px; z-index: 60;
+    background: transparent; pointer-events: none;
+  }
+  .progreso__barra {
+    display: block; height: 100%;
+    background: var(--color-texto);
+    transform-origin: left; transform: scaleX(var(--p, 0));
+  }
+  @supports (animation-timeline: scroll()) {
+    .progreso__barra {
+      animation: avanzar linear both;
+      animation-timeline: scroll(root);
+    }
+    @keyframes avanzar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  }
+</style>
+
+<script>
+  if (!CSS.supports('animation-timeline', 'scroll()')) {
+    const barra = document.querySelector<HTMLElement>('[data-progreso]');
+    let pendiente = false;
+    const actualizar = () => {
+      const max = document.documentElement.scrollHeight - innerHeight;
+      barra?.style.setProperty('--p', String(max > 0 ? scrollY / max : 0));
+      pendiente = false;
+    };
+    addEventListener('scroll', () => {
+      if (!pendiente) { pendiente = true; requestAnimationFrame(actualizar); }
+    }, { passive: true });
+    actualizar();
+  }
+</script>

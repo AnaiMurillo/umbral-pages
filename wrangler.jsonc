@@ -1,0 +1,11 @@
+// Cloudflare Workers con archivos estáticos.
+// Workers Builds: push a main = producción; cualquier otra rama = vista previa con su propia URL.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "umbral-pages", // debe coincidir con el nombre del Worker en Cloudflare
+  "compatibility_date": "2026-10-20",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}

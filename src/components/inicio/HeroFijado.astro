@@ -1,0 +1,109 @@
+---
+// Hero fijado del Inicio: el único lugar del sitio con espectáculo.
+// Idea: cruzar un umbral. Una línea se abre como una puerta y el manifiesto
+// aparece frase por frase, ligado a la posición del scroll (pin + scrub).
+// Sin JavaScript, con movimiento reducido o en móvil: todo se ve completo y quieto.
+interface Props { frases: string[] }
+const { frases } = Astro.props;
+---
+<section class="hero" data-hero aria-labelledby="hero-titulo">
+  <div class="hero__escena">
+    <div class="hero__puerta" aria-hidden="true">
+      <span class="hero__hoja hero__hoja--izq"></span>
+      <span class="hero__hoja hero__hoja--der"></span>
+    </div>
+    <h1 id="hero-titulo" class="hero__titulo">UMBRAL</h1>
+    <span class="hero__linea" aria-hidden="true"></span>
+    <ol class="hero__manifiesto">
+      {frases.map((f) => <li class="hero__frase">{f}</li>)}
+    </ol>
+    <p class="hero__pista" aria-hidden="true">Baja para cruzar ↓</p>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; }
+  .hero__escena {
+    position: relative;
+    min-height: calc(100svh - 3.5rem);
+    display: grid; place-content: center; justify-items: center;
+    gap: var(--e-4);
+    padding: var(--e-6) var(--gutter);
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero__titulo {
+    font-size: var(--t-hero);
+    letter-spacing: 0.04em;
+    margin: 0;
+    position: relative; z-index: 2;
+  }
+  .hero__linea {
+    display: block; width: min(40rem, 80vw); height: 4px;
+    background: var(--color-texto); transform-origin: center;
+    position: relative; z-index: 2;
+  }
+  .hero__manifiesto {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: var(--e-3);
+    font-size: var(--t-l); max-width: 34rem;
+    position: relative; z-index: 2;
+  }
+  .hero__pista { font-size: var(--t-s); color: var(--color-texto-suave); margin: 0; }
+
+  /* La "puerta": dos hojas pastel que se abren. Sin JS quedan abiertas (no se ven). */
+  .hero__puerta { position: absolute; inset: 0; display: flex; pointer-events: none; z-index: 1; }
+  .hero__hoja { flex: 1; transform: scaleX(0); }
+  .hero__hoja--izq { background: var(--color-dato); transform-origin: left; }
+  .hero__hoja--der { background: var(--color-destacado); transform-origin: right; }
+
+  /* Modo animado (solo escritorio, con JS y sin movimiento reducido):
+     la sección se alarga para dar recorrido y la escena se queda fija. */
+  :global(.hero--animado) { height: 320vh; }
+  :global(.hero--animado) .hero__escena {
+    position: sticky; top: 3.5rem;
+    height: calc(100svh - 3.5rem);
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const estatico = document.documentElement.hasAttribute('data-estatico');
+
+  if (hero && !estatico) {
+    const mm = gsap.matchMedia();
+    // Efecto pesado solo en pantallas amplias y si la persona no pidió menos movimiento.
+    mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      hero.classList.add('hero--animado');
+      const q = gsap.utils.selector(hero);
+      const tl = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top+=56',
+          end: 'bottom bottom',
+          scrub: 0.6,
+        },
+      });
+
+      tl.from(q('.hero__linea'), { scaleX: 0, duration: 1 })
+        .to(q('.hero__hoja'), { scaleX: 1, duration: 1 }, '<0.3')
+        .to(q('.hero__hoja--izq'), { xPercent: -100, duration: 1.2 }, '>')
+        .to(q('.hero__hoja--der'), { xPercent: 100, duration: 1.2 }, '<')
+        .to(q('.hero__titulo'), { y: '-6vh', letterSpacing: '0.18em', duration: 1.2 }, '<')
+        .to(q('.hero__pista'), { autoAlpha: 0, duration: 0.3 }, 0);
+
+      q('.hero__frase').forEach((frase: Element, i: number) => {
+        tl.from(frase, { autoAlpha: 0, y: 24, duration: 0.6 }, 2.2 + i * 0.7);
+      });
+
+      ScrollTrigger.refresh();
+      return () => hero.classList.remove('hero--animado');
+    });
+  }
+</script>

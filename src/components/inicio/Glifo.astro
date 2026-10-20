@@ -1,0 +1,51 @@
+---
+// Miniatura abstracta de cada pilar. Reacciona al pasar el cursor o el foco por la zona.
+interface Props { pilar: string }
+const { pilar } = Astro.props;
+---
+<svg class={`glifo glifo--${pilar}`} viewBox="0 0 120 48" width="120" height="48" aria-hidden="true" focusable="false">
+  {pilar === 'confianza' && (
+    <g>
+      <rect x="4" y="10" width="36" height="28" rx="6" />
+      <path class="glifo__mov" d="M14 24 l6 6 l12 -12" />
+      <line x1="52" y1="24" x2="116" y2="24" stroke-dasharray="4 6" />
+    </g>
+  )}
+  {pilar === 'persuasion' && (
+    <g>
+      <circle cx="24" cy="24" r="14" />
+      <path class="glifo__mov" d="M44 24 H108 M98 14 L108 24 L98 34" />
+    </g>
+  )}
+  {pilar === 'comprension' && (
+    <g>
+      <line x1="4" y1="12" x2="116" y2="12" />
+      <line x1="4" y1="24" x2="90" y2="24" />
+      <line class="glifo__mov" x1="4" y1="36" x2="40" y2="36" />
+    </g>
+  )}
+  {pilar === 'atencion' && (
+    <g>
+      <circle cx="60" cy="24" r="20" />
+      <circle class="glifo__mov" cx="60" cy="24" r="6" />
+    </g>
+  )}
+  {pilar === 'identidad-digital' && (
+    <g>
+      <circle cx="30" cy="24" r="16" />
+      <circle class="glifo__mov" cx="54" cy="24" r="16" stroke-dasharray="3 4" />
+      <rect x="84" y="8" width="30" height="32" rx="4" />
+    </g>
+  )}
+</svg>
+
+<style>
+  .glifo { fill: none; stroke: var(--color-texto); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; margin-block: var(--e-2); }
+  .glifo__mov { transition: transform var(--dur-media) var(--curva); transform-box: fill-box; transform-origin: center; }
+  :global(.zona:hover) .glifo__mov,
+  :global(.zona:focus-within) .glifo__mov { transform: translateX(6px); }
+  :global(.zona:hover) .glifo--atencion .glifo__mov,
+  :global(.zona:focus-within) .glifo--atencion .glifo__mov { transform: scale(2.2); }
+  :global(.zona:hover) .glifo--comprension .glifo__mov,
+  :global(.zona:focus-within) .glifo--comprension .glifo__mov { transform: scaleX(2.4); transform-origin: left; }
+</style>

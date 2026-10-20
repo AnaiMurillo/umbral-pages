@@ -1,0 +1,37 @@
+[
+  {
+    "id": "confianza",
+    "nombre": "Confianza",
+    "mecanismo": "Qué señales nos hacen creerle a una interfaz",
+    "teaser": "[Relleno] Le creemos a la pantalla antes de leerla.",
+    "orden": 1
+  },
+  {
+    "id": "persuasion",
+    "nombre": "Persuasión",
+    "mecanismo": "Cómo el diseño empuja decisiones",
+    "teaser": "[Relleno] El botón ya decidió por ti.",
+    "orden": 2
+  },
+  {
+    "id": "comprension",
+    "nombre": "Comprensión",
+    "mecanismo": "Qué entendemos, y qué creemos entender",
+    "teaser": "[Relleno] Aceptaste los términos. ¿Cuáles?",
+    "orden": 3
+  },
+  {
+    "id": "atencion",
+    "nombre": "Atención",
+    "mecanismo": "Quién controla hacia dónde miramos",
+    "teaser": "[Relleno] Este scroll no tiene fondo.",
+    "orden": 4
+  },
+  {
+    "id": "identidad-digital",
+    "nombre": "Identidad digital",
+    "mecanismo": "Quiénes somos para un sistema",
+    "teaser": "[Relleno] El algoritmo ya tiene una versión de ti.",
+    "orden": 5
+  }
+]

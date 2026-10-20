@@ -1,0 +1,13 @@
+---
+// Cambia entre la versión animada y la versión estática de todas las escenas.
+// Recarga la página para que cada escena arranque en el modo correcto.
+---
+<a class="boton" data-boton-estatico href="?estatico=1">Ver sin animación</a>
+
+<script>
+  const activo = document.documentElement.hasAttribute('data-estatico');
+  document.querySelectorAll<HTMLAnchorElement>('[data-boton-estatico]').forEach((b) => {
+    b.textContent = activo ? 'Ver con animación' : 'Ver sin animación';
+    b.href = `${location.pathname}?estatico=${activo ? '0' : '1'}`;
+  });
+</script>

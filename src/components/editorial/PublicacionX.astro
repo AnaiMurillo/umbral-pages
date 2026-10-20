@@ -1,0 +1,42 @@
+---
+// Publicación real incrustada (por ejemplo, de X).
+// Privacidad primero: se muestra el texto citado y un enlace. El script de X
+// (que rastrea) solo se carga si la persona pulsa "Ver publicación original".
+interface Props { url: string; autor: string; fecha?: string }
+const { url, autor, fecha } = Astro.props;
+---
+<figure class="publicacion" data-publicacion-x>
+  <blockquote class="twitter-tweet" data-dnt="true" data-lang="es">
+    <slot />
+    <p class="publicacion__autor">— {autor}{fecha && `, ${fecha}`} · <a href={url} target="_blank" rel="noopener">ver en X ↗</a></p>
+  </blockquote>
+  <button type="button" class="boton publicacion__cargar">Ver publicación original</button>
+  <figcaption class="publicacion__nota">Al cargarla, X puede registrar tu visita.</figcaption>
+</figure>
+
+<style>
+  .publicacion { margin: var(--e-5) 0; }
+  .twitter-tweet {
+    margin: 0 0 var(--e-3); padding: var(--e-4);
+    background: var(--color-superficie); border: var(--borde); border-radius: var(--radio);
+  }
+  .publicacion__autor { margin: var(--e-3) 0 0; font-size: var(--t-s); color: var(--color-texto-suave); }
+  .publicacion__nota { font-size: var(--t-xs); color: var(--color-texto-suave); margin-top: var(--e-2); }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-publicacion-x]').forEach((fig) => {
+    fig.querySelector('.publicacion__cargar')?.addEventListener('click', (e) => {
+      (e.currentTarget as HTMLElement).remove();
+      fig.querySelector('.publicacion__nota')?.remove();
+      if (!document.querySelector('script[src*="platform.twitter.com"]')) {
+        const s = document.createElement('script');
+        s.src = 'https://platform.twitter.com/widgets.js';
+        s.async = true;
+        document.body.appendChild(s);
+      } else {
+        (window as any).twttr?.widgets?.load(fig);
+      }
+    });
+  });
+</script>
