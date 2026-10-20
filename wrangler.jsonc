@@ -9,5 +9,8 @@
   "assets": {
     "directory": "./dist",
     "not_found_handling": "404-page"
-  }
+  },
+  // Vistas previas por rama (wrangler preview). Obligatorio aunque esté vacío:
+  // el sitio es estático y no necesita ajustes propios en las vistas previas.
+  "previews": {}
 }
