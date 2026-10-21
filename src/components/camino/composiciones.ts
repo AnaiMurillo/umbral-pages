@@ -31,7 +31,7 @@ export const camino: Record<'computador' | 'movil', ComposicionCamino> = {
     vuelo: 0.16,
     inicio: { x: 0.08, y: -160 },
     hundir: 0.18,
-    punta: 0.72,
+    punta: 0.9,
   },
   movil: {
     // Cinta de 96 a 140 px; se sale de los bordes de la pantalla.
@@ -40,7 +40,7 @@ export const camino: Record<'computador' | 'movil', ComposicionCamino> = {
     vuelo: 0.55,
     inicio: { x: 1.15, y: -120 },
     hundir: 0.22,
-    punta: 0.78,
+    punta: 0.92,
   },
 };
 

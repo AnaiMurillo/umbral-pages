@@ -167,17 +167,20 @@ function prepararModulo(modulo: HTMLElement) {
       // 2. Criaturas que se arman cuando llega la punta (ease: none, ligado al scroll)
       modulo.querySelectorAll<HTMLElement>('[data-parada]').forEach((parada) => {
         const ancla = parada.querySelector<HTMLElement>('[data-ancla]');
-        if (!ancla) return;
+        const tarjeta = parada.querySelector<HTMLElement>('.parada__tarjeta');
+        if (!ancla || !tarjeta) return;
+        // Sincronía con la lectura: la criatura queda armada cuando la parte de arriba
+        // de su tarjeta llega al 60 % de la pantalla (ahí se empieza a leer).
+        // Computador: arranca cuando la tarjeta asoma por abajo (la criatura va a su lado).
+        // Móvil: arranca cuando asoma la criatura (va encima de la tarjeta).
+        const inicio = computador
+          ? { trigger: tarjeta, start: 'top bottom' }
+          : { trigger: ancla, start: 'top 98%' };
+        const fin = { endTrigger: tarjeta, end: 'top 60%' };
         const piezas = ancla.querySelectorAll<SVGGElement>('[data-pieza]');
         const tl = gsap.timeline({
           defaults: { ease: 'none', duration: 1 },
-          scrollTrigger: {
-            trigger: ancla,
-            // Se arma mientras la base sube del borde inferior hasta justo bajo la punta.
-            start: `bottom ${Math.round(comp.punta * 100 + 26)}%`,
-            end: `bottom ${Math.round(comp.punta * 100 - 4)}%`,
-            scrub: 0.5,
-          },
+          scrollTrigger: { ...inicio, ...fin, scrub: 0.3 },
         });
         piezas.forEach((p, i) => tl.from(p, { ...leerDesde(p), opacity: 0 }, i * 0.18));
         if (tl.scrollTrigger) triggers.push(tl.scrollTrigger);
@@ -187,7 +190,7 @@ function prepararModulo(modulo: HTMLElement) {
           m.style.strokeDasharray = '1 1';
           const t = gsap.fromTo(m, { strokeDashoffset: 1 }, {
             strokeDashoffset: 0, ease: 'none',
-            scrollTrigger: { trigger: ancla, start: 'top 85%', end: 'bottom 45%', scrub: 0.5 },
+            scrollTrigger: { ...inicio, ...fin, scrub: 0.3 },
           });
           if (t.scrollTrigger) triggers.push(t.scrollTrigger);
         });
