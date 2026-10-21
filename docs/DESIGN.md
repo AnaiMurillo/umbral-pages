@@ -92,7 +92,7 @@ Principios: scrollytelling sí, scrolljacking no. El scroll nunca cambia de velo
 | Línea de estela y objetos secundarios | Que cada idea tiene detalles | Scroll, con parallax | Máximo 3 objetos por escena | Dibujados y fijos |
 | Entrada de parada (tarjeta y criatura) | Una idea por pantalla | Cuando el punto llega a la parada | Criatura sobre la tarjeta | Todo visible |
 | Formas que se arman | Que la idea se construye | Ligadas al scroll cuando el camino llega a la parada (`ease: none`, ver 5b) | Igual | Formas ya armadas |
-| Cerebro de partículas | El enfoque analítico de Umbral | Ambiente continuo, solo en Inicio e Identidad digital. Cerebro de perfil con contorno, circunvoluciones, cerebelo y tronco; una onda de actividad lo recorre. Sin botón de pausa (decisión de Isabel). | 260 partículas (420 en computador), se detiene solo fuera de pantalla | Imagen fija |
+| Cerebro de partículas | El enfoque analítico de Umbral | Ambiente continuo, solo en Inicio e Identidad digital. Cerebro de frente: dos hemisferios de puntos de colores con circunvoluciones y uniones finas. Sin botón de pausa (decisión de Isabel). | 420 partículas (700 en computador), se detiene solo fuera de pantalla | Imagen fija |
 
 Producción: GSAP con ScrollTrigger solo en el Inicio y en el camino grueso de los módulos (camino, criaturas, estelas y parallax), con trazo dibujado por scroll y `ease: none`. La activación de paradas usa Scrollama; las apariciones simples, CSS `view()`. Sin Lenis.
 

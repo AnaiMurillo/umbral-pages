@@ -44,7 +44,7 @@ Orden: saltar al contenido → logo → menú → modo evidencia → ver sin ani
 | Elemento | Se anuncia como | Observación |
 |---|---|---|
 | Camino, criaturas y objetos | (oculto) | `aria-hidden`: decorativos, como pide DESIGN §8 |
-| Cerebro | imagen, "Un cerebro de perfil dibujado con cientos de puntos…" | `role="img"` con descripción |
+| Cerebro | imagen, "Un cerebro hecho de cientos de puntos de colores…" | `role="img"` con descripción |
 | Parada | región con el título de la tarjeta | `section` con `aria-labelledby` |
 | Afirmación | botón, "texto (ver fuente)" | `aria-haspopup="dialog"` |
 | Interruptor del sello | botones con `aria-pressed` | dentro de un grupo con nombre |
