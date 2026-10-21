@@ -83,10 +83,32 @@ export function iniciarCerebro(canvas: HTMLCanvasElement) {
 
   let colores: string[] = [];
   let linea = '#1F2120';
+  // Colores de la paleta. Se resuelven con un elemento de prueba (el navegador devuelve
+  // siempre un color final, p. ej. "rgb(124, 203, 232)"). Leer la variable CSS directo
+  // puede devolver "var(--celeste-v)" en algunos navegadores (Safari): el canvas no lo
+  // entiende y pinta todo en negro. Si algo falla, se usa el color fijo de la paleta.
+  const RESPALDO: Record<string, string> = {
+    '--a1': '#7CCBE8', '--a2': '#FF8DC7', '--a3': '#FFE27A', '--a4': '#BDEBCB', '--fg': '#1F2120', '--line': '#1F2120',
+  };
+  const prueba = document.createElement('canvas').getContext('2d');
+  const esValido = (c: string) => {
+    if (!prueba || !c) return false;
+    prueba.fillStyle = '#010203';
+    prueba.fillStyle = c;
+    return prueba.fillStyle !== '#010203';
+  };
+  const resolver = (variable: string) => {
+    const sonda = document.createElement('span');
+    sonda.style.display = 'none';
+    sonda.style.color = `var(${variable}, ${RESPALDO[variable]})`;
+    document.body.appendChild(sonda);
+    const c = getComputedStyle(sonda).color;
+    sonda.remove();
+    return esValido(c) ? c : RESPALDO[variable];
+  };
   const leerColores = () => {
-    const cs = getComputedStyle(document.documentElement);
-    colores = ['--a1', '--a2', '--a3', '--a4', '--fg'].map((v) => cs.getPropertyValue(v).trim());
-    linea = cs.getPropertyValue('--line').trim();
+    colores = ['--a1', '--a2', '--a3', '--a4', '--fg'].map(resolver);
+    linea = resolver('--line');
   };
   leerColores();
 
