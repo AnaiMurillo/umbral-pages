@@ -45,7 +45,7 @@ const limpio = (t: string) => t.replace(/\*/g, '');
         ) : (
           <p class="pilar__pronto"><span class="etiqueta">Próximamente.</span> El primer artículo de este pilar está en preparación.</p>
         )}
-        <a class="boton boton--claro pilar__ver" href={`/pilares/${p.id}`}>Ver el pilar →</a>
+        <a class="boton boton--claro pilar__ver" href={`/pilares/${p.id}`}>Ver el pilar →<span class="visualmente-oculto"> {p.data.nombre}</span></a>
       </Parada>
     );
   })}

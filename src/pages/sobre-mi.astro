@@ -1,10 +1,82 @@
 ---
+// Sobre mí (TEXTOS_FINALES.md §7). Habla Isabel en primera persona.
 import Base from '../layouts/Base.astro';
+import Retrato from '../components/sobre-mi/Retrato.astro';
+import CopiarCorreo from '../components/comunes/CopiarCorreo.astro';
+import { sitio } from '../data/sitio';
+
+const enfoque = [
+  ['Primero el comportamiento.', 'Parto del mecanismo humano, no de la herramienta. La tecnología cambia; los mecanismos se repiten.'],
+  ['Evidencia, no opinión.', 'Lo que publico tiene fuente, y siempre busco la que lo complica.'],
+  ['Mirada desde Latinoamérica.', 'Busco datos y casos de la región, donde casi no hay investigación.'],
+];
 ---
-<Base titulo="Sobre mí">
-  <section class="lectura pagina">
-    <h1>Sobre mí</h1>
-    <p>[Relleno] Narrativa profesional de Isabel, pendiente de redactar.</p>
+<Base titulo="Sobre mí" descripcion="Ana Isabel Murillo Murillo · Behavioral HCI Researcher & Human-Centered AI · Cali, Colombia">
+  <section class="intro contenedor" aria-labelledby="sobre-titulo">
+    <div class="intro__texto">
+      <h1 id="sobre-titulo" class="etiqueta etiqueta--banda">Sobre mí</h1>
+      <p class="intro__nombre">Ana Isabel Murillo Murillo</p>
+      <p class="intro__rol">Behavioral HCI Researcher &amp; Human-Centered AI · Cali, Colombia</p>
+      <p class="intro__afirmacion">Investigo cómo las personas piensan, deciden y confían frente a la tecnología.</p>
+    </div>
+    <Retrato />
+  </section>
+
+  <section class="lectura bloque" aria-labelledby="quien-titulo">
+    <div class="tarjeta">
+      <h2 id="quien-titulo">Quién soy</h2>
+      <p>Soy psicóloga, especializada en la intersección entre ciencia del comportamiento, investigación en HCI y sistemas de IA. Construyo evidencia para que los productos se diseñen más centrados en las personas.</p>
+    </div>
+  </section>
+
+  <section class="contenedor bloque" aria-labelledby="enfoque-titulo">
+    <h2 id="enfoque-titulo">Mi enfoque</h2>
+    <ol class="enfoque">
+      {enfoque.map(([t, d], i) => (
+        <li class={`enfoque__item enfoque__item--${i + 1}`} data-reveal>
+          <h3>{t}</h3>
+          <p>{d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="lectura bloque" aria-labelledby="construyendo-titulo">
+    <div class="tarjeta">
+      <h2 id="construyendo-titulo">Qué estoy construyendo</h2>
+      <p>Estoy preparando el primer artículo. Cada uno sale con su brief y un camino interactivo, cuando la evidencia está lista, aproximadamente cada 4 a 6 semanas.</p>
+    </div>
+  </section>
+
+  <section class="lectura bloque" aria-labelledby="encontrarme-titulo">
+    <div class="tarjeta encontrarme">
+      <h2 id="encontrarme-titulo">Dónde encontrarme</h2>
+      <CopiarCorreo tamano="grande" />
+      {sitio.linkedin && <a class="boton boton--claro" href={sitio.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>}
+    </div>
   </section>
 </Base>
-<style>.pagina { padding-top: var(--s-6); }</style>
+
+<style>
+  .intro { display: grid; gap: var(--s-5); align-items: center; padding-top: var(--s-5); }
+  .intro__nombre { font-family: var(--font-title); font-weight: 800; letter-spacing: var(--title-tracking); line-height: var(--title-leading); font-size: clamp(2.4rem, 1.6rem + 3.5vw, 4.4rem); margin: var(--s-3) 0 var(--s-2); text-wrap: balance; }
+  .intro__rol { color: var(--muted); }
+  .intro__afirmacion {
+    font-family: var(--font-title); font-weight: 700; font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem);
+    line-height: 1.15; letter-spacing: -0.02em; margin-top: var(--s-4);
+  }
+  @media (min-width: 52rem) { .intro { grid-template-columns: 1.1fr 1fr; min-height: calc(100svh - 4rem); } }
+
+  .bloque { margin-top: var(--s-6); }
+  .bloque h2 { font-size: var(--t-card); }
+  .enfoque { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 52rem) { .enfoque { grid-template-columns: repeat(3, 1fr); } }
+  .enfoque__item { border-radius: var(--r-card); padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem); color: var(--on-color); }
+  .enfoque__item h3 { font-size: var(--t-lead); }
+  .enfoque__item p { margin: 0; }
+  .enfoque__item--1 { background: var(--celeste-v); }
+  .enfoque__item--2 { background: var(--rosa-v); }
+  .enfoque__item--3 { background: var(--mantequilla); }
+  .encontrarme { display: grid; gap: var(--s-3); justify-items: start; }
+  .encontrarme h2 { margin: 0; }
+</style>

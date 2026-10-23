@@ -6,40 +6,27 @@ Sitio estático con **Astro** y componentes interactivos en **Svelte**. El camin
 
 ## Editar contenido (sin tocar código)
 
+Documentos de referencia en `docs/`: `DESIGN.md` (diseño, manda), `GUIA_INTERFAZ_Y_CONTENIDO.md` y `TEXTOS_FINALES.md`.
+
 | Qué | Dónde |
 | --- | --- |
-| Los 5 pilares (nombre, mecanismo, teaser) | `src/content/pilares.json` |
-| Módulos explorables | `src/content/modulos/*.mdx`, un archivo por módulo (el nombre del archivo es la URL) |
-| Research briefs | `src/content/investigacion/*.md` |
-| Manifiesto del Inicio | `src/pages/index.astro`, lista `frases` |
-| Sobre mí / Colabora | `src/pages/sobre-mi.astro`, `src/pages/colabora.astro` |
+| Correo y **LinkedIn** (vacío = botón oculto) | `src/data/sitio.ts` |
+| Los 5 pilares: pregunta, frase, qué explora, situaciones, en el radar, glosario, vacíos | `src/content/pilares.json` |
+| Artículos (un `.mdx` por artículo; el nombre del archivo es la URL `/articulos/nombre`) | `src/content/articulos/` |
+| Briefs (un `.md` por brief) | `src/content/investigacion/` |
 
-**Crear un módulo nuevo:** copia `src/content/modulos/plantilla-ejemplo.mdx`, cámbiale el nombre y edita los campos de arriba (titular, bajada, pregunta, hallazgo, fuentes, recomendaciones) y el texto.
-
-### Componentes que puedes usar en el texto de un módulo
-
-El diseño sigue `docs/DESIGN.md`. Cada módulo es un **camino grueso** con cinco paradas: Gancho y Qué hacer salen del frontmatter; las tres del medio se escriben en el MDX:
+**Crear un artículo:** copia `src/content/articulos/ejemplo.mdx`, cámbiale el nombre, pon `ejemplo: false` y reemplaza los campos del frontmatter (guía §3.4) y las escenas:
 
 ```mdx
-<Parada escena="jugable" etiqueta="Escena jugable" titulo="Pruébalo tú">
-  Texto de la tarjeta, gráficos y decisión.
-</Parada>
-<Parada escena="revelacion" etiqueta="El hallazgo" titulo={frontmatter.hallazgo}>...</Parada>
-<Parada escena="evidencia" etiqueta="La evidencia" titulo="...">...</Parada>
-
-<Afirmacion fuente="id-de-fuente">una afirmación importante</Afirmacion>
-<PullQuote quien="Nombre" contexto="cargo" fuente="id">Cita</PullQuote>
-<Llamada titulo="Dato de Colombia" tipo="dato">...</Llamada>   (tipo: dato | ojo)
-<LecturaRapida>- punto 1 - punto 2</LecturaRapida>
-<Acordeon titulo="Comunicado oficial" meta="Entidad · fecha">...</Acordeon>
-<PublicacionX url="https://x.com/..." autor="@cuenta" fecha="2026">Texto</PublicacionX>
+<Escena n={1}>Para empezar (máx. 60 palabras)</Escena>
+<Escena n={2}>Pruébalo tú: una interacción + <QueSimula>…</QueSimula></Escena>
+<Escena n={3}>El hallazgo: 2 o 3 frases (la frase destacada sale de hallazgoUnaFrase)</Escena>
+<Escena n={4}>La evidencia (el caso de la región y lo que complica salen del frontmatter)</Escena>
 ```
 
-- `color: celeste | rosa` en el frontmatter elige el color del camino.
-- En el titular, `*palabra*` se resalta en rosa.
-- Las criaturas, sus objetos y la composición de computador y móvil están en `src/components/camino/composiciones.ts`.
+La escena 5 (Qué hacer con esto) y el cierre se arman solos desde el frontmatter. Otros componentes: `<Afirmacion fuente="id">`, `<PullQuote>`, `<Acordeon>`, `<Llamada>`, `<PublicacionX>`.
 
-Cada `<Afirmacion>` debe apuntar a un `id` de la lista `fuentes` del mismo archivo. Si no existe, la consola del navegador avisa.
+El artículo de ejemplo (`ejemplo: true`) no aparece en catálogos ni buscadores. Bórralo cuando publiques el primero real.
 
 ## Trabajar en local
 
@@ -63,4 +50,4 @@ Versión estática de cualquier página: agrega `?estatico=1` a la URL (`?estati
 
 ## Pendientes
 
-- El correo de `colabora.astro` es de relleno.
+- Enlace de LinkedIn en `src/data/sitio.ts`.

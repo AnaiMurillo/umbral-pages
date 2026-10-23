@@ -1,0 +1,46 @@
+---
+// Foto de la autora tratada como una criatura más (DESIGN §5, TEXTOS_FINALES §7):
+// formas geométricas planas detrás, la figura se sale por arriba (recorte de papel)
+// y todo aparece con el scroll (CSS view()). Sin movimiento: foto y formas quietas.
+---
+<figure class="retrato">
+  <svg class="retrato__formas" viewBox="0 0 400 500" aria-hidden="true" focusable="false">
+    <g class="forma forma--1"><path d="M10 500 A190 190 0 0 1 390 500 Z" fill="var(--celeste-v)" /></g>
+    <g class="forma forma--2"><circle cx="318" cy="150" r="74" fill="var(--rosa-v)" /></g>
+    <g class="forma forma--3"><rect x="22" y="262" width="112" height="112" rx="28" fill="var(--mantequilla)" transform="rotate(-10 78 318)" /></g>
+    <g class="forma forma--4 solo-pc"><path d="M70 90 C72 112 80 120 102 122 C80 124 72 132 70 154 C68 132 60 124 38 122 C60 120 68 112 70 90Z" fill="var(--menta)" /></g>
+  </svg>
+  <picture class="retrato__foto">
+    <source srcset="/img/isabel.webp" type="image/webp" />
+    <img src="/img/isabel.png" width="471" height="693" alt="Retrato de Ana Isabel Murillo Murillo" decoding="async" />
+  </picture>
+</figure>
+
+<style>
+  .retrato { position: relative; margin: 0; width: min(84vw, 26rem); aspect-ratio: 4 / 5; justify-self: center; }
+  .retrato__formas { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .forma { transform-box: fill-box; transform-origin: 50% 100%; }
+  .retrato__foto { position: absolute; left: 50%; bottom: 0; width: 76%; translate: -50% 0; }
+  .retrato__foto img { width: 100%; height: auto; display: block; }
+  .solo-pc { display: none; }
+  @media (min-width: 52rem) { .solo-pc { display: inline; } .retrato { width: min(100%, 30rem); } }
+
+  /* Aparición con el scroll: las formas se arman detrás y la foto sube sobre ellas. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html:not([data-estatico])) .forma,
+      :global(html:not([data-estatico])) .retrato__foto {
+        animation: linear both;
+        animation-timeline: view();
+      }
+      :global(html:not([data-estatico])) .forma--1 { animation-name: umbral-forma; animation-range: entry 0% cover 30%; }
+      :global(html:not([data-estatico])) .forma--2 { animation-name: umbral-forma-rota; animation-range: entry 10% cover 35%; }
+      :global(html:not([data-estatico])) .forma--3 { animation-name: umbral-forma-rota; animation-range: entry 15% cover 38%; }
+      :global(html:not([data-estatico])) .forma--4 { animation-name: umbral-forma; animation-range: entry 20% cover 42%; }
+      :global(html:not([data-estatico])) .retrato__foto { animation-name: umbral-foto; animation-range: entry 25% cover 45%; }
+    }
+  }
+  @keyframes umbral-forma { from { opacity: 0; transform: translateY(40px) scale(0.6); } to { opacity: 1; transform: none; } }
+  @keyframes umbral-forma-rota { from { opacity: 0; transform: translateY(30px) rotate(-25deg) scale(0.5); } to { opacity: 1; transform: none; } }
+  @keyframes umbral-foto { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: none; } }
+</style>
