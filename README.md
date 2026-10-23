@@ -50,4 +50,4 @@ Versión estática de cualquier página: agrega `?estatico=1` a la URL (`?estati
 
 ## Pendientes
 
-- Enlace de LinkedIn en `src/data/sitio.ts`.
+- LinkedIn configurado en `src/data/sitio.ts`.

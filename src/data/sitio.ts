@@ -7,7 +7,7 @@ export const sitio = {
   nombre: 'Umbral',
   autora: 'Ana Isabel Murillo Murillo',
   correo: 'psi.anamurillo@gmail.com',
-  linkedin: '', // ← p. ej. 'https://www.linkedin.com/in/tu-perfil'
+  linkedin: 'https://www.linkedin.com/in/anaimurillo',
   lema: 'Behavioral HCI y Human-Centered AI para Latinoamérica.',
   avisoPie: 'Este sitio no recoge datos de lectores. Las simulaciones corren solo en tu navegador.',
   licencia: 'Creative Commons BY-NC 4.0',
