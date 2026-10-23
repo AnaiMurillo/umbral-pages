@@ -1,0 +1,73 @@
+---
+// Tarjeta de artículo del catálogo (GUIA §2.2). Mismos bordes y estructura en todas.
+// "En preparación": título de trabajo, la pregunta que responderá y silueta sin colorear; sin enlace.
+import type { CollectionEntry } from 'astro:content';
+import Criatura from '../criaturas/Criatura.astro';
+import { tiposInteraccion, formatoFecha } from '../../data/sitio';
+
+interface Props {
+  articulo: CollectionEntry<'articulos'>;
+  criatura: 'pregunta' | 'sello' | 'ojo' | 'pila' | 'saltarin' | 'empujon' | 'doble';
+  destacada?: boolean;
+  nivel?: 'h2' | 'h3';
+}
+const { articulo, criatura, destacada = false, nivel = 'h3' } = Astro.props;
+const d = articulo.data;
+const preparando = d.estado === 'en-preparacion';
+const Titulo = nivel;
+const limpio = (t: string) => t.replace(/\*/g, '');
+---
+<article
+  class:list={['tarjeta-art', { 'tarjeta-art--destacada': destacada, 'tarjeta-art--preparando': preparando }]}
+  data-mecanismo={d.mecanismo}
+  data-tipo={d.tipoInteraccion}
+  data-fecha={+d.fecha}
+  data-titulo={limpio(d.titulo)}
+>
+  <div class="tarjeta-art__mini" aria-hidden="true"><Criatura nombre={criatura} /></div>
+  <div class="tarjeta-art__texto">
+    <p class="tarjeta-art__estado etiqueta">{preparando ? 'En preparación' : 'Publicado'}</p>
+    <Titulo class="tarjeta-art__titulo">
+      {preparando ? limpio(d.titulo) : <a href={`/articulos/${articulo.id}`}>{limpio(d.titulo)}</a>}
+    </Titulo>
+    <p class="tarjeta-art__bajada">{preparando && d.preguntaQueResponde ? d.preguntaQueResponde : d.bajada}</p>
+    <p class="tarjeta-art__chips">
+      <span class="chip chip--pilar">{d.mecanismo}</span>
+      <span class="chip">{tiposInteraccion[d.tipoInteraccion]}</span>
+    </p>
+    {!preparando && <p class="tarjeta-art__meta">{d.tiempoLectura} min · {formatoFecha(d.fecha)}</p>}
+  </div>
+</article>
+
+<style>
+  .tarjeta-art {
+    position: relative;
+    display: grid; grid-template-rows: auto 1fr;
+    background: var(--surface); border: var(--border); border-radius: var(--r-card);
+    overflow: hidden;
+  }
+  .tarjeta-art__mini { background: var(--pilar); padding: var(--s-4) var(--s-4) 0; display: grid; place-items: end center; }
+  .tarjeta-art__mini :global(svg) { width: min(70%, 220px); }
+  .tarjeta-art--preparando .tarjeta-art__mini { background: var(--band); }
+  /* Silueta sin colorear */
+  .tarjeta-art--preparando .tarjeta-art__mini :global(svg *) { fill: var(--surface) !important; stroke: var(--surface) !important; }
+  .tarjeta-art__texto { padding: var(--s-4); }
+  .tarjeta-art__estado { margin-bottom: var(--s-2); }
+  .tarjeta-art__titulo { font-size: var(--t-card); margin-bottom: var(--s-2); }
+  .tarjeta-art__titulo a { text-decoration: none; }
+  /* Toda la tarjeta es clicable, el enlace sigue siendo el título */
+  .tarjeta-art__titulo a::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+  .tarjeta-art__titulo a:focus-visible { outline: none; }
+  .tarjeta-art:has(a:focus-visible) { outline: 3px solid var(--fg); outline-offset: 3px; }
+  @media (hover: hover) { .tarjeta-art:has(a):hover .tarjeta-art__titulo a { text-decoration: underline; } }
+  .tarjeta-art__bajada { color: var(--muted); }
+  .tarjeta-art__chips { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-bottom: var(--s-2); }
+  .chip { display: inline-block; border: 1.5px solid var(--outline); border-radius: var(--r-pill); padding: 0.2em 0.8em; font-size: var(--t-label); }
+  .chip--pilar { background: var(--pilar); color: var(--on-color); border-color: transparent; }
+  .tarjeta-art__meta { font-size: var(--t-small); color: var(--muted); margin: 0; }
+
+  @media (min-width: 52rem) {
+    .tarjeta-art--destacada { grid-column: span 2; grid-template-rows: none; grid-template-columns: 1fr 1.3fr; }
+    .tarjeta-art--destacada .tarjeta-art__mini { place-items: center; padding: var(--s-5); }
+  }
+</style>

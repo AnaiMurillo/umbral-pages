@@ -22,8 +22,10 @@ interface Props {
   pilar?: string;
   /** Criatura del pilar del artículo: si una escena la repite, se usa otra. */
   evitar?: NombreCriatura;
+  /** Mostrar el slot "figura" en lugar de la criatura (p. ej. el cerebro). */
+  conFigura?: boolean;
 }
-const { escena, etiqueta, nombre, titulo, nivel = 'h2', criatura, id: idSeccion, pilar, evitar } = Astro.props;
+const { escena, etiqueta, nombre, titulo, nivel = 'h2', criatura, id: idSeccion, pilar, evitar, conFigura = false } = Astro.props;
 const comp = paradas[escena];
 let nombreCriatura = criatura ?? comp.criatura;
 if (!criatura && evitar && nombreCriatura === evitar) nombreCriatura = alternativa[nombreCriatura];
@@ -32,7 +34,7 @@ const Titulo = nivel;
 ---
 <section id={idSeccion} class:list={['parada', `parada--${escena}`, `parada--${comp.lado}`]} data-parada={escena} data-pilar={pilar} data-pilar-parada={pilar} aria-labelledby={titulo ? `${id}-titulo` : undefined} aria-label={titulo ? undefined : (nombre ?? etiqueta)}>
   <div class="parada__criatura" data-ancla>
-    <Criatura nombre={nombreCriatura} />
+    {conFigura && Astro.slots.has('figura') ? <slot name="figura" /> : <Criatura nombre={nombreCriatura} />}
     <Objetos lista={comp.objetos} id={escena} />
   </div>
   <div class="parada__tarjeta tarjeta">

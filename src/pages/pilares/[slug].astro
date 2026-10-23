@@ -1,20 +1,208 @@
 ---
-// Página de pilar. Etapa 1: ruta y encabezado. La página completa llega en la etapa 3.
+// Página de pilar (GUIA §2, TEXTOS_FINALES §4).
+// Orden: pregunta · frase destacada · qué explora · cómo lo notas en tu día · artículos ·
+//        en el radar · palabras del pilar · lo que aún no sabemos · sigue con.
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import Camino from '../../components/camino/Camino.astro';
+import Parada from '../../components/camino/Parada.astro';
+import Remate from '../../components/camino/Remate.astro';
+import Cerebro from '../../components/inicio/Cerebro.astro';
+import Acordeon from '../../components/evidencia/Acordeon.astro';
+import TarjetaArticulo from '../../components/comunes/TarjetaArticulo.astro';
+import { paradas, type Pilar } from '../../components/camino/composiciones';
+import { tiposInteraccion } from '../../data/sitio';
 
 export async function getStaticPaths() {
-  const pilares = await getCollection('pilares');
-  return pilares.map((pilar) => ({ params: { slug: pilar.id }, props: { pilar } }));
+  const pilares = (await getCollection('pilares')).sort((a, b) => a.data.orden - b.data.orden);
+  return pilares.map((pilar, i) => ({
+    params: { slug: pilar.id },
+    props: { pilar, siguiente: pilares[(i + 1) % pilares.length], anterior: pilares[(i - 1 + pilares.length) % pilares.length] },
+  }));
 }
-const { pilar } = Astro.props;
+const { pilar, siguiente, anterior } = Astro.props;
 const p = pilar.data;
+
+// Catálogo: publicados y en preparación del pilar (nunca el de ejemplo). Más reciente primero.
+const articulos = (await getCollection('articulos'))
+  .filter((a) => a.data.pilar.id === pilar.id && !a.data.ejemplo)
+  // Primero los publicados (el más reciente queda destacado), luego los que están en preparación.
+  .sort((a, b) => (a.data.estado === b.data.estado ? +b.data.fecha - +a.data.fecha : a.data.estado === 'publicado' ? -1 : 1));
+const publicados = articulos.filter((a) => a.data.estado === 'publicado');
+const conFiltros = articulos.length >= 4;
+const mecanismos = [...new Set(articulos.map((a) => a.data.mecanismo))];
+const tipos = [...new Set(articulos.map((a) => a.data.tipoInteraccion))];
+
+// "En el radar" no repite lo que ya está publicado (se compara con el mecanismo de cada artículo).
+const publicadosMec = publicados.map((a) => a.data.mecanismo.toLowerCase());
+const radar = p.enElRadar.filter((r) => !publicadosMec.some((m) => r.toLowerCase().includes(m)));
+
+// La segunda parada va al lado contrario de la primera.
+const ladoHero = paradas[pilar.id as Pilar].lado;
+const escenaDos = ladoHero === 'der' ? 'gancho' : 'jugable';
 ---
 <Base titulo={p.nombre} descripcion={p.pregunta} pilar={pilar.id}>
-  <section class="lectura" style="padding-top: var(--s-6)">
-    <p class="etiqueta">Pilar {p.numero}</p>
-    <h1>{p.nombre}</h1>
-    <p style="font-size: var(--t-lead)">{p.pregunta}</p>
-    <p class="etiqueta">Próximamente</p>
-  </section>
+  <div class="pilar" data-modulo-camino>
+    <Camino />
+
+    <!-- Hero: número, nombre y la pregunta que organiza el pilar -->
+    <Parada escena={pilar.id as Pilar} criatura={p.criatura} titulo={p.pregunta} nivel="h1" nombre={p.nombre} conFigura={pilar.id === 'identidad-digital'}>
+      <div slot="figura" class="pilar__cerebro">{pilar.id === 'identidad-digital' && <Cerebro />}</div>
+      <p slot="antes" class="pilar__nombre"><span class="pilar__numero">{p.numero}</span> {p.nombre}</p>
+      <p class="pilar__frase"><span>{p.frase}</span></p>
+    </Parada>
+
+    <!-- Qué explora + Cómo lo notas en tu día -->
+    <Parada escena={escenaDos} evitar={p.criatura} etiqueta="Qué explora" nombre="Qué explora">
+      <p class="pilar__explora">{p.queExplora}</p>
+      {p.situaciones.length > 0 && (
+        <>
+          <h2 class="pilar__h">Cómo lo notas en tu día</h2>
+          <ul class="situaciones">{p.situaciones.map((s) => <li>{s}</li>)}</ul>
+        </>
+      )}
+    </Parada>
+
+    <div class="pilar__bloques contenedor">
+      <!-- Artículos -->
+      <section class="bloque" aria-labelledby="articulos-titulo">
+        <h2 id="articulos-titulo">Artículos</h2>
+        {articulos.length === 0 ? (
+          <div class="tarjeta vacio">
+            <p class="etiqueta etiqueta--banda">Próximamente</p>
+            <h3>Aquí aparecerá el primer artículo</h3>
+            <p>Está en preparación. Mientras tanto, esto es lo que viene en este pilar.</p>
+          </div>
+        ) : (
+          <>
+            {conFiltros && (
+              <form class="filtros" data-filtros aria-label="Filtrar artículos" onsubmit="return false">
+                <label>Mecanismo
+                  <select name="mecanismo"><option value="">Todos</option>{mecanismos.map((m) => <option>{m}</option>)}</select>
+                </label>
+                <label>Tipo de interacción
+                  <select name="tipo"><option value="">Todos</option>{tipos.map((t) => <option value={t}>{tiposInteraccion[t]}</option>)}</select>
+                </label>
+                <label>Orden
+                  <select name="orden"><option value="fecha">Más reciente</option><option value="alfa">Alfabético</option></select>
+                </label>
+                <p class="filtros__estado" role="status" aria-live="polite"></p>
+              </form>
+            )}
+            <div class="catalogo" data-catalogo>
+              {articulos.map((a, i) => <TarjetaArticulo articulo={a} criatura={p.criatura} destacada={i === 0 && a.data.estado === 'publicado'} />)}
+            </div>
+            {publicados.length === 1 && <p class="siguiente-prep">Siguiente artículo en preparación.</p>}
+          </>
+        )}
+      </section>
+
+      <!-- En el radar -->
+      {radar.length > 0 && (
+        <section class="bloque tarjeta" aria-labelledby="radar-titulo">
+          <h2 id="radar-titulo">En el radar</h2>
+          <ul class="radar">{radar.map((r) => <li>{r}</li>)}</ul>
+        </section>
+      )}
+
+      <!-- Palabras del pilar -->
+      {p.glosario.length > 0 && (
+        <section class="bloque" aria-labelledby="palabras-titulo">
+          <h2 id="palabras-titulo">Palabras del pilar</h2>
+          {p.glosario.map((g) => (
+            <Acordeon titulo={g.termino}>
+              <p>{g.definicion}</p>
+              <p class="glosario__fuente">{g.sinFuenteAcademica ? <em>{g.fuente}</em> : <>Fuente: <em>{g.fuente}</em></>}</p>
+            </Acordeon>
+          ))}
+        </section>
+      )}
+
+      <!-- Lo que aún no sabemos (se oculta sin vacíos documentados) -->
+      {p.vacios.length > 0 && (
+        <section class="bloque tarjeta vacios" aria-labelledby="vacios-titulo">
+          <h2 id="vacios-titulo">Lo que aún no sabemos</h2>
+          <ul>{p.vacios.map((v) => <li>{v}</li>)}</ul>
+          <a class="boton boton--claro" href="/colabora">Colabora</a>
+        </section>
+      )}
+    </div>
+
+    <!-- Sigue con + cierre -->
+    <Remate>
+      <p class="etiqueta etiqueta--banda">Sigue con</p>
+      <h2 class="sigue__pregunta"><a href={`/pilares/${siguiente.id}`}>{siguiente.data.pregunta}</a></h2>
+      <p class="sigue__pilares">
+        <a href={`/pilares/${anterior.id}`}>← {anterior.data.numero} {anterior.data.nombre}</a>
+        <a href={`/pilares/${siguiente.id}`}>{siguiente.data.numero} {siguiente.data.nombre} →</a>
+      </p>
+      <p class="sigue__escribe"><a href="/colabora">¿Tienes datos o casos sobre este pilar? Escríbeme →</a></p>
+    </Remate>
+  </div>
 </Base>
+
+<style>
+  .pilar { position: relative; overflow-x: clip; }
+  .pilar :global(h1.parada__titulo) { font-size: clamp(2.2rem, 1.4rem + 3vw, 3.8rem); }
+  .pilar__nombre { font-family: var(--font-title); font-weight: 800; font-size: var(--t-lead); margin: 0 0 var(--s-3); }
+  .pilar__numero { display: inline-grid; place-items: center; min-width: 2.4em; height: 2.4em; border-radius: 50%; background: var(--pilar); color: var(--on-color); margin-right: var(--s-2); font-size: var(--t-small); }
+  .pilar__frase { margin: var(--s-3) 0 0; }
+  .pilar__frase span {
+    background: var(--pilar); color: var(--on-color); padding: 0.1em 0.35em; border-radius: 0.25em; font-size: var(--t-lead);
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  .pilar__cerebro { width: 100%; }
+  .pilar__explora { font-size: var(--t-lead); }
+  .pilar__h { font-size: var(--t-lead); margin-top: var(--s-4); }
+  .situaciones { padding: 0; list-style: none; display: grid; gap: var(--s-2); margin: 0; }
+  .situaciones li { padding: var(--s-2) var(--s-3); border-radius: 14px; background: var(--band); }
+
+  .pilar__bloques { position: relative; z-index: 1; display: grid; gap: var(--s-5); margin-top: var(--s-6); }
+  .bloque > h2 { font-size: var(--t-card); }
+  /* Bloques sin tarjeta: banda del color del fondo para que el texto nunca quede sobre la cinta. */
+  .bloque:not(.tarjeta) { background: var(--bg); border-radius: var(--r-band); padding: var(--s-4) var(--s-3); margin-inline: calc(-1 * var(--s-3)); }
+  .tarjeta.bloque > h2 { font-size: var(--t-lead); }
+  .vacio { text-align: center; display: grid; justify-items: center; padding-block: var(--s-5); }
+  .vacio h3 { font-size: var(--t-card); margin-top: var(--s-3); }
+  .vacio p { color: var(--muted); max-width: 32rem; }
+  .catalogo { display: grid; gap: var(--s-3); }
+  @media (min-width: 52rem) { .catalogo { grid-template-columns: 1fr 1fr; } }
+  .siguiente-prep { color: var(--muted); margin-top: var(--s-3); }
+  .filtros { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-bottom: var(--s-4); align-items: end; }
+  .filtros label { display: grid; gap: var(--s-1); font-size: var(--t-small); }
+  .filtros select { min-height: 44px; border: var(--border); border-radius: var(--r-pill); padding: 0 var(--s-3); background: var(--surface); color: var(--fg); font: inherit; }
+  .filtros__estado { flex-basis: 100%; margin: 0; font-size: var(--t-small); color: var(--muted); }
+  .radar { padding-left: 1.2em; margin: 0; display: grid; gap: var(--s-2); }
+  .glosario__fuente { font-size: var(--t-small); color: var(--muted); margin: 0; }
+  .vacios ul { padding-left: 1.2em; }
+
+  .sigue__pregunta { font-size: var(--t-card); margin: var(--s-2) 0 0; }
+  .sigue__pregunta a { text-decoration: none; }
+  .sigue__pilares { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-2) var(--s-4); margin: 0; }
+  .sigue__pilares a, .sigue__escribe a { display: inline-flex; min-height: 44px; align-items: center; }
+  .sigue__escribe { margin: 0; font-weight: 700; }
+</style>
+
+<script>
+  // Filtros del catálogo (solo aparecen con 4 artículos o más). Nada se guarda.
+  const f = document.querySelector<HTMLFormElement>('[data-filtros]');
+  const cat = document.querySelector<HTMLElement>('[data-catalogo]');
+  if (f && cat) {
+    const tarjetas = Array.from(cat.children) as HTMLElement[];
+    const aplicar = () => {
+      const fd = new FormData(f);
+      const mec = String(fd.get('mecanismo') || ''), tipo = String(fd.get('tipo') || ''), orden = String(fd.get('orden'));
+      const visibles = tarjetas.filter((t) => {
+        const ok = (!mec || t.dataset.mecanismo === mec) && (!tipo || t.dataset.tipo === tipo);
+        t.hidden = !ok;
+        return ok;
+      });
+      tarjetas.slice().sort((a, b) => orden === 'alfa'
+        ? (a.dataset.titulo || '').localeCompare(b.dataset.titulo || '', 'es')
+        : Number(b.dataset.fecha) - Number(a.dataset.fecha)).forEach((t) => cat.append(t));
+      const est = f.querySelector('.filtros__estado');
+      if (est) est.textContent = `${visibles.length} ${visibles.length === 1 ? 'artículo' : 'artículos'}`;
+    };
+    f.addEventListener('change', aplicar);
+  }
+</script>
