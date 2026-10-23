@@ -15,7 +15,7 @@ import { camino as composiciones, type ComposicionCamino } from './composiciones
 
 gsap.registerPlugin(ScrollTrigger);
 
-type Punto = { x: number; y: number; lado: -1 | 1 };
+type Punto = { x: number; y: number; lado: -1 | 1; pilar?: string };
 
 const quieto = () =>
   document.documentElement.hasAttribute('data-estatico') ||
@@ -35,20 +35,22 @@ function puntosDePaso(modulo: HTMLElement, comp: ComposicionCamino, anchoCinta: 
     const x = r.left - caja.left + r.width / 2;
     // La base se hunde un poco en la cinta: la criatura parece salir del camino.
     const y = r.bottom - caja.top - anchoCinta * (0.5 - comp.hundir);
-    puntos.push({ x, y, lado: x > W / 2 ? 1 : -1 });
+    // Color del tramo que llega a esta parada: el de su pilar, si la parada lo declara.
+    const pilar = ancla.closest<HTMLElement>('[data-parada]')?.dataset.pilarParada;
+    puntos.push({ x, y, lado: x > W / 2 ? 1 : -1, pilar });
   });
 
   const fin = modulo.querySelector<HTMLElement>('[data-remate-ancla]');
   if (fin) {
     const r = fin.getBoundingClientRect();
-    puntos.push({ x: r.left - caja.left, y: r.top - caja.top, lado: 1 });
+    puntos.push({ x: r.left - caja.left, y: r.top - caja.top, lado: 1, pilar: puntos[puntos.length - 1]?.pilar });
   }
   return puntos;
 }
 
-/** Une los puntos con curvas Bézier. La y siempre crece: el camino nunca retrocede. */
-function trazado(puntos: Punto[], comp: ComposicionCamino, W: number): string {
-  let d = `M ${puntos[0].x.toFixed(1)} ${puntos[0].y.toFixed(1)}`;
+/** Une los puntos con curvas Bézier, un tramo por parada. La y siempre crece. */
+function trazado(puntos: Punto[], comp: ComposicionCamino, W: number): { d: string; pilar?: string }[] {
+  const tramos: { d: string; pilar?: string }[] = [];
   for (let i = 1; i < puntos.length; i++) {
     const a = puntos[i - 1];
     const b = puntos[i];
@@ -58,9 +60,12 @@ function trazado(puntos: Punto[], comp: ComposicionCamino, W: number): string {
     const c2x = b.x + b.lado * W * comp.vuelo * 0.6;
     const c1y = a.y + dy * comp.tension;
     const c2y = b.y - dy * comp.tension;
-    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+    tramos.push({
+      d: `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`,
+      pilar: b.pilar,
+    });
   }
-  return d;
+  return tramos;
 }
 
 /** Tabla longitud → altura, para que la punta del trazo siga una altura fija en pantalla. */
@@ -90,9 +95,10 @@ function leerDesde(el: Element) {
 
 function prepararModulo(modulo: HTMLElement) {
   const svg = modulo.querySelector<SVGSVGElement>('[data-camino] svg');
-  const cinta = modulo.querySelector<SVGPathElement>('[data-cinta]');
-  const medida = modulo.querySelector<SVGPathElement>('[data-medida]');
-  if (!svg || !cinta || !medida) return;
+  const grupo = modulo.querySelector<SVGGElement>('[data-tramos]');
+  if (!svg || !grupo) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  let cintas: SVGPathElement[] = [];
 
   // Scrollama: parada activa (siempre, también en modo quieto marca la actual sin atenuar).
   const paradas = Array.from(modulo.querySelectorAll<HTMLElement>('[data-parada]'));
@@ -117,40 +123,56 @@ function prepararModulo(modulo: HTMLElement) {
       const comp = composiciones[computador ? 'computador' : 'movil'];
       const sinMovimiento = reducido || quieto();
       const triggers: ScrollTrigger[] = [];
-      let alturaDeTramo: (y: number) => number = () => 1;
+      let alturas: ((y: number) => number)[] = [];
 
+      // Cada tramo es un path con su propio color (el del pilar al que llega).
       const dibujarTrazado = () => {
         const caja = modulo.getBoundingClientRect();
         const W = caja.width, H = caja.height;
         const ancho = comp.ancho(innerWidth);
         svg.setAttribute('viewBox', `0 0 ${W.toFixed(0)} ${H.toFixed(0)}`);
-        const d = trazado(puntosDePaso(modulo, comp, ancho), comp, W);
-        cinta.setAttribute('d', d);
-        medida.setAttribute('d', d);
-        cinta.style.strokeWidth = `${ancho}px`;
-        cinta.setAttribute('pathLength', '1');
-        alturaDeTramo = tablaAlturas(medida);
+        const tramos = trazado(puntosDePaso(modulo, comp, ancho), comp, W);
+        grupo.replaceChildren();
+        cintas = []; alturas = [];
+        for (const t of tramos) {
+          const medida = document.createElementNS(NS, 'path');
+          medida.setAttribute('d', t.d);
+          medida.setAttribute('class', 'camino__medida');
+          const cinta = document.createElementNS(NS, 'path');
+          cinta.setAttribute('d', t.d);
+          cinta.setAttribute('class', 'camino__cinta');
+          cinta.setAttribute('data-cinta', '');
+          if (t.pilar) cinta.setAttribute('data-pilar', t.pilar);
+          cinta.setAttribute('pathLength', '1');
+          cinta.style.strokeWidth = `${ancho}px`;
+          grupo.append(medida, cinta);
+          cintas.push(cinta);
+          alturas.push(tablaAlturas(medida));
+        }
+        // Los tramos se dibujan en orden inverso para que el que llega quede encima en las uniones.
+        cintas.slice().reverse().forEach((c) => grupo.append(c));
       };
 
       // La punta del camino sigue una altura fija de la pantalla.
       const avanzar = () => {
         const yPunta = scrollY + innerHeight * comp.punta - (modulo.getBoundingClientRect().top + scrollY);
-        cinta.style.strokeDashoffset = String(1 - alturaDeTramo(yPunta));
+        cintas.forEach((c, i) => { c.style.strokeDashoffset = String(1 - alturas[i](yPunta)); });
       };
 
       dibujarTrazado();
 
       if (sinMovimiento) {
         modulo.removeAttribute('data-animado');
-        cinta.style.strokeDasharray = 'none';
-        cinta.style.strokeDashoffset = '0';
-        const alCambiarTamano = () => dibujarTrazado();
+        const completo = () => cintas.forEach((c) => { c.style.strokeDasharray = 'none'; c.style.strokeDashoffset = '0'; });
+        completo();
+        const alCambiarTamano = () => { dibujarTrazado(); completo(); };
         addEventListener('resize', alCambiarTamano);
         return () => removeEventListener('resize', alCambiarTamano);
       }
 
       modulo.setAttribute('data-animado', '');
-      cinta.style.strokeDasharray = '1 1';
+      const preparar = () => cintas.forEach((c) => { c.style.strokeDasharray = '1 1'; });
+      preparar();
 
       // 1. Camino ligado al scroll
       triggers.push(
@@ -159,7 +181,7 @@ function prepararModulo(modulo: HTMLElement) {
           start: 'top bottom',
           end: 'bottom top',
           onUpdate: avanzar,
-          onRefresh: () => { dibujarTrazado(); avanzar(); },
+          onRefresh: () => { dibujarTrazado(); preparar(); avanzar(); },
         }),
       );
       avanzar();

@@ -1,25 +1,82 @@
 ---
-// Layout sobrio para Investigación: sin efectos, solo lectura y barra de progreso.
+// Layout sobrio para los briefs: sin efectos, barra de progreso, índice
+// lateral fijo en computador y desplegable en móvil, y caja "Cómo citar".
+import type { CollectionEntry } from 'astro:content';
 import Base from './Base.astro';
 import BarraProgreso from '../components/scroll/BarraProgreso.astro';
-interface Props { titulo: string; resumen?: string; meta?: string; ejemplo?: boolean }
-const { titulo, resumen, meta, ejemplo } = Astro.props;
+import { sitio, formatoFecha } from '../data/sitio';
+
+interface Props {
+  brief: CollectionEntry<'investigacion'>;
+  pilar: CollectionEntry<'pilares'>;
+  indice: { slug: string; text: string }[];
+}
+const { brief, pilar, indice } = Astro.props;
+const d = brief.data;
+const url = new URL(`/investigacion/${brief.id}`, Astro.site ?? Astro.url).href;
+const cita = `Murillo Murillo, A. I. (${d.fecha.getUTCFullYear()}). ${d.titulo}. Umbral. ${url}`;
 ---
-<Base titulo={titulo} descripcion={resumen}>
+<Base titulo={d.titulo} descripcion={d.queEncontramos} pilar={pilar.id}>
   <BarraProgreso />
-  <article class="lectura documento">
-    <p class="etiqueta">Investigación{meta && ` · ${meta}`}</p>
-    {ejemplo && <p class="aviso-ejemplo">Brief de ejemplo con texto de relleno.</p>}
-    <h1>{titulo}</h1>
-    {resumen && <p class="documento__resumen">{resumen}</p>}
-    <div class="documento__cuerpo"><slot /></div>
-  </article>
+  <div class="brief contenedor">
+    <aside class="brief__indice">
+      <details open>
+        <summary>Índice</summary>
+        <ol>{indice.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+      </details>
+    </aside>
+
+    <article class="brief__texto">
+      <p class="etiqueta">Investigación · {pilar.data.nombre}</p>
+      <h1>{d.titulo}</h1>
+      <dl class="brief__ficha">
+        <div><dt>Pilar</dt><dd>{pilar.data.nombre}</dd></div>
+        <div><dt>Mecanismo</dt><dd>{d.mecanismo}</dd></div>
+        <div><dt>Fecha</dt><dd>{formatoFecha(d.fecha)}</dd></div>
+        <div><dt>Última actualización</dt><dd>{formatoFecha(d.actualizado)}</dd></div>
+        <div><dt>Tipo de fuentes</dt><dd>{d.tipoFuentes}</dd></div>
+      </dl>
+      <div class="brief__cuerpo"><slot /></div>
+
+      <section class="tarjeta brief__cita" aria-labelledby="cita-titulo">
+        <h2 id="cita-titulo">Cómo citar</h2>
+        <p data-cita>{cita}</p>
+        <button type="button" class="boton boton--claro" data-copiar-cita>Copiar</button>
+        <span class="brief__estado" role="status" aria-live="polite"></span>
+      </section>
+      {d.articuloSlug && <p><a href={`/articulos/${d.articuloSlug}`}>Ver el artículo interactivo →</a></p>}
+    </article>
+  </div>
 </Base>
 
 <style>
-  .documento { padding-top: var(--s-6); }
-  .documento h1 { font-size: var(--t-card); }
-  .documento__resumen { font-size: var(--t-lead); color: var(--muted); border-bottom: var(--border); padding-bottom: var(--s-4); }
-  .documento__cuerpo :global(h2) { font-size: var(--t-lead); margin-top: var(--s-5); }
-  .documento__cuerpo :global(li) { margin-bottom: var(--s-2); }
+  .brief { display: grid; gap: var(--s-4); padding-top: var(--s-5); }
+  .brief__texto { max-width: var(--measure); min-width: 0; }
+  .brief__texto h1 { font-size: var(--t-card); }
+  .brief__ficha { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: var(--s-2) var(--s-4); margin: var(--s-4) 0; padding: var(--s-3) 0; border-block: 1.5px solid var(--outline); font-size: var(--t-small); }
+  .brief__ficha dt { color: var(--muted); font-size: var(--t-label); text-transform: uppercase; letter-spacing: 0.12em; }
+  .brief__ficha dd { margin: 0; }
+  .brief__cuerpo :global(h2) { font-size: var(--t-lead); margin-top: var(--s-5); scroll-margin-top: 5rem; }
+  .brief__cita { margin-top: var(--s-6); }
+  .brief__cita h2 { font-size: var(--t-lead); }
+  .brief__estado { display: block; min-height: 1.4em; font-size: var(--t-small); color: var(--muted); }
+  .brief__indice summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+  .brief__indice ol { padding-left: 1.2em; font-size: var(--t-small); }
+  .brief__indice a { display: inline-flex; min-height: 36px; align-items: center; }
+  @media (min-width: 64rem) {
+    .brief { grid-template-columns: 14rem minmax(0, 1fr); align-items: start; }
+    .brief__indice { position: sticky; top: 6rem; }
+  }
 </style>
+
+<script>
+  import { textos } from '../data/sitio';
+  const b = document.querySelector<HTMLButtonElement>('[data-copiar-cita]');
+  const estado = document.querySelector<HTMLElement>('.brief__estado');
+  b?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(document.querySelector('[data-cita]')?.textContent || '');
+      if (estado) estado.textContent = textos.copiado;
+    } catch { if (estado) estado.textContent = textos.errorCopiar; }
+  });
+</script>

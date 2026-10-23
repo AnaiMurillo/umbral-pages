@@ -1,11 +1,25 @@
 ---
 import Base from '../layouts/Base.astro';
+import Criatura from '../components/criaturas/Criatura.astro';
 ---
-<Base titulo="No encontrado">
-  <section class="lectura pagina">
-    <h1>Este umbral no lleva a ninguna parte.</h1>
-    <p>La página que buscas no existe o cambió de lugar.</p>
-    <a class="boton" href="/">Volver al inicio</a>
+<Base titulo="Página no encontrada">
+  <section class="no-encontrada contenedor">
+    <div class="no-encontrada__criatura" aria-hidden="true"><Criatura nombre="pregunta" /></div>
+    <div class="tarjeta no-encontrada__tarjeta">
+      <p class="etiqueta etiqueta--banda">404</p>
+      <h1>Este camino no lleva a ninguna parte</h1>
+      <p>La página que buscas no existe o cambió de lugar.</p>
+      <a class="boton" href="/pilares">Volver a los pilares</a>
+    </div>
   </section>
 </Base>
-<style>.pagina { padding-block: var(--s-7); }</style>
+<style>
+  .no-encontrada { display: grid; gap: var(--s-4); padding-block: var(--s-6); justify-items: center; }
+  .no-encontrada__criatura { width: min(70vw, 360px); }
+  .no-encontrada__tarjeta { max-width: 36rem; text-align: center; display: grid; justify-items: center; }
+  .no-encontrada h1 { font-size: var(--t-card); }
+  @media (min-width: 52rem) {
+    .no-encontrada { grid-template-columns: 1fr 1fr; align-items: center; min-height: 60vh; }
+    .no-encontrada__tarjeta { text-align: left; justify-items: start; }
+  }
+</style>

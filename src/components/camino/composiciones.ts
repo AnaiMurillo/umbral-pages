@@ -4,7 +4,7 @@
 // la forma de las curvas, el lado de cada criatura y qué objetos aparecen.
 // ==========================================================
 
-export type Escena = 'gancho' | 'jugable' | 'revelacion' | 'evidencia' | 'que-hacer';
+export type Escena = 'cabecera' | 'gancho' | 'jugable' | 'revelacion' | 'evidencia' | 'que-hacer';
 export type NombreCriatura = 'pregunta' | 'sello' | 'ojo' | 'pila' | 'saltarin' | 'empujon' | 'doble';
 export type Pilar = 'confianza' | 'persuasion' | 'comprension' | 'atencion' | 'identidad-digital';
 
@@ -66,9 +66,20 @@ export interface ComposicionEscena {
 }
 
 export const escenas: Record<Escena, ComposicionEscena> = {
+  // Cabecera del artículo: primera parada; su criatura es la del pilar (Parada la reemplaza).
+  cabecera: {
+    criatura: 'sello',
+    lado: 'der',
+    objetos: [
+      { tipo: 'estrella', color: 'a3', tam: 54, pc: { x: -8, y: 4 }, movil: { x: 2, y: -6 }, parallax: 0.7 },
+      { tipo: 'circulo', color: 'a4', tam: 40, pc: { x: 100, y: 18 }, movil: { x: 88, y: 2 }, parallax: 0.4 },
+      { tipo: 'estela', color: 'line', tam: 300, pc: { x: -62, y: 66, giro: -8 } },
+      { tipo: 'flecha', color: 'line', tam: 90, pc: { x: 92, y: -14, giro: 10 }, movil: { x: 70, y: -16, giro: 10 } },
+    ],
+  },
   gancho: {
     criatura: 'pregunta',
-    lado: 'der',
+    lado: 'izq',
     objetos: [
       { tipo: 'estrella', color: 'a3', tam: 54, pc: { x: -8, y: 4 }, movil: { x: 2, y: -6 }, parallax: 0.7 },
       { tipo: 'circulo', color: 'a4', tam: 40, pc: { x: 100, y: 18 }, movil: { x: 88, y: 2 }, parallax: 0.4 },
@@ -79,7 +90,7 @@ export const escenas: Record<Escena, ComposicionEscena> = {
   },
   jugable: {
     criatura: 'sello',
-    lado: 'izq',
+    lado: 'der',
     objetos: [
       { tipo: 'circulo', color: 'a3', tam: 46, pc: { x: 104, y: 6 }, movil: { x: 86, y: -4 }, parallax: 0.6 },
       { tipo: 'nota', color: 'a4', tam: 52, pc: { x: -10, y: 10 }, movil: { x: 2, y: 0 }, parallax: 0.5 },
@@ -90,7 +101,7 @@ export const escenas: Record<Escena, ComposicionEscena> = {
   },
   revelacion: {
     criatura: 'ojo',
-    lado: 'der',
+    lado: 'izq',
     objetos: [
       { tipo: 'estrella', color: 'a3', tam: 64, pc: { x: -14, y: 20 }, movil: { x: 0, y: 6 }, parallax: 0.5 },
       { tipo: 'estrella', color: 'a4', tam: 34, pc: { x: 102, y: 4 }, movil: { x: 88, y: -6 }, parallax: 0.8 },
@@ -102,7 +113,7 @@ export const escenas: Record<Escena, ComposicionEscena> = {
   },
   evidencia: {
     criatura: 'pila',
-    lado: 'izq',
+    lado: 'der',
     objetos: [
       { tipo: 'nota', color: 'a3', tam: 48, pc: { x: 100, y: 0 }, movil: { x: 84, y: -8 }, parallax: 0.6 },
       { tipo: 'circulo', color: 'a4', tam: 36, pc: { x: -8, y: 8 }, movil: { x: 0, y: 2 }, parallax: 0.4 },
@@ -112,7 +123,7 @@ export const escenas: Record<Escena, ComposicionEscena> = {
   },
   'que-hacer': {
     criatura: 'saltarin',
-    lado: 'der',
+    lado: 'izq',
     objetos: [
       { tipo: 'estrella', color: 'a3', tam: 46, pc: { x: -6, y: 6 }, movil: { x: 2, y: -2 }, parallax: 0.7 },
       { tipo: 'flecha', color: 'line', tam: 96, pc: { x: 96, y: -12, giro: -20 }, movil: { x: 74, y: -14, giro: -20 } },
@@ -185,3 +196,8 @@ export const pilares: Record<Pilar, ComposicionEscena> = {
 
 /** Todas las paradas posibles: escenas de módulo y pilares. */
 export const paradas: Record<Escena | Pilar, ComposicionEscena> = { ...escenas, ...pilares };
+
+/** Si la criatura de una escena es la misma del pilar, se usa esta otra. */
+export const alternativa: Record<NombreCriatura, NombreCriatura> = {
+  sello: 'empujon', empujon: 'pila', pila: 'sello', ojo: 'doble', doble: 'ojo', pregunta: 'saltarin', saltarin: 'pregunta',
+};

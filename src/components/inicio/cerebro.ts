@@ -111,6 +111,10 @@ export function iniciarCerebro(canvas: HTMLCanvasElement) {
     linea = resolver('--line');
   };
   leerColores();
+  // Al cambiar de modo claro/oscuro, los colores se vuelven a leer (los puntos "tinta" pasan a claros).
+  const alCambiarTema = () => { leerColores(); if (canvas.dataset.estado === 'fijo') dibujar(0, 1); };
+  addEventListener('umbral:tema', alCambiarTema);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', alCambiarTema);
 
   let ancho = 0, alto = 0, escala = 1;
   const medir = () => {

@@ -6,8 +6,7 @@
 ---
 <div class="camino" aria-hidden="true" data-camino>
   <svg class="camino__svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-    <path class="camino__cinta" data-cinta />
-    <path class="camino__medida" data-medida />
+    <g data-tramos></g>
   </svg>
 </div>
 
@@ -18,13 +17,13 @@
     overflow: hidden;
   }
   .camino__svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; }
-  .camino__cinta {
+  .camino :global(.camino__cinta) {
     fill: none;
     stroke: var(--path);
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .camino__medida { fill: none; stroke: none; visibility: hidden; }
+  .camino :global(.camino__medida) { fill: none; stroke: none; visibility: hidden; }
 </style>
 
 <script>

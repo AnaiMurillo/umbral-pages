@@ -1,42 +1,217 @@
 [
   {
     "id": "confianza",
-    "nombre": "Confianza",
-    "mecanismo": "Qué señales nos hacen creerle a una interfaz",
-    "teaser": "[Relleno] Le creemos a la pantalla antes de leerla.",
     "orden": 1,
-    "descripcion": "[Relleno] Dos o tres frases que explican el mecanismo: qué señales de una interfaz (sellos, logos, tono, diseño) nos llevan a creerle, y por qué eso importa en Colombia y LatAm."
+    "numero": "01",
+    "nombre": "Confianza",
+    "color": "celeste-v",
+    "criatura": "sello",
+    "subtitulo": "En quién o en qué confías cuando no puedes comprobarlo",
+    "frase": "Le creemos a la pantalla antes de leerla.",
+    "pregunta": "¿En quién o en qué confías cuando ya no puedes comprobarlo tú?",
+    "queExplora": "Confiamos en lo que no podemos verificar: el saldo de una app, la respuesta de un chatbot, la recomendación que nadie explicó. Este pilar estudia qué hace que esa confianza se rompa, qué la repara y cuándo seguir usando algo no significa confiar en ello.",
+    "situaciones": [
+      "La app falla, pero la sigues usando porque no hay otra.",
+      "Revisas dos veces lo que te responde un chatbot.",
+      "Le crees más a una persona que a una recomendación automática."
+    ],
+    "enElRadar": [
+      "Aversión y apreciación del algoritmo: cuándo le creemos más a una máquina y cuándo menos.",
+      "Qué repara la confianza de verdad y qué solo la simula.",
+      "Confianza o dependencia: usar algo no es confiar en ello.",
+      "Confianza en influencers virtuales y en recomendaciones automatizadas.",
+      "Autoeficacia digital: aceptar retroalimentación de una IA en el trabajo."
+    ],
+    "glosario": [
+      {
+        "termino": "Aversión al algoritmo",
+        "definicion": "Perder confianza en un sistema automatizado más rápido que en una persona ante el mismo error.",
+        "fuente": "Dietvorst, Simmons y Massey (2015), \"Algorithm aversion: People erroneously avoid algorithms after seeing them err\", Journal of Experimental Psychology: General."
+      },
+      {
+        "termino": "Apreciación del algoritmo",
+        "definicion": "Preferir el consejo de un algoritmo al de una persona, sobre todo en tareas numéricas u objetivas.",
+        "fuente": "Logg, Minson y Moore (2019), \"Algorithm appreciation: People prefer algorithmic to human judgment\", Organizational Behavior and Human Decision Processes."
+      },
+      {
+        "termino": "Dependencia estructural",
+        "definicion": "Seguir usando un sistema que falla porque no existe una alternativa igual de accesible.",
+        "fuente": "Término de trabajo de Umbral, no un concepto académico establecido.",
+        "sinFuenteAcademica": true
+      }
+    ],
+    "vacios": []
   },
   {
     "id": "persuasion",
-    "nombre": "Persuasión",
-    "mecanismo": "Cómo el diseño empuja decisiones",
-    "teaser": "[Relleno] El botón ya decidió por ti.",
     "orden": 2,
-    "descripcion": "[Relleno] Dos o tres frases sobre cómo el diseño empuja decisiones: botones por defecto, urgencia, prueba social. Qué se ha medido y dónde."
+    "numero": "02",
+    "nombre": "Persuasión",
+    "color": "rosa-v",
+    "criatura": "empujon",
+    "subtitulo": "Cómo el diseño empuja decisiones",
+    "frase": "El botón ya decidió por ti.",
+    "pregunta": "¿Cuándo un diseño deja de ayudarte a decidir y empieza a decidir por ti?",
+    "queExplora": "Un temporizador que te apura, un botón de cancelar escondido, un \"no, gracias\" que te hace sentir mal. Este pilar mira los patrones de diseño que inclinan tus decisiones sin que lo notes, y dónde está la línea entre persuadir y manipular.",
+    "situaciones": [
+      "Suscribirte toma un toque; cancelar, un laberinto.",
+      "Un contador regresivo te apura a decidir.",
+      "El botón para rechazar dice \"No quiero ahorrar\"."
+    ],
+    "enElRadar": [
+      "Patrones oscuros documentados con método: confirmshaming, cancelación obstruida y consentimiento de cookies, auditados en sitios y apps colombianas.",
+      "El modelo de Fogg (motivación, capacidad y disparador) aplicado a suscripciones y retención.",
+      "Cuánta confianza pierde una marca por usar patrones oscuros.",
+      "Cómo describe la gente, con sus palabras, haberse sentido engañada por una interfaz.",
+      "Persuasión fuera de la pantalla: dispositivos del hogar."
+    ],
+    "glosario": [
+      {
+        "termino": "Patrón oscuro",
+        "definicion": "Un diseño que lleva a la persona a hacer algo que no habría elegido con información clara.",
+        "fuente": "Mathur et al. (2019), \"Dark patterns at scale\", Proceedings of the ACM on Human-Computer Interaction (CSCW)."
+      },
+      {
+        "termino": "Confirmshaming",
+        "definicion": "Redactar la opción de rechazo para que quien la elige se sienta mal.",
+        "fuente": "catálogo de patrones engañosos de Harry Brignull, deceptive.design."
+      },
+      {
+        "termino": "Modelo de Fogg",
+        "definicion": "Una conducta ocurre cuando coinciden motivación, capacidad y un disparador.",
+        "fuente": "Fogg (2009), \"A behavior model for persuasive design\", Persuasive Technology."
+      }
+    ],
+    "vacios": []
   },
   {
     "id": "comprension",
-    "nombre": "Comprensión",
-    "mecanismo": "Qué entendemos, y qué creemos entender",
-    "teaser": "[Relleno] Aceptaste los términos. ¿Cuáles?",
     "orden": 3,
-    "descripcion": "[Relleno] Dos o tres frases sobre la distancia entre lo que entendemos y lo que creemos entender: términos y condiciones, explicaciones de la IA, letra pequeña."
+    "numero": "03",
+    "nombre": "Comprensión",
+    "color": "mantequilla",
+    "criatura": "pila",
+    "subtitulo": "Qué entendemos, y qué creemos entender",
+    "frase": "Aceptaste los términos. ¿Cuáles?",
+    "pregunta": "¿Por qué necesitamos una razón antes de aceptar un resultado?",
+    "queExplora": "Cuando un sistema decide por ti, quieres saber por qué. Este pilar explora las teorías que la gente se inventa cuando la explicación no llega, la distancia entre lo que las empresas explican y lo que las personas preguntan, y por qué casi nadie usa las explicaciones cuando existen.",
+    "situaciones": [
+      "Te preguntas por qué te salió ese anuncio.",
+      "Te rechazan un trámite y nadie te dice la razón.",
+      "Armas tu propia teoría de cómo funciona el algoritmo."
+    ],
+    "enElRadar": [
+      "Modelos mentales: lo que la gente cree que hace una IA, frente a lo que la empresa explica.",
+      "La brecha entre las explicaciones que se ofrecen y las preguntas que se hacen.",
+      "Comunidades que intentan descifrar juntas una decisión algorítmica.",
+      "Por qué casi nadie toca \"¿por qué veo este anuncio?\".",
+      "Entender una decisión cuando hay mucho en juego: crédito, salud, seguros."
+    ],
+    "glosario": [
+      {
+        "termino": "Modelo mental",
+        "definicion": "La idea que una persona se hace de cómo funciona un sistema.",
+        "fuente": "Norman (1983), \"Some observations on mental models\", en Gentner y Stevens (eds.), Mental Models."
+      },
+      {
+        "termino": "Explicabilidad",
+        "definicion": "La capacidad de un sistema de mostrar las razones de un resultado en términos que su usuario entienda.",
+        "fuente": "Miller (2019), \"Explanation in artificial intelligence: Insights from the social sciences\", Artificial Intelligence."
+      },
+      {
+        "termino": "Construcción colectiva de sentido",
+        "definicion": "Personas que interpretan juntas una situación que no logran entender por separado.",
+        "fuente": "Weick (1995), Sensemaking in Organizations."
+      }
+    ],
+    "vacios": []
   },
   {
     "id": "atencion",
-    "nombre": "Atención",
-    "mecanismo": "Quién controla hacia dónde miramos",
-    "teaser": "[Relleno] Este scroll no tiene fondo.",
     "orden": 4,
-    "descripcion": "[Relleno] Dos o tres frases sobre quién controla hacia dónde miramos: notificaciones, scroll infinito, diseño que retiene."
+    "numero": "04",
+    "nombre": "Atención",
+    "color": "menta",
+    "criatura": "ojo",
+    "subtitulo": "Quién controla hacia dónde miramos",
+    "frase": "Este scroll no tiene fondo.",
+    "pregunta": "¿Quién decide hacia dónde miras?",
+    "queExplora": "Hay estímulos diseñados para capturar tu atención y retenerla: el scroll sin final, la notificación que urge, la recompensa que llega cuando menos la esperas. Este pilar estudia cómo funcionan, qué dejan en ti y qué fricciones los frenan.",
+    "situaciones": [
+      "Abres el teléfono para algo y media hora después sigues ahí.",
+      "Una notificación te hace sentir que te pierdes algo.",
+      "No recuerdas lo que acabas de ver."
+    ],
+    "enElRadar": [
+      "Refuerzo de razón variable: el mecanismo de las tragamonedas dentro de las apps.",
+      "Scroll infinito y la falta de señales de parada.",
+      "Patrones de captura de atención dañinos en apps de uso diario en Colombia, con foco en WhatsApp.",
+      "FOMO y urgencia en el lenguaje de las notificaciones.",
+      "Fricciones de diseño que frenan, y cuánto cuestan en satisfacción."
+    ],
+    "glosario": [
+      {
+        "termino": "Refuerzo de razón variable",
+        "definicion": "Recompensas que llegan después de un número impredecible de acciones, como en una tragamonedas.",
+        "fuente": "Ferster y Skinner (1957), Schedules of Reinforcement."
+      },
+      {
+        "termino": "FOMO",
+        "definicion": "Miedo a perderse algo que otras personas sí están viendo o viviendo.",
+        "fuente": "Przybylski et al. (2013), \"Motivational, emotional, and behavioral correlates of fear of missing out\", Computers in Human Behavior."
+      },
+      {
+        "termino": "Scroll infinito",
+        "definicion": "Un flujo de contenido sin final que elimina el punto natural de parada.",
+        "fuente": "Patrón de diseño, sin fuente académica de referencia; se cita cuando un artículo lo estudie.",
+        "sinFuenteAcademica": true
+      }
+    ],
+    "vacios": []
   },
   {
     "id": "identidad-digital",
-    "nombre": "Identidad digital",
-    "mecanismo": "Quiénes somos para un sistema",
-    "teaser": "[Relleno] El algoritmo ya tiene una versión de ti.",
     "orden": 5,
-    "descripcion": "[Relleno] Dos o tres frases sobre quiénes somos para un sistema: perfiles, recomendaciones y la versión de nosotros que construye un algoritmo."
+    "numero": "05",
+    "nombre": "Identidad digital",
+    "color": "coral",
+    "criatura": "doble",
+    "subtitulo": "Quiénes somos para un sistema",
+    "frase": "El algoritmo ya tiene una versión de ti.",
+    "pregunta": "¿Cómo sabes qué es real en línea, y quién eres para el sistema que te mira?",
+    "queExplora": "Una voz, un video o un perfil pueden ser falsos sin que lo notes. Y tú no eres la misma persona en cada plataforma, mientras los sistemas arman su propia versión de ti con tus datos. Este pilar explora cómo verificamos lo real y cómo nos construimos, y nos construyen, en línea.",
+    "situaciones": [
+      "Dudas de un video, pero no sabes cómo comprobarlo.",
+      "Eres alguien distinto en cada red.",
+      "Una plataforma cree saber quién eres."
+    ],
+    "enElRadar": [
+      "Detectar deepfakes a ojo: por qué acertamos casi como al azar y por qué creemos que a otros los engañan, a nosotros no.",
+      "Lo que saben los expertos en seguridad y lo que percibe el público sobre la verificación biométrica.",
+      "Cómo cambias tu forma de mostrarte según la red.",
+      "El avatar como extensión de quién eres, no solo como máscara.",
+      "Qué cree una plataforma que eres, frente a cómo te ves tú.",
+      "Identidad digital del Estado: cédulas digitales y sistemas de identidad."
+    ],
+    "glosario": [
+      {
+        "termino": "Percepción en tercera persona",
+        "definicion": "Creer que los mensajes persuasivos y los engaños afectan más a otras personas que a uno mismo.",
+        "fuente": "Davison (1983), \"The third-person effect in communication\", Public Opinion Quarterly."
+      },
+      {
+        "termino": "Gestión de impresión",
+        "definicion": "Ajustar lo que muestras de ti según quién te está mirando.",
+        "fuente": "Leary y Kowalski (1990), \"Impression management: A literature review and two-component model\", Psychological Bulletin."
+      },
+      {
+        "termino": "Efecto de desinhibición en línea",
+        "definicion": "Decir o hacer en internet cosas que no harías cara a cara.",
+        "fuente": "Suler (2004), \"The online disinhibition effect\", CyberPsychology & Behavior."
+      }
+    ],
+    "vacios": [
+      "La identidad digital impulsada por el Estado, como las cédulas digitales, casi no tiene investigación sobre cómo la viven las personas en la región."
+    ]
   }
 ]

@@ -1,11 +1,11 @@
 /* ==========================================================
    Umbral — tokens de diseño (fuente de verdad: docs/DESIGN.md)
-   Paleta ampliada aprobada + tokens semánticos. Solo modo claro (decisión 2026-10-20).
-   Los componentes usan SOLO los tokens semánticos (sección 2).
+   Paleta ampliada + tokens semánticos + modo oscuro + color por pilar.
+   Los componentes usan SOLO los tokens semánticos.
    ========================================================== */
 
 :root {
-  /* ---------- Paleta (sección 2) ---------- */
+  /* ---------- Paleta (DESIGN §2 y §12.4) ---------- */
   --crema:       #FCFCF0;
   --celeste:     #D6F7FF;
   --rosa:        #FFCFE9;
@@ -15,40 +15,52 @@
   --rosa-v:      #FF8DC7;
   --mantequilla: #FFE27A;
   --menta:       #BDEBCB;
+  --coral:       #FF8A6B;
   --blanco:      #FFFFFF;
 
-  /* ---------- Tokens semánticos ---------- */
-  --bg:       var(--crema);     /* fondo de página */
-  --band:     var(--celeste);   /* bandas, etiquetas, fondos suaves */
-  --surface:  var(--blanco);    /* tarjetas */
-  --fg:       var(--tinta);     /* texto principal */
-  --muted:    var(--gris);      /* texto secundario */
-  --line:     var(--tinta);     /* líneas finas y estelas sobre el fondo */
-  --outline:  var(--tinta);     /* borde de tarjetas */
-  --a1: var(--celeste-v);       /* formas principales */
+  /* ---------- Tokens semánticos: modo claro ---------- */
+  --bg:       var(--crema);
+  --band:     var(--celeste);
+  --surface:  var(--blanco);
+  --fg:       var(--tinta);
+  --muted:    var(--gris);
+  --line:     var(--tinta);
+  --outline:  var(--tinta);
+  --a1: var(--celeste-v);
   --a2: var(--rosa-v);
   --a3: var(--mantequilla);
   --a4: var(--menta);
-  --path: var(--celeste-v);     /* camino grueso; un módulo puede pedir rosa con data-color="rosa" */
-  --on-color: var(--tinta);     /* texto sobre cualquier pastel o color vivo: SIEMPRE tinta */
+  --on-color: var(--tinta);     /* texto sobre pastel o color vivo: SIEMPRE tinta */
   --btn-bg: var(--tinta);
   --btn-fg: var(--crema);
   --highlight: var(--mantequilla);
+
+  /* Color del pilar (cinta, chips, miniaturas). Por defecto, Confianza. */
+  --pilar: var(--celeste-v);
+  --path: var(--pilar);
+
+  /* Colores de criatura: cr1 = lugar del rosa, cr2 = celeste, cr3 = mantequilla, cr4 = menta.
+     Cada pilar cambia el que coincidiría con su cinta, para que no se fundan. */
+  --cr1: var(--rosa-v);
+  --cr2: var(--menta);
+  --cr3: var(--mantequilla);
+  --cr4: var(--menta);
+
   color-scheme: light;
 
-  /* ---------- Tipografía (sección 3) ---------- */
+  /* ---------- Tipografía (DESIGN §3) ---------- */
   --font-title: 'Bricolage Grotesque', 'Arial Black', system-ui, sans-serif;
   --font-body:  'Questrial', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --t-label: 0.8125rem;                                   /* 13px */
+  --t-label: 0.8125rem;
   --t-small: 0.9375rem;
-  --t-body:  1.0625rem;                                   /* 17px */
-  --t-lead:  1.1875rem;                                   /* 19px */
-  --t-card:  clamp(1.75rem, 1.3rem + 1.6vw, 2.625rem);    /* 28 a 42px */
-  --t-hero:  clamp(2.875rem, 1.6rem + 5.6vw, 6.5rem);     /* 46 a 104px */
+  --t-body:  1.0625rem;
+  --t-lead:  1.1875rem;
+  --t-card:  clamp(1.75rem, 1.3rem + 1.6vw, 2.625rem);
+  --t-hero:  clamp(2.875rem, 1.6rem + 5.6vw, 6.5rem);
   --title-tracking: -0.03em;
   --title-leading: 1.02;
 
-  /* ---------- Layout y formas (sección 4) ---------- */
+  /* ---------- Layout y formas (DESIGN §4) ---------- */
   --container: 1080px;
   --gutter: max(16px, env(safe-area-inset-left), env(safe-area-inset-right), 4vw);
   --measure: 65ch;
@@ -62,11 +74,38 @@
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-/* Color del camino por módulo: <article data-color="rosa"> (por defecto celeste). */
-[data-color='rosa'] { --path: var(--rosa-v); }
+/* ---------- Color por pilar: data-pilar="slug" en el contenedor ---------- */
+[data-pilar='confianza']         { --pilar: var(--celeste-v);   --cr1: var(--rosa-v); --cr2: var(--menta);     --cr3: var(--mantequilla); --cr4: var(--menta); }
+[data-pilar='persuasion']        { --pilar: var(--rosa-v);      --cr1: var(--menta);  --cr2: var(--celeste-v); --cr3: var(--mantequilla); --cr4: var(--menta); }
+[data-pilar='comprension']       { --pilar: var(--mantequilla); --cr1: var(--rosa-v); --cr2: var(--celeste-v); --cr3: var(--coral);       --cr4: var(--menta); }
+[data-pilar='atencion']          { --pilar: var(--menta);       --cr1: var(--rosa-v); --cr2: var(--celeste-v); --cr3: var(--mantequilla); --cr4: var(--coral); }
+[data-pilar='identidad-digital'] { --pilar: var(--coral);       --cr1: var(--rosa-v); --cr2: var(--celeste-v); --cr3: var(--mantequilla); --cr4: var(--menta); }
+[data-pilar] { --path: var(--pilar); }
 
-/* Colores de criatura: nunca el mismo que el camino, para que no se fundan con la cinta.
-   --cr1 ocupa el lugar del rosa vivo y --cr2 el del celeste vivo. */
-:root { --cr1: var(--rosa-v); --cr2: var(--celeste-v); }
-[data-color='celeste'] { --cr2: var(--menta); }
-[data-color='rosa']    { --cr1: var(--menta); }
+/* ---------- Modo oscuro (DESIGN §2 y §12.3) ----------
+   Sigue al sistema, salvo que la persona elija un modo con el botón. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #181A19; --band: #252928; --surface: #252928;
+    --fg: #F3F3E6; --muted: #B5B8AE; --line: #F3F3E6; --outline: #B5B8AE;
+    --btn-bg: var(--crema); --btn-fg: var(--tinta);
+    color-scheme: dark;
+  }
+  /* En oscuro el camino es crema y las criaturas recuperan todos sus colores. */
+  :root:not([data-theme='light']),
+  :root:not([data-theme='light']) [data-pilar] {
+    --path: var(--crema);
+    --cr1: var(--rosa-v); --cr2: var(--celeste-v); --cr3: var(--mantequilla); --cr4: var(--menta);
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #181A19; --band: #252928; --surface: #252928;
+  --fg: #F3F3E6; --muted: #B5B8AE; --line: #F3F3E6; --outline: #B5B8AE;
+  --btn-bg: var(--crema); --btn-fg: var(--tinta);
+  color-scheme: dark;
+}
+:root[data-theme='dark'],
+:root[data-theme='dark'] [data-pilar] {
+  --path: var(--crema);
+  --cr1: var(--rosa-v); --cr2: var(--celeste-v); --cr3: var(--mantequilla); --cr4: var(--menta);
+}

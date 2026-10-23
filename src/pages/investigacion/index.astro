@@ -1,29 +1,92 @@
 ---
+// Investigación (TEXTOS_FINALES.md §6). Lectura sobria, sin camino.
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import { formatoFecha } from '../../data/sitio';
+
 const briefs = (await getCollection('investigacion')).sort((a, b) => +b.data.fecha - +a.data.fecha);
 const conPilar = await Promise.all(briefs.map(async (b) => ({ b, pilar: await getEntry(b.data.pilar) })));
+const vacios = briefs.flatMap((b) => b.data.vacios);
+const principios = [
+  ['Nada sin respaldo.', 'Cada afirmación tiene un dato, un estudio o un caso verificable.'],
+  ['Primero lo local.', 'Cada brief incluye al menos una fuente de Colombia o Latinoamérica.'],
+  ['Siempre una fuente que complique.', 'Se busca activamente lo que contradice o matiza el hallazgo.'],
+  ['Sin datos de lectores.', 'Umbral no recoge información de quien lo visita.'],
+];
 ---
-<Base titulo="Investigación" descripcion="Research briefs completos para audiencia académica y técnica.">
-  <section class="lectura pagina">
+<Base titulo="Investigación" descripcion="Cada artículo de Umbral sale de un documento completo, con fuentes y límites a la vista.">
+  <section class="lectura cabeza">
     <h1>Investigación</h1>
-    <p class="pagina__bajada">Los research briefs completos detrás de cada módulo. Lectura limpia, con método y referencias.</p>
-    <ul class="lista">
-      {conPilar.map(({ b, pilar }) => (
-        <li>
-          <span class="etiqueta">{pilar?.data.nombre}{b.data.ejemplo && ' · ejemplo'}</span>
-          <h2><a href={`/investigacion/${b.id}`}>{b.data.titulo}</a></h2>
-          <p>{b.data.resumen}</p>
+    <p class="cabeza__bajada">Cada artículo de Umbral sale de un documento completo, con fuentes y límites a la vista. Aquí estarán todos.</p>
+  </section>
+
+  <section class="contenedor bloque" id="como-investigamos" aria-labelledby="como-titulo">
+    <h2 id="como-titulo">Cómo investigamos</h2>
+    <ol class="principios">
+      {principios.map(([t, d], i) => (
+        <li class="tarjeta principio">
+          <span class="principio__n" aria-hidden="true">0{i + 1}</span>
+          <h3>{t}</h3>
+          <p>{d}</p>
         </li>
       ))}
-    </ul>
+    </ol>
   </section>
+
+  <section class="contenedor bloque" aria-labelledby="briefs-titulo">
+    <h2 id="briefs-titulo" class="visualmente-oculto">Briefs</h2>
+    {conPilar.length === 0 ? (
+      <div class="tarjeta vacio">
+        <p class="etiqueta etiqueta--banda">Próximamente</p>
+        <h3>El primer brief está en camino</h3>
+        <p>Cada brief se publica junto a su artículo interactivo, aproximadamente cada 4 a 6 semanas.</p>
+      </div>
+    ) : (
+      <ul class="briefs">
+        {conPilar.map(({ b, pilar }) => (
+          <li class="tarjeta brief" data-pilar={pilar?.id}>
+            <p class="brief__meta"><span class="chip">{pilar?.data.nombre}</span> <span class="etiqueta">{b.data.mecanismo} · {formatoFecha(b.data.fecha)}</span></p>
+            <h3>{b.data.titulo}</h3>
+            <p><strong>Qué encontramos:</strong> {b.data.queEncontramos}</p>
+            <p class="etiqueta">{b.data.numFuentes} fuentes</p>
+            <div class="brief__acciones">
+              <a class="boton" href={`/investigacion/${b.id}`}>Leer brief</a>
+              {b.data.articuloSlug && <a class="boton boton--claro" href={`/articulos/${b.data.articuloSlug}`}>Ver el artículo interactivo</a>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  {vacios.length > 0 && (
+    <section class="contenedor bloque" aria-labelledby="vacios-titulo">
+      <div class="tarjeta">
+        <h2 id="vacios-titulo">Preguntas que la región aún no ha investigado</h2>
+        <p>Esto es lo que no encontramos publicado. Si tienes datos o casos sobre alguno, escríbeme.</p>
+        <ul>{vacios.map((v) => <li>{v}</li>)}</ul>
+        <a class="boton boton--claro" href="/colabora">Colabora</a>
+      </div>
+    </section>
+  )}
 </Base>
+
 <style>
-  .pagina { padding-top: var(--s-6); }
-  .pagina__bajada { font-size: var(--t-lead); color: var(--muted); }
-  .lista { list-style: none; padding: 0; margin: var(--s-5) 0 0; }
-  .lista li { border-top: var(--border); padding-block: var(--s-4); }
-  .lista h2 { font-size: var(--t-lead); margin: var(--s-2) 0; }
-  .lista p { margin: 0; color: var(--muted); }
+  .cabeza { padding-top: var(--s-6); }
+  .cabeza__bajada { font-size: var(--t-lead); color: var(--muted); }
+  .bloque { margin-top: var(--s-6); }
+  .principios { list-style: none; padding: 0; margin: var(--s-4) 0 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 40rem) { .principios { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 64rem) { .principios { grid-template-columns: repeat(4, 1fr); } }
+  .principio h3 { font-size: var(--t-lead); margin-top: var(--s-2); }
+  .principio p { margin: 0; color: var(--muted); }
+  .principio__n { font-family: var(--font-title); font-weight: 800; font-size: 2rem; letter-spacing: -0.04em; }
+  .principio:nth-child(1) .principio__n { color: var(--fg); }
+  .vacio { text-align: center; display: grid; justify-items: center; padding-block: var(--s-6); }
+  .vacio h3 { font-size: var(--t-card); margin-top: var(--s-3); }
+  .vacio p { max-width: 34rem; color: var(--muted); }
+  .briefs { list-style: none; padding: 0; display: grid; gap: var(--s-3); }
+  .brief h3 { font-size: var(--t-card); }
+  .brief__acciones { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .chip { display: inline-block; background: var(--pilar); color: var(--on-color); border-radius: var(--r-pill); padding: 0.2em 0.8em; font-size: var(--t-label); text-transform: uppercase; letter-spacing: 0.12em; }
 </style>

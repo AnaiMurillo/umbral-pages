@@ -1,0 +1,36 @@
+---
+// Correo visible con botón "Copiar" (sin formulario: el sitio no recoge datos).
+import { sitio, textos } from '../../data/sitio';
+interface Props { tamano?: 'normal' | 'grande' }
+const { tamano = 'normal' } = Astro.props;
+---
+<div class:list={['correo', `correo--${tamano}`]} data-copiar-correo>
+  <a class="correo__texto" href={`mailto:${sitio.correo}`}>{sitio.correo}</a>
+  <button type="button" class="boton boton--claro correo__boton" data-texto={sitio.correo}>{textos.copiar}</button>
+  <span class="correo__estado" role="status" aria-live="polite"></span>
+</div>
+
+<style>
+  .correo { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); }
+  .correo__texto { font-size: var(--t-lead); overflow-wrap: anywhere; min-height: 44px; display: inline-flex; align-items: center; }
+  .correo--grande .correo__texto { font-family: var(--font-title); font-weight: 700; font-size: clamp(1.3rem, 1rem + 1.5vw, 2rem); letter-spacing: -0.02em; }
+  .correo__estado { font-size: var(--t-small); color: var(--muted); flex-basis: 100%; min-height: 1.4em; }
+</style>
+
+<script>
+  import { textos } from '../../data/sitio';
+  document.querySelectorAll<HTMLElement>('[data-copiar-correo]').forEach((caja) => {
+    const boton = caja.querySelector<HTMLButtonElement>('button');
+    const estado = caja.querySelector<HTMLElement>('.correo__estado');
+    boton?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(boton.dataset.texto || '');
+        if (estado) estado.textContent = textos.copiado;
+        boton.textContent = textos.copiado;
+        setTimeout(() => { boton.textContent = textos.copiar; if (estado) estado.textContent = ''; }, 2500);
+      } catch {
+        if (estado) estado.textContent = textos.errorCopiar;
+      }
+    });
+  });
+</script>

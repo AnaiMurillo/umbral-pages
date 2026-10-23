@@ -32,6 +32,10 @@ h1, h2, h3, h4 {
   text-wrap: balance;
 }
 h1 { font-size: var(--t-hero); }
+/* Los títulos nunca cortan una palabra por la mitad. */
+h1, h2, h3, h4 { overflow-wrap: normal; word-break: normal; hyphens: manual; }
+/* En columnas de lectura (65 caracteres) el título de página es algo menor. */
+.lectura h1 { font-size: clamp(2.6rem, 1.6rem + 4vw, 4.6rem); }
 h2 { font-size: var(--t-card); font-weight: 700; }
 h3 { font-size: var(--t-lead); font-weight: 700; letter-spacing: -0.01em; }
 

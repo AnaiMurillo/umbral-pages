@@ -1,23 +1,27 @@
 ---
 import '../styles/base.css';
+import BotonTema from '../components/comunes/BotonTema.astro';
+import CopiarCorreo from '../components/comunes/CopiarCorreo.astro';
+import { sitio, textos, nav } from '../data/sitio';
 
 interface Props {
   titulo?: string;
   descripcion?: string;
+  /** No indexar en buscadores (artículo de ejemplo). */
+  noindex?: boolean;
+  /** Color de pilar de toda la página (cinta, chips). */
+  pilar?: string;
 }
 const {
   titulo,
-  descripcion = 'Umbral: investigación en Behavioral HCI y Human-Centered AI para Latinoamérica, hecha de artículos interactivos.',
+  descripcion = 'Umbral explica, con evidencia y con el scroll, los mecanismos de comportamiento que se activan cuando usamos tecnología e inteligencia artificial.',
+  noindex = false,
+  pilar,
 } = Astro.props;
 
 const tituloCompleto = titulo ? `${titulo} · Umbral` : 'Umbral';
 const ruta = Astro.url.pathname.replace(/\/$/, '') || '/';
-const nav = [
-  { href: '/pilares', texto: 'Pilares' },
-  { href: '/investigacion', texto: 'Investigación' },
-  { href: '/sobre-mi', texto: 'Sobre mí' },
-  { href: '/colabora', texto: 'Colabora' },
-];
+const actual = (href: string) => (ruta === href || ruta.startsWith(href + '/') ? 'page' : undefined);
 ---
 <!doctype html>
 <html lang="es">
@@ -26,13 +30,14 @@ const nav = [
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{tituloCompleto}</title>
     <meta name="description" content={descripcion} />
-    <meta name="theme-color" content="#FCFCF0" />
-    <meta name="color-scheme" content="light only" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FCFCF0" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#181A19" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/questrial-latin.woff2" as="font" type="font/woff2" crossorigin />
     <script is:inline>
-      // Antes de pintar: JS disponible, versión estática y modo evidencia.
+      // Antes de pintar: JS disponible, tema elegido, versión estática y modo evidencia.
       (function () {
         var d = document.documentElement;
         d.setAttribute('data-js', '');
@@ -42,24 +47,32 @@ const nav = [
           if (q.has('estatico')) localStorage.setItem('umbral-estatico', q.get('estatico') === '0' ? '0' : '1');
           if (localStorage.getItem('umbral-estatico') === '1') d.setAttribute('data-estatico', '');
           if (localStorage.getItem('umbral-evidencia') === '1') d.setAttribute('data-evidencia', '');
+          var t = q.get('tema') || localStorage.getItem('umbral-tema');
+          if (t === 'claro' || t === 'oscuro') d.setAttribute('data-theme', t === 'claro' ? 'light' : 'dark');
         } catch (e) {}
       })();
     </script>
   </head>
-  <body>
-    <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <body data-pilar={pilar}>
+    <a class="saltar" href="#contenido">{textos.saltar}</a>
     <header class="cabecera">
       <div class="contenedor cabecera__fila">
         <a class="logo" href="/" aria-label="Umbral, inicio">umbral</a>
-        <nav aria-label="Principal">
+        <nav class="nav-pc" aria-label="Principal">
           <ul>
-            {nav.map((n) => (
-              <li><a href={n.href} aria-current={ruta.startsWith(n.href) ? 'page' : undefined}>{n.texto}</a></li>
-            ))}
+            {nav.map((n) => <li><a href={n.href} aria-current={actual(n.href)}>{n.texto}</a></li>)}
           </ul>
         </nav>
+        <BotonTema />
       </div>
     </header>
+
+    <!-- Móvil: menú flotante tipo píldora (GUIA §4) -->
+    <nav class="nav-pildora" aria-label="Principal (móvil)">
+      <ul>
+        {nav.map((n) => <li><a href={n.href} aria-current={actual(n.href)}>{n.texto}</a></li>)}
+      </ul>
+    </nav>
 
     <main id="contenido">
       <slot />
@@ -67,8 +80,15 @@ const nav = [
 
     <footer class="pie">
       <div class="contenedor pie__fila">
-        <p><span class="logo">umbral</span><br />Behavioral HCI y Human-Centered AI para Latinoamérica.</p>
-        <p class="pie__nota">Este sitio no recoge datos de lectores. Las simulaciones corren solo en tu navegador.</p>
+        <div class="pie__marca">
+          <p class="logo">umbral</p>
+          <p>{sitio.lema}</p>
+          <p class="pie__aviso">{sitio.avisoPie}</p>
+        </div>
+        <div class="pie__contacto">
+          <CopiarCorreo />
+          {sitio.linkedin && <a class="boton boton--claro" href={sitio.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>}
+        </div>
       </div>
     </footer>
   </body>
@@ -80,33 +100,49 @@ const nav = [
     background: var(--bg);
     border-bottom: 1.5px solid var(--outline);
   }
-  .cabecera__fila {
-    display: flex; align-items: center; gap: var(--s-2) var(--s-4);
-    min-height: 4rem; flex-wrap: wrap;
-    padding-block: var(--s-2);
-  }
+  .cabecera__fila { display: flex; align-items: center; gap: var(--s-2) var(--s-4); min-height: 4rem; }
   .logo {
     font-family: var(--font-title); font-weight: 800;
-    font-size: 1.6rem; letter-spacing: -0.04em; text-decoration: none;
-    margin-right: auto; display: inline-flex; align-items: center; min-height: 44px;
+    font-size: 1.6rem; letter-spacing: -0.04em; text-decoration: none; line-height: 1;
+    margin: 0 auto 0 0; display: inline-flex; align-items: center; min-height: 44px;
   }
-  nav { order: 3; width: 100%; }
-  nav ul { display: flex; flex-wrap: wrap; gap: 0 var(--s-4); list-style: none; margin: 0; padding: 0; font-size: var(--t-small); }
-  nav a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
-  nav a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 2px; }
-  @media (hover: hover) { nav a:hover { text-decoration: underline; } }
+  .nav-pc { display: none; }
+  .nav-pc ul, .nav-pildora ul { display: flex; list-style: none; margin: 0; padding: 0; }
+  .nav-pc ul { gap: var(--s-4); font-size: var(--t-small); }
+  nav a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; text-decoration: none; }
+  .nav-pc a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.3em; }
+  @media (hover: hover) { .nav-pc a:hover { text-decoration: underline; } }
+
+  /* Píldora flotante en móvil */
+  .nav-pildora {
+    position: fixed; z-index: 60;
+    left: 50%; translate: -50% 0;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    width: max-content; max-width: calc(100vw - 24px);
+    background: var(--btn-bg); color: var(--btn-fg);
+    border-radius: var(--r-pill); padding: 4px;
+  }
+  .nav-pildora ul { gap: 2px; font-size: 0.875rem; }
+  .nav-pildora a { padding: 0 0.85rem; border-radius: var(--r-pill); color: var(--btn-fg); }
+  .nav-pildora a[aria-current='page'] { background: var(--btn-fg); color: var(--btn-bg); }
+  .nav-pildora a:focus-visible { outline-color: var(--btn-fg); outline-offset: -3px; }
+  :global(body) { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
 
   @media (min-width: 52rem) {
     .cabecera { position: sticky; top: 0; }
-    nav { order: 0; width: auto; }
+    .nav-pc { display: block; }
+    .nav-pildora { display: none; }
+    :global(body) { padding-bottom: 0; }
   }
 
   .pie { margin-top: var(--s-7); border-top: 1.5px solid var(--outline); }
   .pie__fila {
-    display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-4);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-5);
     padding-block: var(--s-5) calc(var(--s-5) + env(safe-area-inset-bottom));
     font-size: var(--t-small); color: var(--muted);
   }
-  .pie .logo { color: var(--fg); }
-  .pie__nota { max-width: 26rem; }
+  .pie__marca { max-width: 28rem; }
+  .pie__marca p { margin-bottom: var(--s-2); }
+  .pie .logo { color: var(--fg); margin-bottom: var(--s-3); }
+  .pie__contacto { display: grid; gap: var(--s-3); align-content: start; }
 </style>

@@ -18,46 +18,41 @@ const Titulo = nivel;
 const NivelParada = nivel === 'h1' ? 'h2' : 'h3';
 
 const pilares = (await getCollection('pilares')).sort((a, b) => a.data.orden - b.data.orden);
-const modulos = await getCollection('modulos');
+// Solo artículos publicados y que no sean de ejemplo (TEXTOS_FINALES §5.3).
+const articulos = (await getCollection('articulos')).filter((a) => !a.data.ejemplo && a.data.estado === 'publicado');
 const limpio = (t: string) => t.replace(/\*/g, '');
 ---
-<div class="pilares" data-modulo-camino data-color="celeste" data-inicio-x="0.94">
+<div class="pilares" data-modulo-camino data-inicio-x="0.94">
   <Camino />
 
   <header class="pilares__intro contenedor">
-    <p class="etiqueta etiqueta--banda">El mapa</p>
     <Titulo id="mapa-titulo" class="pilares__titulo">{titulo}</Titulo>
     <p class="pilares__bajada">Cada pilar agrupa un mecanismo de comportamiento, no una industria. Baja y recorre el camino.</p>
   </header>
 
   {pilares.map((p) => {
-    const suyos = modulos.filter((m) => m.data.pilar.id === p.id);
+    const suyos = articulos.filter((m) => m.data.pilar.id === p.id);
     return (
-      <Parada escena={p.id as Pilar} id={p.id} etiqueta={`Pilar 0${p.data.orden}`} titulo={p.data.nombre} nivel={NivelParada}>
-        <p class="pilar__mecanismo">{p.data.mecanismo}</p>
-        {p.data.descripcion && <p class="pilar__descripcion">{p.data.descripcion}</p>}
-        <p class="pilar__teaser">{p.data.teaser}</p>
+      <Parada escena={p.id as Pilar} id={p.id} pilar={p.id} criatura={p.data.criatura} etiqueta={p.data.numero} titulo={p.data.nombre} nivel={NivelParada}>
+        <p class="pilar__subtitulo">{p.data.subtitulo}</p>
+        <p class="pilar__frase">{p.data.frase}</p>
         {suyos.length > 0 ? (
-          <ul class="pilar__modulos" aria-label={`Módulos de ${p.data.nombre}`}>
+          <ul class="pilar__articulos" aria-label={`Artículos de ${p.data.nombre}`}>
             {suyos.map((m) => (
-              <li>
-                <a class="pilar__modulo" href={`/modulos/${m.id}`}>
-                  <span class="pilar__modulo-titulo">{limpio(m.data.titulo)}</span>
-                  <span class="etiqueta">{m.data.ejemplo ? 'Módulo de ejemplo' : 'Módulo'} · Recorrer →</span>
-                </a>
-              </li>
+              <li><a class="pilar__articulo" href={`/articulos/${m.id}`}>{limpio(m.data.titulo)}</a></li>
             ))}
           </ul>
         ) : (
-          <p class="pilar__pronto"><span class="etiqueta">Próximamente</span><br />El primer módulo de este pilar está en preparación.</p>
+          <p class="pilar__pronto"><span class="etiqueta">Próximamente.</span> El primer artículo de este pilar está en preparación.</p>
         )}
+        <a class="boton boton--claro pilar__ver" href={`/pilares/${p.id}`}>Ver el pilar →</a>
       </Parada>
     );
   })}
 
   <Remate>
-    <p class="etiqueta etiqueta--banda">Para fundaciones, empresas y medios</p>
-    <h2 class="pilares__cierre">[Relleno] ¿Investigamos juntos?</h2>
+    <h2 class="pilares__cierre">¿Investigamos juntos?</h2>
+    <p>Si trabajas en una fundación, una empresa, un medio o una universidad y tienes una pregunta sobre cómo las personas viven la tecnología, escríbeme.</p>
     <div class="pilares__acciones">
       <a class="boton" href="/colabora">Colabora</a>
       <a class="boton boton--claro" href="/investigacion">Ver la investigación</a>
@@ -72,26 +67,18 @@ const limpio = (t: string) => t.replace(/\*/g, '');
   .pilares__bajada { color: var(--muted); max-width: 32rem; font-size: var(--t-lead); }
   .pilares :global(.parada) { scroll-margin-top: 5rem; }
 
-  .pilar__mecanismo { font-size: var(--t-lead); }
-  .pilar__descripcion { color: var(--muted); }
-  .pilar__teaser {
+  .pilar__subtitulo { font-size: var(--t-lead); }
+  .pilar__frase {
     display: inline;
-    background: var(--highlight); color: var(--on-color);
+    background: var(--pilar); color: var(--on-color);
     padding: 0.1em 0.3em; border-radius: 0.25em;
     -webkit-box-decoration-break: clone; box-decoration-break: clone;
   }
-  .pilar__modulos { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-2); }
-  .pilar__modulo {
-    display: grid; gap: var(--s-1);
-    min-height: 44px; padding: var(--s-3) var(--s-4);
-    border: 1.5px solid var(--outline); border-radius: calc(var(--r-card) * 0.7);
-    background: var(--surface); text-decoration: none;
-    transition: background var(--dur) var(--ease);
-  }
-  @media (hover: hover) { .pilar__modulo:hover { background: var(--band); } }
-  .pilar__modulo-titulo { font-family: var(--font-title); font-weight: 700; font-size: var(--t-lead); line-height: 1.15; letter-spacing: -0.01em; }
-  .pilar__pronto { margin: var(--s-4) 0 0; padding-top: var(--s-3); border-top: 1.5px solid var(--outline); color: var(--muted); }
-
+  .pilar__articulos { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-2); }
+  .pilar__articulo { display: flex; align-items: center; min-height: 44px; font-family: var(--font-title); font-weight: 700; }
+  .pilar__pronto { margin: var(--s-4) 0 var(--s-3); padding-top: var(--s-3); border-top: 1.5px solid var(--outline); color: var(--muted); }
+  .pilar__pronto .etiqueta { color: var(--fg); }
+  .pilar__ver { margin-top: var(--s-3); }
   .pilares__cierre { font-size: var(--t-card); margin-top: var(--s-3); }
   .pilares__acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-2); }
 </style>

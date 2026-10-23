@@ -1,0 +1,95 @@
+---
+# ─────────────────────────────────────────────────────────────
+# ARTÍCULO DE EJEMPLO, con datos inventados (TEXTOS_FINALES.md §5.3).
+# No aparece en catálogos ni buscadores. Se elimina cuando se publique
+# el primer artículo real.
+#
+# Para crear un artículo: copia este archivo con otro nombre (será la
+# URL /articulos/nombre), cambia "ejemplo: true" a false y reemplaza
+# cada campo y cada escena.
+# ─────────────────────────────────────────────────────────────
+
+# CABECERA
+titulo: "¿Le creerías a este mensaje si tuviera un *sello*?"   # *palabra* = resaltado
+bajada: "Un sello de verificación cambia lo que crees de un mensaje, aunque el mensaje sea idéntico."
+pilar: confianza
+mecanismo: "Señales de confianza"
+tipoInteraccion: decision-forzada   # decision-forzada | antes-y-despues | explorar-datos | simular-interfaz | predecir-antes-de-ver
+fecha: 2026-10-23
+actualizado: 2026-10-23
+tiempoLectura: 5
+estado: publicado                   # publicado | en-preparacion
+ejemplo: true
+
+# El hallazgo en una frase (escena 3 y "Para llevarte")
+hallazgoUnaFrase: "Un sello cambia lo que crees, no lo que sabes."
+
+# Piezas fijas de "La evidencia"
+casoLocal:
+  titulo: "Ejemplo inventado: una billetera digital colombiana agregó un sello a sus mensajes y las denuncias de fraude no bajaron."
+  fuente: "Fuente de ejemplo, no real."
+matiz:
+  titulo: "Ejemplo inventado: en un estudio el sello no cambió la decisión de quienes ya conocían al remitente."
+  fuente: "Fuente de ejemplo, no real."
+
+# "Qué hacer con esto": una recomendación por público
+recomendaciones:
+  producto: "Ejemplo: no uses un sello como sustituto de una verificación real; explica qué verificaste."
+  usuarios: "Ejemplo: ante un sello, pregúntate quién lo puso y qué comprobó."
+  investigacion: "Ejemplo: mide la confianza antes y después del sello con el mismo mensaje."
+
+# briefSlug: nombre-del-brief   ← activa "Leer el brief completo"
+
+# Fuentes: cada <Afirmacion fuente="id"> apunta a una de estas.
+fuentes:
+  - { id: ejemplo-paper, titulo: "Fuente de ejemplo: título de un estudio", autor: "Autora, A.", anio: 2026, tipo: paper }
+  - { id: ejemplo-dato-co, titulo: "Fuente de ejemplo: encuesta de Colombia", autor: "Entidad", anio: 2026, tipo: dato, latam: true }
+  - { id: ejemplo-comunicado, titulo: "Fuente de ejemplo: comunicado oficial", anio: 2026, tipo: comunicado, latam: true }
+---
+import GraficoMecanismo from '../../components/graficos/GraficoMecanismo.svelte';
+
+<Escena n={1}>
+  Te llega un mensaje de tu banco: "Actualiza tus datos hoy". Lleva un sello azul de verificación. Ayer te llegó el mismo texto, sin sello, y lo borraste. ¿Qué cambió, el mensaje o tú?
+</Escena>
+
+<Escena n={2}>
+  Cien personas reciben el mismo mensaje. Activa o quita el sello y decide qué harías.
+
+  <GraficoMecanismo
+    client:visible
+    titulo="100 personas reciben el mismo mensaje"
+    mecanismo="Sello de verificación"
+    respuestaSi="confía"
+    respuestaNo="no confía"
+    valorCon={72}
+    valorSin={41}
+    pasos={[{ mecanismo: 'con', decision: true }]}
+    pregunta="¿Abrirías el enlace de este mensaje?"
+    opciones={['Sí, lo abro', 'No, lo ignoro']}
+    respuestas={[
+      'Como 72 de cada 100 personas de la muestra de ejemplo cuando ven el sello.',
+      'Como 28 de cada 100. Sin el sello, 59 de cada 100 harían lo mismo que tú.'
+    ]}
+    nota="Datos inventados para el ejemplo."
+  />
+
+  <QueSimula>
+    Simula: la diferencia entre ver el mismo mensaje con y sin sello. No simula: quién envía el mensaje, tu historial con ese banco ni el contexto en que lo lees. Los números son inventados.
+  </QueSimula>
+</Escena>
+
+<Escena n={3}>
+  Ejemplo: el sello no agrega información sobre el mensaje, pero cambia <Afirmacion fuente="ejemplo-paper">cuánto confiamos en él</Afirmacion>. Funciona como un atajo: lo vemos y dejamos de revisar.
+</Escena>
+
+<Escena n={4}>
+  Ejemplo: en Colombia, <Afirmacion fuente="ejemplo-dato-co">un dato inventado sobre fraude por mensajes</Afirmacion> sirve aquí para mostrar dónde iría la evidencia local.
+
+  <PullQuote quien="Persona de ejemplo" contexto="cargo inventado" fuente="ejemplo-comunicado">
+    Una cita de ejemplo que genera contraste.
+  </PullQuote>
+
+  <Acordeon titulo="Comunicado oficial completo" meta="Entidad de ejemplo · 2026">
+    Texto de ejemplo del comunicado, para quien quiera leerlo entero sin interrumpir el relato.
+  </Acordeon>
+</Escena>

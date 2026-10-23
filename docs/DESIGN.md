@@ -25,15 +25,14 @@ Se conserva el kit de Wix y se amplía con cuatro colores.
 | `--mantequilla` | `#FFE27A` | Forma principal 3, resaltado de dato clave |
 | `--menta` | `#BDEBCB` | Forma principal 4, estados positivos |
 | `--blanco` | `#FFFFFF` | Tarjetas |
+| `--coral` | `#FF8A6B` | Color del pilar Identidad digital (agregado 2026-10-23) |
 
 Tokens semánticos: `--bg`, `--band`, `--surface`, `--fg`, `--muted`, `--line`, `--a1..a4` (formas), `--path`, `--outline`.
 
 Reglas:
 - Texto siempre en `--tinta` o `--gris`. Nunca texto blanco sobre pasteles ni sobre colores vivos.
 - Un solo color vivo dominante por escena; los demás en apoyo.
-- Solo modo claro. El modo oscuro se probó y se descartó (decisión de Isabel, 2026-10-20). La página declara `color-scheme: light`.
-- Cualquier texto sobre un color pastel o vivo usa `--tinta`.
-- Las criaturas nunca usan el color del camino de su módulo (tokens `--cr1` y `--cr2`), para no fundirse con la cinta.
+- Modo oscuro obligatorio: fondo `#181A19`, superficie `#252928`, texto `#F3F3E6`, camino en crema. Las formas mantienen sus colores.
 - Negro y blanco definidos por Umbral (no dependen de Wix): el negro es `--tinta` `#1F2120` y el blanco es `--blanco` `#FFFFFF`.
 
 ## 3. Tipografía
@@ -58,7 +57,8 @@ No hay ilustración propia: todo se arma con círculos, semicírculos, arcos y c
 - Estilo de recorte de papel: colores planos, **sin contorno**. La tinta solo se usa en detalles pequeños (ojos, boca, líneas finas).
 - Tamaño grande: en computador cada criatura mide entre 280 y 560px de ancho; en móvil, entre 60% y 90% del ancho de pantalla.
 - Cada criatura se arma con 5 a 8 formas, en dos o tres colores vivos. Cada pilar puede tener su propia combinación.
-- Se dibujan en SVG inline con tokens de color, para que cambien con la paleta.
+- Se dibujan en SVG inline con tokens de color, para que cambien con la paleta y el modo oscuro.
+- **Foto de la autora (Sobre mí):** PNG recortado y sin fondo, tratado como una criatura más: formas geométricas detrás, aparición con el scroll y parte de la figura que puede salirse de las formas. Misma regla de móvil y de `prefers-reduced-motion` que las criaturas.
 - El prototipo aprobado sirve solo como referencia de color y tipografía. Sus criaturas pequeñas y con contorno no son el nivel que se busca.
 
 ## 5b. El camino grueso (elemento principal de cada módulo)
@@ -91,10 +91,10 @@ Principios: scrollytelling sí, scrolljacking no. El scroll nunca cambia de velo
 | Camino grueso que se dibuja (ver 5b) | Progreso del módulo | Scroll (ligado al avance) | Cinta de 96 a 140px que puede salirse de pantalla | Camino ya dibujado |
 | Línea de estela y objetos secundarios | Que cada idea tiene detalles | Scroll, con parallax | Máximo 3 objetos por escena | Dibujados y fijos |
 | Entrada de parada (tarjeta y criatura) | Una idea por pantalla | Cuando el punto llega a la parada | Criatura sobre la tarjeta | Todo visible |
-| Formas que se arman | Que la idea se construye | Ligadas al scroll cuando el camino llega a la parada (`ease: none`, ver 5b) | Igual | Formas ya armadas |
-| Cerebro de partículas | El enfoque analítico de Umbral | Ambiente continuo, solo en Inicio e Identidad digital. Cerebro de frente: dos hemisferios de puntos de colores con circunvoluciones y uniones finas. Sin botón de pausa (decisión de Isabel). | 420 partículas (700 en computador), se detiene solo fuera de pantalla | Imagen fija |
+| Formas que se arman | Que la idea se construye | Con la entrada de la parada, 0.9 s, curva suave | Igual | Formas ya armadas |
+| Cerebro de partículas | El enfoque analítico de Umbral | Ambiente, solo en Inicio e Identidad digital | 260 partículas (420 en computador), pausa fuera de pantalla | Imagen fija |
 
-Producción: GSAP con ScrollTrigger solo en el Inicio y en el camino grueso de los módulos (camino, criaturas, estelas y parallax), con trazo dibujado por scroll y `ease: none`. La activación de paradas usa Scrollama; las apariciones simples, CSS `view()`. Sin Lenis.
+Producción: GSAP con ScrollTrigger solo en el Inicio, con la misma lógica del prototipo (trazo dibujado por scroll, `ease: none`). En los módulos, Scrollama y CSS `view()`. Sin Lenis.
 
 ## 7. Componentes base
 
@@ -108,7 +108,7 @@ Plantilla de módulo, 5 escenas: Gancho · Escena jugable · Revelación · Evid
 - Contraste AA mínimo. Foco visible de 3px en todos los controles.
 - Los gráficos y criaturas son decorativos (`aria-hidden`) salvo el cerebro, que lleva descripción.
 - Objetivos táctiles de al menos 44px.
-- Contenido completo visible sin scroll de activación (la parada inactiva baja a 55% de opacidad, nunca a 0; subido desde 35% el 2026-10-20 por contraste, ver docs/ACCESIBILIDAD.md).
+- Contenido completo visible sin scroll de activación (la parada inactiva baja a 35% de opacidad, nunca a 0).
 
 ## 9. Prohibido
 
@@ -118,13 +118,25 @@ Sombras, degradados, texto blanco sobre pasteles, scrolljacking, más de un efec
 
 - Playwright en modo móvil (`--mobile`) y computador, con capturas de cada escena.
 - Auditoría de accesibilidad y de guías de interfaz al terminar cada módulo.
-- Pruebas con `prefers-reduced-motion` activado.
-
-## 10b. Inicio
-
-El Inicio usa el mismo camino grueso de los módulos: después del hero con el cerebro, una parada por pilar (criatura del mecanismo, descripción y módulos) y un remate con el llamado a colaborar. `/pilares` muestra el mismo camino.
+- Pruebas con `prefers-reduced-motion` activado y con modo oscuro.
 
 ## 11. Pendientes
 
 - Primer tema de módulo.
-- ~~Confirmar si Bricolage Grotesque se descarga local o desde Google Fonts.~~ Resuelto: local en `public/fonts` (Bricolage Grotesque variable y Questrial, licencia OFL).
+- Confirmar si Bricolage Grotesque se descarga local (`public/fonts`) o se carga desde Google Fonts.
+
+## 12. Decisiones aprobadas (2026-10-23)
+
+Estas decisiones resuelven contradicciones entre DESIGN.md, la guía de interfaz y versiones anteriores. Mandan sobre lo que diga más arriba.
+
+1. **Cerebro de partículas:** 420 partículas en móvil y 700 en computador (sube desde 260/420 a pedido de Isabel). Se detiene solo fuera de pantalla o con la pestaña oculta; sin botón de pausa. Imagen fija con `prefers-reduced-motion`.
+2. **Parada inactiva:** baja a 55 % de opacidad (no 35 %), solo el contenido; el fondo de la tarjeta queda opaco.
+3. **Modo oscuro:** sigue al sistema, con botón para cambiarlo en la cabecera. Texto secundario en oscuro `#B5B8AE` (el gris `#464746` no pasa AA sobre `#181A19`). Cualquier texto sobre pastel o color vivo usa `--tinta`, también en oscuro.
+4. **Color por pilar** (cinta, chips y miniaturas): Confianza `--celeste-v`, Persuasión `--rosa-v`, Comprensión `--mantequilla`, Atención `--menta`, Identidad digital `--coral` `#FF8A6B` (color nuevo de la paleta). El camino deja de ser solo celeste o rosa. Las criaturas nunca usan el color de la cinta de su pilar. En modo oscuro el camino es crema.
+5. **Cerebro en Identidad digital:** reemplaza a la criatura en el encabezado de la página de ese pilar.
+6. **Briefs:** no hay briefs publicados; Investigación muestra su estado vacío. El artículo de ejemplo no enlaza a un brief.
+7. **Titulares de gancho de Wix:** tarjetas en el Inicio (sin rotación).
+8. **GSAP con ScrollTrigger:** solo en el Inicio y en el camino grueso (camino, criaturas, estelas, parallax). Scrollama marca la parada activa; lo demás, CSS. Sin Lenis.
+9. **Formas que se arman:** ligadas al scroll (`ease: none`); quedan completas cuando la tarjeta de su parada llega al 60 % de la pantalla.
+10. **Fuentes:** locales en `public/fonts` (Bricolage Grotesque variable y Questrial, licencia OFL). Sin Google Fonts.
+11. **Vocabulario:** "módulo" pasa a "artículo" en todo el sitio.
