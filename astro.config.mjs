@@ -7,4 +7,8 @@ import svelte from '@astrojs/svelte';
 export default defineConfig({
   integrations: [mdx(), svelte()],
   trailingSlash: 'ignore',
+  // La ruta del piloto pasa a /articulos (TEXTOS_FINALES §5.3).
+  redirects: {
+    '/modulos/plantilla-ejemplo': '/articulos/ejemplo',
+  },
 });

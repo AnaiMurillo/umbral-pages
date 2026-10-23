@@ -1,0 +1,83 @@
+---
+// Una de las escenas del artículo, escrita en el MDX:
+//   <Escena n={1}>…</Escena>  Para empezar (máx. 60 palabras)
+//   <Escena n={2}>…</Escena>  Pruébalo tú (una sola interacción)
+//   <Escena n={3}>…</Escena>  El hallazgo (frase destacada = hallazgoUnaFrase, o destacado="…")
+//   <Escena n={4}>…</Escena>  La evidencia (agrega solas las piezas fijas: caso de la región y lo que complica)
+// La escena 5 (Qué hacer con esto) la arma la plantilla desde el frontmatter.
+import Parada from '../camino/Parada.astro';
+import { tiposInteraccion } from '../../data/sitio';
+
+interface Props { n: 1 | 2 | 3 | 4; titulo?: string; destacado?: string }
+const { n, titulo, destacado } = Astro.props;
+const art = Astro.locals.articulo;
+if (!art) throw new Error('<Escena> solo se usa dentro de un artículo.');
+const d = art.data;
+
+const instruccion = d.tipoInteraccion === 'antes-y-despues' ? 'Mueve el control.' : 'Elige una opción.';
+const config = {
+  1: { escena: 'gancho', etiqueta: 'Para empezar', titulo: titulo },
+  2: { escena: 'jugable', etiqueta: 'Pruébalo tú', titulo: titulo },
+  3: { escena: 'revelacion', etiqueta: 'El hallazgo', titulo: undefined },
+  4: { escena: 'evidencia', etiqueta: 'La evidencia', titulo: titulo ?? 'Lo que dicen los datos' },
+} as const;
+const c = config[n];
+---
+<Parada escena={c.escena} etiqueta={c.etiqueta} titulo={c.titulo} evitar={art.criaturaPilar}>
+  {n === 1 && <div class="escena-gancho"><slot /></div>}
+
+  {n === 2 && (
+    <>
+      <p class="escena-instruccion"><strong>{instruccion}</strong> <span class="escena-privacidad">No se guarda nada.</span></p>
+      <p class="etiqueta">{tiposInteraccion[d.tipoInteraccion]}</p>
+      <slot />
+    </>
+  )}
+
+  {n === 3 && (
+    <>
+      <p class="escena-destacado"><span>{destacado ?? d.hallazgoUnaFrase}</span></p>
+      <slot />
+    </>
+  )}
+
+  {n === 4 && (
+    <>
+      <slot />
+      <div class="piezas-fijas">
+        <aside class="pieza pieza--caso" aria-label="Caso de la región">
+          <p class="etiqueta">Caso de la región</p>
+          <p class="pieza__titulo">{d.casoLocal.titulo}</p>
+          <p class="pieza__fuente">{d.casoLocal.fuente}</p>
+        </aside>
+        <aside class="pieza pieza--matiz" aria-label="Lo que complica la historia">
+          <p class="etiqueta">Lo que complica la historia</p>
+          <p class="pieza__titulo">{d.matiz.titulo}</p>
+          <p class="pieza__fuente">{d.matiz.fuente}</p>
+        </aside>
+      </div>
+    </>
+  )}
+</Parada>
+
+<style>
+  .escena-gancho { font-size: var(--t-lead); }
+  .escena-gancho :global(p:last-child) { margin-bottom: 0; }
+  .escena-instruccion { font-size: var(--t-lead); }
+  .escena-privacidad { color: var(--muted); font-size: var(--t-small); }
+  .escena-destacado { margin: 0 0 var(--s-4); }
+  .escena-destacado span {
+    font-family: var(--font-title); font-weight: 800; letter-spacing: var(--title-tracking); line-height: 1.12;
+    font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+    background: var(--highlight); color: var(--on-color);
+    padding: 0 0.15em; border-radius: 0.15em;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  .piezas-fijas { display: grid; gap: var(--s-3); margin-top: var(--s-4); }
+  .pieza { border-radius: calc(var(--r-card) * 0.7); padding: var(--s-3) var(--s-4); color: var(--on-color); }
+  .pieza .etiqueta { color: var(--on-color); }
+  .pieza--caso { background: var(--pilar); }
+  .pieza--matiz { background: var(--rosa); }
+  .pieza__titulo { font-weight: 700; margin-bottom: var(--s-2); }
+  .pieza__fuente { font-size: var(--t-small); margin: 0; }
+</style>

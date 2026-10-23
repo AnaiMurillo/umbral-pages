@@ -1,26 +1,26 @@
 ---
-// Botón de compartir: usa el menú nativo del teléfono; en escritorio copia el enlace.
-interface Props { titulo: string }
-const { titulo } = Astro.props;
+// Compartir (TEXTOS_FINALES §5.1): botón "Copiar enlace" con confirmación. Nada se envía.
 ---
-<button type="button" class="boton boton--claro" data-compartir={titulo}>Compartir</button>
-<span class="visualmente-oculto" aria-live="polite" data-compartir-aviso></span>
+<div class="compartir" data-compartir>
+  <button type="button" class="boton">Copiar enlace</button>
+  <span class="compartir__estado" role="status" aria-live="polite"></span>
+</div>
+
+<style>
+  .compartir { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); }
+  .compartir__estado { font-size: var(--t-small); color: var(--muted); }
+</style>
 
 <script>
-  document.querySelectorAll<HTMLButtonElement>('[data-compartir]').forEach((b) => {
-    b.addEventListener('click', async () => {
-      const url = location.origin + location.pathname;
-      const aviso = b.nextElementSibling as HTMLElement | null;
+  import { textos } from '../../data/sitio';
+  document.querySelectorAll<HTMLElement>('[data-compartir]').forEach((caja) => {
+    const b = caja.querySelector('button');
+    const estado = caja.querySelector<HTMLElement>('.compartir__estado');
+    b?.addEventListener('click', async () => {
       try {
-        if (navigator.share) {
-          await navigator.share({ title: b.dataset.compartir, url });
-        } else {
-          await navigator.clipboard.writeText(url);
-          b.textContent = 'Enlace copiado';
-          if (aviso) aviso.textContent = 'Enlace copiado al portapapeles';
-          setTimeout(() => (b.textContent = 'Compartir'), 2500);
-        }
-      } catch {}
+        await navigator.clipboard.writeText(location.origin + location.pathname);
+        if (estado) estado.textContent = 'Enlace copiado.';
+      } catch { if (estado) estado.textContent = textos.errorCopiar; }
     });
   });
 </script>

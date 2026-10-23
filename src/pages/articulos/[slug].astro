@@ -1,0 +1,18 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Articulo from '../../layouts/Articulo.astro';
+import { componentesMdx } from '../../components/mdx';
+
+export async function getStaticPaths() {
+  const articulos = await getCollection('articulos');
+  return articulos.map((articulo) => ({ params: { slug: articulo.id }, props: { articulo } }));
+}
+const { articulo } = Astro.props;
+const pilar = (await getEntry(articulo.data.pilar))!;
+// Las escenas del MDX leen los datos del artículo desde aquí.
+Astro.locals.articulo = { data: articulo.data, pilarId: pilar.id, criaturaPilar: pilar.data.criatura };
+const { Content } = await render(articulo);
+---
+<Articulo articulo={articulo}>
+  <Content components={componentesMdx} />
+</Articulo>

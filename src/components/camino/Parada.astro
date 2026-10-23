@@ -1,7 +1,6 @@
 ---
 // Una parada del camino: criatura grande + tarjeta blanca + objetos secundarios.
-// Uso en MDX:
-//   <Parada escena="jugable" etiqueta="Escena jugable" titulo="Pruébalo tú"> ...texto... </Parada>
+// En los artículos se usa a través de <Escena n={…}> (components/articulo/Escena.astro).
 import Criatura from '../criaturas/Criatura.astro';
 import Objetos from './Objetos.astro';
 import { paradas, alternativa, type Escena, type Pilar, type NombreCriatura } from './composiciones';
@@ -11,7 +10,10 @@ interface Props {
   escena: Escena | Pilar;
   /** id de la sección (para enlazar, p. ej. /#confianza). */
   id?: string;
-  etiqueta: string;
+  /** Etiqueta de escena (p. ej. "Para empezar"). Opcional. */
+  etiqueta?: string;
+  /** Nombre accesible cuando no hay título visible. */
+  nombre?: string;
   titulo?: string;
   /** El Gancho usa h1; el resto h2. */
   nivel?: 'h1' | 'h2';
@@ -21,20 +23,21 @@ interface Props {
   /** Criatura del pilar del artículo: si una escena la repite, se usa otra. */
   evitar?: NombreCriatura;
 }
-const { escena, etiqueta, titulo, nivel = 'h2', criatura, id: idSeccion, pilar, evitar } = Astro.props;
+const { escena, etiqueta, nombre, titulo, nivel = 'h2', criatura, id: idSeccion, pilar, evitar } = Astro.props;
 const comp = paradas[escena];
 let nombreCriatura = criatura ?? comp.criatura;
 if (!criatura && evitar && nombreCriatura === evitar) nombreCriatura = alternativa[nombreCriatura];
 const id = `parada-${escena}`;
 const Titulo = nivel;
 ---
-<section id={idSeccion} class:list={['parada', `parada--${escena}`, `parada--${comp.lado}`]} data-parada={escena} data-pilar={pilar} data-pilar-parada={pilar} aria-labelledby={titulo ? `${id}-titulo` : undefined} aria-label={titulo ? undefined : etiqueta}>
+<section id={idSeccion} class:list={['parada', `parada--${escena}`, `parada--${comp.lado}`]} data-parada={escena} data-pilar={pilar} data-pilar-parada={pilar} aria-labelledby={titulo ? `${id}-titulo` : undefined} aria-label={titulo ? undefined : (nombre ?? etiqueta)}>
   <div class="parada__criatura" data-ancla>
     <Criatura nombre={nombreCriatura} />
     <Objetos lista={comp.objetos} id={escena} />
   </div>
   <div class="parada__tarjeta tarjeta">
-    <p class="etiqueta etiqueta--banda parada__etiqueta">{etiqueta}</p>
+    <slot name="antes" />
+    {etiqueta && <p class="etiqueta etiqueta--banda parada__etiqueta">{etiqueta}</p>}
     {titulo && <Titulo id={`${id}-titulo`} class="parada__titulo"><Fragment set:html={titulo} /></Titulo>}
     <slot />
   </div>

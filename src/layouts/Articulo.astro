@@ -1,0 +1,173 @@
+---
+// Plantilla común de artículo (GUIA §3, TEXTOS_FINALES §5).
+//   Cabecera (primera parada) → escenas 1 a 4 (MDX) → escena 5 Qué hacer →
+//   cierre: Para llevarte · Compartir · Cómo se hizo · Fuentes · Sigue explorando →
+//   remate "Fin del camino."
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
+import Base from './Base.astro';
+import BarraProgreso from '../components/scroll/BarraProgreso.astro';
+import InterruptorEvidencia from '../components/evidencia/InterruptorEvidencia.astro';
+import TarjetaFuente from '../components/evidencia/TarjetaFuente.astro';
+import BotonEstatico from '../components/scroll/BotonEstatico.astro';
+import Compartir from '../components/editorial/Compartir.astro';
+import Camino from '../components/camino/Camino.astro';
+import Parada from '../components/camino/Parada.astro';
+import Remate from '../components/camino/Remate.astro';
+import { textos, tiposInteraccion, formatoFecha } from '../data/sitio';
+
+interface Props { articulo: CollectionEntry<'articulos'> }
+const { articulo } = Astro.props;
+const d = articulo.data;
+const pilar = (await getEntry(d.pilar))!;
+
+// Sigue explorando: siguiente artículo del pilar y uno de otro pilar (nunca el de ejemplo).
+const publicados = (await getCollection('articulos'))
+  .filter((a) => a.id !== articulo.id && !a.data.ejemplo && a.data.estado === 'publicado')
+  .sort((a, b) => +b.data.fecha - +a.data.fecha);
+const delPilar = publicados.find((a) => a.data.pilar.id === pilar.id);
+const deOtro = publicados.find((a) => a.data.pilar.id !== pilar.id);
+const sigue = [delPilar, deOtro].filter(Boolean) as CollectionEntry<'articulos'>[];
+
+const tipos: Record<string, string> = { dato: 'Dato', paper: 'Estudio', caso: 'Caso', comunicado: 'Comunicado oficial', prensa: 'Prensa' };
+const escapar = (t: string) => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+const titular = escapar(d.titulo).replace(/\*(.+?)\*/g, '<span class="resaltado-titular">$1</span>');
+const tituloPlano = d.titulo.replace(/\*/g, '');
+const limpio = (t: string) => t.replace(/\*/g, '');
+---
+<Base titulo={tituloPlano} descripcion={d.bajada} noindex={d.ejemplo} pilar={pilar.id}>
+  <BarraProgreso />
+
+  <article class="articulo" data-modulo-camino>
+    <Camino />
+
+    <!-- CABECERA: primera parada del camino, con la criatura del pilar -->
+    <Parada escena="cabecera" criatura={pilar.data.criatura} titulo={titular} nivel="h1" nombre="Cabecera del artículo">
+      <nav slot="antes" class="ruta" aria-label="Ruta">
+        <ol>
+          <li><a href="/pilares">Pilares</a></li>
+          <li><a href={`/pilares/${pilar.id}`}>{pilar.data.nombre}</a></li>
+          <li aria-current="page">{d.mecanismo}</li>
+        </ol>
+      </nav>
+      {d.ejemplo && <p class="aviso-ejemplo">Artículo de ejemplo con datos inventados</p>}
+      <p class="articulo__bajada">{d.bajada}</p>
+      <p class="ficha">
+        {d.tiempoLectura} min · {formatoFecha(d.fecha)} · {d.fuentes.length} fuentes · {tiposInteraccion[d.tipoInteraccion]}
+      </p>
+      <div class="articulo__controles">
+        <div class="articulo__evidencia">
+          <InterruptorEvidencia />
+          <p class="articulo__ayuda" id="ayuda-evidencia">{textos.ayudaEvidencia}</p>
+        </div>
+        <BotonEstatico />
+      </div>
+    </Parada>
+
+    <!-- ESCENAS 1 A 4 (MDX) -->
+    <slot />
+
+    <!-- ESCENA 5: QUÉ HACER CON ESTO -->
+    {d.recomendaciones && (
+      <Parada escena="que-hacer" etiqueta="Qué hacer con esto" evitar={pilar.data.criatura} nombre="Qué hacer con esto">
+        <dl class="recomendaciones">
+          <div><dt>Para equipos de producto</dt><dd>{d.recomendaciones.producto}</dd></div>
+          <div><dt>Para personas usuarias</dt><dd>{d.recomendaciones.usuarios}</dd></div>
+          <div><dt>Para quienes investigan</dt><dd>{d.recomendaciones.investigacion}</dd></div>
+        </dl>
+      </Parada>
+    )}
+
+    <!-- CIERRE -->
+    <div class="cierre contenedor">
+      <section class="tarjeta cierre__llevar" aria-labelledby="llevar-titulo">
+        <h2 id="llevar-titulo" class="etiqueta etiqueta--banda">Para llevarte</h2>
+        <p class="cierre__hallazgo">{d.hallazgoUnaFrase}</p>
+        <h3 class="cierre__sub">Compartir</h3>
+        <Compartir />
+      </section>
+
+      <section class="tarjeta" aria-labelledby="como-titulo">
+        <h2 id="como-titulo" class="cierre__titulo">Cómo se hizo</h2>
+        <p>Este artículo se basa en fuentes secundarias abiertas: estudios académicos y cobertura de medios. No hay encuestas ni entrevistas propias. La metodología completa está en el brief.</p>
+      </section>
+
+      {d.fuentes.length > 0 && (
+        <section id="fuentes" class="tarjeta fuentes" aria-labelledby="fuentes-titulo">
+          <h2 id="fuentes-titulo" class="cierre__titulo">Fuentes</h2>
+          <ol>
+            {d.fuentes.map((f) => (
+              <li id={`fuente-${f.id}`}>
+                <span class="etiqueta">{tipos[f.tipo]}{f.latam && ' · Colombia / LatAm'}</span><br />
+                {f.titulo}{(f.autor || f.anio) && <span class="fuentes__meta">. {[f.autor, f.anio].filter(Boolean).join(', ')}</span>}
+                {f.url && <> · <a href={f.url} target="_blank" rel="noopener">{textos.abrirFuente}</a></>}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      <section class="tarjeta" aria-labelledby="sigue-titulo">
+        <h2 id="sigue-titulo" class="cierre__titulo">Sigue explorando</h2>
+        {sigue.length > 0 ? (
+          <ul class="sigue">
+            {sigue.map((a) => <li><a href={`/articulos/${a.id}`}>{limpio(a.data.titulo)}</a></li>)}
+          </ul>
+        ) : (
+          <p>{textos.proximamente}. Los siguientes artículos están en preparación.</p>
+        )}
+      </section>
+    </div>
+
+    <Remate>
+      <p class="fin">Fin del camino.</p>
+      <div class="acciones">
+        {d.briefSlug && <a class="boton" href={`/investigacion/${d.briefSlug}`}>Leer el brief completo</a>}
+        <a class:list={['boton', { 'boton--claro': !!d.briefSlug }]} href="/pilares">Explorar los pilares</a>
+      </div>
+    </Remate>
+  </article>
+
+  <TarjetaFuente fuentes={d.fuentes} />
+</Base>
+
+<style>
+  .articulo { position: relative; overflow-x: clip; }
+
+  .ruta ol { list-style: none; display: flex; flex-wrap: wrap; gap: 0 var(--s-2); margin: 0 0 var(--s-3); padding: 0; font-size: var(--t-small); }
+  .ruta li:not(:last-child)::after { content: '›'; margin-left: var(--s-2); color: var(--muted); }
+  .ruta a { display: inline-flex; align-items: center; min-height: 44px; }
+  .ruta [aria-current] { display: inline-flex; align-items: center; color: var(--muted); }
+
+  .articulo__bajada { font-size: var(--t-lead); color: var(--muted); }
+  .ficha { font-size: var(--t-small); color: var(--muted); border-top: 1.5px solid var(--outline); padding-top: var(--s-3); }
+  .articulo__controles { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--s-3); margin-top: var(--s-3); }
+  .articulo__evidencia { display: grid; gap: var(--s-1); }
+  .articulo__ayuda { font-size: var(--t-label); color: var(--muted); margin: 0; max-width: 18rem; }
+
+  :global(.resaltado-titular) {
+    background: var(--rosa); color: var(--on-color);
+    padding: 0 0.12em; border-radius: 0.18em;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+
+  .recomendaciones { margin: 0; display: grid; gap: var(--s-3); }
+  .recomendaciones dt { font-weight: 700; }
+  .recomendaciones dd { margin: var(--s-1) 0 0; }
+
+  .cierre { position: relative; z-index: 1; display: grid; gap: var(--s-3); max-width: calc(46rem + 2 * var(--gutter)); margin-top: var(--s-6); }
+  .cierre__llevar { border-width: 2.5px; }
+  .cierre__hallazgo { font-family: var(--font-title); font-weight: 800; letter-spacing: var(--title-tracking); line-height: 1.1; font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); margin: var(--s-3) 0 var(--s-4); }
+  .cierre__sub { font-size: var(--t-body); margin-bottom: var(--s-2); }
+  .cierre__titulo { font-size: var(--t-lead); }
+  .fuentes ol { padding-left: 1.4em; font-size: var(--t-small); }
+  .fuentes li { margin-bottom: var(--s-3); scroll-margin-top: 6rem; }
+  .fuentes li:target { background: var(--mantequilla); color: var(--on-color); outline: 6px solid var(--mantequilla); border-radius: 2px; }
+  .fuentes li:target .etiqueta, .fuentes li:target .fuentes__meta { color: var(--on-color); }
+  .fuentes__meta { color: var(--muted); }
+  .sigue { padding-left: 1.2em; }
+  .sigue a { display: inline-flex; min-height: 44px; align-items: center; }
+
+  .fin { font-family: var(--font-title); font-weight: 800; font-size: var(--t-card); letter-spacing: var(--title-tracking); margin: 0; }
+  .acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--s-2); }
+</style>
