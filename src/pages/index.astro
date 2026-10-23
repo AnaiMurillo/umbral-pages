@@ -1,37 +1,64 @@
 ---
+// Inicio (TEXTOS_FINALES.md §2).
 import Base from '../layouts/Base.astro';
 import Cerebro from '../components/inicio/Cerebro.astro';
 import CaminoPilares from '../components/inicio/CaminoPilares.astro';
 
-// Manifiesto: texto de relleno hasta que Isabel lo redacte.
-const frases = [
-  '[Relleno] Cada interfaz es un umbral: lo cruzamos sin darnos cuenta.',
-  '[Relleno] Aquí no se cuenta cómo nos comportamos frente a la tecnología: se prueba.',
+// Titulares de Wix que se conservan como ganchos (decisión: tarjetas, sin rotación).
+const ganchos = [
+  'Le creíste más a un chatbot que a un desconocido',
+  '¿Casualidad que el algoritmo supiera justo qué mostrarte?',
+  'Por qué respondemos como respondemos frente a la tecnología',
+];
+const pasos = [
+  ['Elige un mecanismo.', 'Cinco pilares, cada uno con una pregunta que organiza todo lo que se publica en él.'],
+  ['Recorre el camino.', 'Cada artículo se baja con el scroll. Lo que ves moverse es lo que se está explicando.'],
+  ['Compruébalo.', 'Todas las afirmaciones llevan fuente. Con el modo evidencia las ves una por una.'],
 ];
 ---
 <Base>
   <section class="hero contenedor" aria-labelledby="hero-titulo">
     <div class="hero__texto">
       <p class="etiqueta etiqueta--banda">Behavioral HCI · Human-Centered AI · LatAm</p>
-      <h1 id="hero-titulo" class="hero__titulo">Lo que <span class="resaltado-rosa">hacemos</span> frente a una pantalla, explicado con el scroll.</h1>
-      {frases.map((f) => <p class="hero__frase">{f}</p>)}
-      <a class="boton" href="#mapa-titulo">Recorrer los pilares</a>
+      <h1 id="hero-titulo" class="hero__titulo">Por qué haces lo que haces frente a una <span class="resaltado-rosa">pantalla</span></h1>
+      <p class="hero__bajada">Umbral explica, con evidencia y con el scroll, los mecanismos de comportamiento que se activan cuando usamos tecnología e inteligencia artificial. Cada artículo se recorre, se prueba y se comprueba en sus fuentes.</p>
+      <div class="hero__botones">
+        <a class="boton" href="#mapa-titulo">Recorrer los pilares</a>
+        <a class="boton boton--claro" href="/investigacion#como-investigamos">Cómo investigamos</a>
+      </div>
     </div>
     <div class="hero__cerebro">
       <Cerebro />
     </div>
   </section>
 
+  <section class="contenedor ganchos" aria-label="Preguntas que explora Umbral">
+    <ul>
+      {ganchos.map((g, i) => <li class={`gancho gancho--${i + 1}`} data-reveal><p>{g}</p></li>)}
+    </ul>
+  </section>
+
+  <section class="contenedor como" aria-labelledby="como-titulo">
+    <h2 id="como-titulo">Cómo funciona</h2>
+    <ol class="pasos">
+      {pasos.map(([t, d], i) => (
+        <li class="tarjeta paso" data-reveal>
+          <span class="paso__n" aria-hidden="true">{i + 1}</span>
+          <h3>{t}</h3>
+          <p>{d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
   <CaminoPilares />
 </Base>
 
 <style>
-  .hero {
-    display: grid; gap: var(--s-4); align-items: center;
-    padding-block: var(--s-5) var(--s-4);
-  }
+  .hero { display: grid; gap: var(--s-4); align-items: center; padding-block: var(--s-4) var(--s-5); }
   .hero__titulo { font-size: clamp(2.875rem, 1.5rem + 4vw, 5.5rem); margin-top: var(--s-3); }
-  .hero__frase { font-size: var(--t-lead); color: var(--muted); max-width: 34rem; }
+  .hero__bajada { font-size: var(--t-lead); color: var(--muted); max-width: 36rem; }
+  .hero__botones { display: flex; flex-wrap: wrap; gap: var(--s-2); }
   .hero__cerebro { order: -1; width: min(100%, 26rem); justify-self: center; }
   .resaltado-rosa {
     background: var(--rosa); color: var(--on-color);
@@ -39,8 +66,30 @@ const frases = [
     -webkit-box-decoration-break: clone; box-decoration-break: clone;
   }
   @media (min-width: 52rem) {
-    .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); min-height: calc(100svh - 4rem); padding-block: var(--s-5); }
+    .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); min-height: calc(100svh - 4rem); }
     .hero__cerebro { order: 0; width: 100%; }
   }
 
+  .ganchos ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+  .gancho { border-radius: var(--r-card); padding: var(--s-4); color: var(--on-color); }
+  .gancho p { margin: 0; font-family: var(--font-title); font-weight: 700; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.9rem); line-height: 1.12; letter-spacing: -0.02em; text-wrap: balance; }
+  .gancho--1 { background: var(--celeste-v); }
+  .gancho--2 { background: var(--rosa-v); }
+  .gancho--3 { background: var(--mantequilla); }
+  @media (min-width: 52rem) {
+    .ganchos ul { grid-template-columns: repeat(3, 1fr); }
+    .gancho--1 { rotate: -1.5deg; }
+    .gancho--3 { rotate: 1.5deg; }
+  }
+
+  .como { margin-top: var(--s-6); }
+  .como h2 { font-size: var(--t-card); }
+  .pasos { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 52rem) { .pasos { grid-template-columns: repeat(3, 1fr); } }
+  .paso h3 { font-size: var(--t-lead); margin-top: var(--s-3); }
+  .paso p { margin: 0; color: var(--muted); }
+  .paso__n {
+    display: inline-grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%;
+    background: var(--band); font-family: var(--font-title); font-weight: 800; font-size: 1.2rem;
+  }
 </style>

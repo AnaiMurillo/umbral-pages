@@ -194,7 +194,7 @@ export const pilares: Record<Pilar, ComposicionEscena> = {
   },
 };
 
-/** Todas las paradas posibles: escenas de módulo y pilares. */
+/** Todas las paradas posibles: escenas de artículo y pilares. */
 export const paradas: Record<Escena | Pilar, ComposicionEscena> = { ...escenas, ...pilares };
 
 /** Si la criatura de una escena es la misma del pilar, se usa esta otra. */

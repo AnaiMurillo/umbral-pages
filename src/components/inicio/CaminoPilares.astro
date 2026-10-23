@@ -63,6 +63,8 @@ const limpio = (t: string) => t.replace(/\*/g, '');
 <style>
   .pilares { position: relative; overflow-x: clip; }
   .pilares__intro { position: relative; z-index: 1; padding-top: var(--s-6); }
+  /* Banda del color del fondo: el texto nunca queda sobre la cinta (en oscuro la cinta es crema). */
+  .pilares__intro > * { background: var(--bg); width: fit-content; max-width: 100%; padding-inline: var(--s-2); margin-inline: calc(-1 * var(--s-2)); border-radius: 12px; }
   .pilares__titulo { font-size: var(--t-card); }
   .pilares__bajada { color: var(--muted); max-width: 32rem; font-size: var(--t-lead); }
   .pilares :global(.parada) { scroll-margin-top: 5rem; }

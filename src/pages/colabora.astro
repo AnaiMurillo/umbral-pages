@@ -1,21 +1,103 @@
 ---
+// Colabora (TEXTOS_FINALES.md §8). Habla Isabel en primera persona. Sin formulario.
 import Base from '../layouts/Base.astro';
+import Acordeon from '../components/evidencia/Acordeon.astro';
+import CopiarCorreo from '../components/comunes/CopiarCorreo.astro';
+import { sitio } from '../data/sitio';
+
+const formas = [
+  {
+    titulo: 'Fundaciones y sector social', color: 'celeste-v',
+    busco: 'comunidades que usan una tecnología sin que nadie les haya explicado cómo funciona.',
+    hacemos: 'investigar el fenómeno y publicarlo como artículo abierto.',
+    empezar: 'cuéntame en un correo qué observas y a quién afecta.',
+  },
+  {
+    titulo: 'Empresas y tecnología', color: 'rosa-v',
+    busco: 'equipos que ven en su producto un comportamiento que no logran explicar.',
+    hacemos: 'conversar, revisar la evidencia y, si hay datos agregados y anónimos, usarlos en un brief.',
+    empezar: 'escríbeme con la pregunta. No hago consultoría ni auditorías por encargo.',
+  },
+  {
+    titulo: 'Academia y comunidades de HCI', color: 'mantequilla',
+    busco: 'personas que quieran revisar la metodología, coescribir o replicar un estudio con datos de la región.',
+    hacemos: 'un brief con autoría compartida o una réplica local.',
+    empezar: 'cuéntame qué estudio o qué pregunta tienes en mente.',
+  },
+  {
+    titulo: 'Medios y eventos', color: 'menta',
+    busco: 'conversaciones sobre cómo las personas viven la tecnología.',
+    hacemos: 'entrevistas, charlas y paneles sobre un mecanismo. Puedes citar y enlazar los artículos.',
+    empezar: 'dime el tema, el formato y la fecha.',
+  },
+];
+const reglas = ['La investigación es independiente.', 'Las conclusiones no se negocian.', 'Todo lo que se publica lleva sus fuentes.'];
+const preguntas = [
+  ['¿Cobran por los artículos?', 'No. Umbral es gratuito y no tiene publicidad.'],
+  ['¿Aceptan temas por encargo?', 'Puedes proponer una pregunta. Los temas se eligen por la evidencia disponible y su relevancia para la región. Las conclusiones son independientes, y por eso no hago investigación pagada por encargo.'],
+  ['¿Puedo usar un artículo en mi clase o en un medio?', 'Sí. Los artículos se publican con licencia Creative Commons BY-NC 4.0: puedes compartirlos y adaptarlos citando a la autora y sin fines comerciales. Si tu uso es comercial, escríbeme.'],
+  ['¿Cómo se financia Umbral?', 'Es un proyecto independiente con costos mínimos. No depende de publicidad ni de datos de lectores.'],
+];
 ---
-<Base titulo="Colabora" descripcion="Contacto para fundaciones, empresas y medios.">
-  <section class="lectura pagina">
-    <h1>Contacto y colabora</h1>
-    <p>[Relleno] Una entrada para fundaciones, empresas y medios. Qué tipo de colaboraciones buscas y cómo escribir.</p>
-    <ul class="audiencias">
-      <li><strong>Fundaciones y sector social.</strong> [Relleno]</li>
-      <li><strong>Empresas y tecnología.</strong> [Relleno]</li>
-      <li><strong>Medios.</strong> [Relleno]</li>
+<Base titulo="Colabora" descripcion="Umbral crece con preguntas reales y con datos de la región. Si tienes una, escríbeme.">
+  <section class="lectura cabeza">
+    <h1>¿Investigamos juntos?</h1>
+    <p class="cabeza__bajada">Umbral crece con preguntas reales y con datos de la región. Si tienes una, escríbeme.</p>
+  </section>
+
+  <section class="contenedor bloque" aria-labelledby="formas-titulo">
+    <h2 id="formas-titulo" class="visualmente-oculto">Cuatro formas de colaborar</h2>
+    <ul class="formas">
+      {formas.map((f) => (
+        <li class="forma" style={`--color-forma: var(--${f.color})`} data-reveal>
+          <h3>{f.titulo}</h3>
+          <dl>
+            <div><dt>Busco</dt><dd>{f.busco}</dd></div>
+            <div><dt>Qué hacemos</dt><dd>{f.hacemos}</dd></div>
+            <div><dt>Cómo empezar</dt><dd>{f.empezar}</dd></div>
+          </dl>
+        </li>
+      ))}
     </ul>
-    <p><a class="boton" href="mailto:correo@ejemplo.com">Escríbeme</a></p>
-    <p class="etiqueta">El correo es de relleno. Cámbialo en src/pages/colabora.astro</p>
+  </section>
+
+  <section class="contenedor bloque" aria-labelledby="trabajo-titulo">
+    <h2 id="trabajo-titulo">Cómo trabajo</h2>
+    <ol class="reglas">{reglas.map((r, i) => <li class="tarjeta"><span aria-hidden="true">{i + 1}</span> {r}</li>)}</ol>
+  </section>
+
+  <section class="lectura bloque" aria-labelledby="contacto-titulo">
+    <div class="tarjeta contacto">
+      <h2 id="contacto-titulo">Escríbeme</h2>
+      <CopiarCorreo tamano="grande" />
+      {sitio.linkedin && <a class="boton boton--claro" href={sitio.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>}
+      <p class="contacto__plazo">Respondo en un plazo de una semana.</p>
+    </div>
+  </section>
+
+  <section class="lectura bloque" aria-labelledby="faq-titulo">
+    <h2 id="faq-titulo">Preguntas frecuentes</h2>
+    {preguntas.map(([q, r]) => <Acordeon titulo={q}><p>{r}</p></Acordeon>)}
   </section>
 </Base>
+
 <style>
-  .pagina { padding-top: var(--s-6); }
-  .audiencias { padding-left: 1.2em; }
-  .audiencias li { margin-bottom: var(--s-3); }
+  .cabeza { padding-top: var(--s-6); }
+  .cabeza__bajada { font-size: var(--t-lead); color: var(--muted); }
+  .bloque { margin-top: var(--s-6); }
+  .bloque > h2 { font-size: var(--t-card); }
+  .formas { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 52rem) { .formas { grid-template-columns: 1fr 1fr; } }
+  .forma { background: var(--color-forma); color: var(--on-color); border-radius: var(--r-card); padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem); }
+  .forma h3 { font-size: var(--t-card); }
+  .forma dl { margin: 0; display: grid; gap: var(--s-3); }
+  .forma dt { font-size: var(--t-label); text-transform: uppercase; letter-spacing: 0.12em; }
+  .forma dd { margin: var(--s-1) 0 0; }
+  .reglas { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 52rem) { .reglas { grid-template-columns: repeat(3, 1fr); } }
+  .reglas li { font-family: var(--font-title); font-weight: 700; font-size: var(--t-lead); display: flex; gap: var(--s-3); align-items: center; }
+  .reglas span { display: inline-grid; place-items: center; flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--band); }
+  .contacto { display: grid; gap: var(--s-3); justify-items: start; }
+  .contacto h2 { font-size: var(--t-card); margin: 0; }
+  .contacto__plazo { color: var(--muted); margin: 0; }
 </style>
