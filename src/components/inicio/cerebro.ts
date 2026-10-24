@@ -52,9 +52,11 @@ function crearParticulas(n: number): Particula[] {
       x = r() * 2 - 1; y = r() * 2 - 1;
     }
     if (!dentro(x, y)) continue;
+    // Punto de partida: una nube suave alrededor del destino, sin salirse del lienzo.
+    const ang = r() * Math.PI * 2, dist = 0.35 + r() * 0.55;
     ps.push({
       tx: x, ty: y,
-      x: (r() * 2 - 1) * 1.6, y: (r() * 2 - 1) * 1.6,
+      x: x * 0.6 + Math.cos(ang) * dist, y: y * 0.6 + Math.sin(ang) * dist * 0.8,
       r: 1.6 + r() * 2.4,
       c: Math.floor(r() * 5),
       fase: r() * Math.PI * 2, vel: 0.4 + r() * 0.9, amp: 0.006 + r() * 0.012,
@@ -118,7 +120,7 @@ export function iniciarCerebro(canvas: HTMLCanvasElement) {
 
   let ancho = 0, alto = 0, escala = 1;
   const medir = () => {
-    const dpr = Math.min(2, devicePixelRatio || 1);
+    const dpr = Math.min(3, devicePixelRatio || 1);
     const caja = canvas.getBoundingClientRect();
     ancho = caja.width; alto = caja.height;
     canvas.width = Math.round(ancho * dpr);
@@ -137,9 +139,10 @@ export function iniciarCerebro(canvas: HTMLCanvasElement) {
       const y = p.y + (p.ty - p.y) * progreso + oy;
       return [cx + x * escala, cy + y * escala];
     };
-    // Uniones finas (aparecen cuando el cerebro ya está armado)
-    if (progreso > 0.6) {
-      ctx.globalAlpha = 0.22 * Math.min(1, (progreso - 0.6) / 0.4);
+    // Uniones finas: solo cuando los puntos ya llegaron a su lugar. Antes, las líneas
+    // cruzaban todo el lienzo y la imagen se veía deformada mientras se armaba.
+    if (progreso > 0.94) {
+      ctx.globalAlpha = 0.22 * Math.min(1, (progreso - 0.94) / 0.06);
       ctx.strokeStyle = linea;
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -198,5 +201,6 @@ export function iniciarCerebro(canvas: HTMLCanvasElement) {
     visible ? arrancar() : pausar();
   }, { threshold: 0.05 }).observe(canvas);
   document.addEventListener('visibilitychange', () => (document.hidden ? pausar() : arrancar()));
-  addEventListener('resize', medir);
+  // Si cambia el tamaño del lienzo, se vuelve a medir y se repinta en el acto (sin un cuadro estirado).
+  new ResizeObserver(() => { medir(); dibujar(acumulado, facil(acumulado / DURACION_ARMADO)); }).observe(canvas);
 }
