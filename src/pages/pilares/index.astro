@@ -1,7 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CaminoPilares from '../../components/inicio/CaminoPilares.astro';
+import { proposito } from '../../data/sitio';
 ---
 <Base titulo="Pilares" descripcion="Cinco pilares, cinco mecanismos de comportamiento.">
-  <CaminoPilares titulo="Pilares" nivel="h1" />
+  <CaminoPilares titulo="Pilares" nivel="h1" lineaIntro={proposito.pilares.lineaIntro} />
 </Base>

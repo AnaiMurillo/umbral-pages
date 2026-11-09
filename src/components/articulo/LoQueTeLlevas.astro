@@ -1,0 +1,30 @@
+---
+// "Lo que te llevas" (FLUJO_PROPOSITO_Y_VALOR §4.4). Tres líneas fijas, siempre en este
+// orden. El texto sale del frontmatter del artículo (campo teLlevas). Sin el campo, no aparece.
+import { proposito } from '../../data/sitio';
+
+interface Props { reconocer: string; entender: string; poder: string }
+const { reconocer, entender, poder } = Astro.props;
+const lineas = [
+  ['Vas a reconocer', reconocer],
+  ['Vas a entender', entender],
+  ['Vas a poder', poder],
+];
+---
+<section class="llevas contenedor" aria-labelledby="llevas-titulo">
+  <div class="tarjeta llevas__caja">
+    <h2 id="llevas-titulo" class="etiqueta etiqueta--banda">{proposito.articulo.teLlevas}</h2>
+    <ol class="llevas__lista">
+      {lineas.map(([verbo, resto]) => <li><strong>{verbo}</strong> {resto}</li>)}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .llevas { position: relative; z-index: 1; max-width: calc(46rem + 2 * var(--gutter)); margin-block: var(--s-5); }
+  .llevas__caja { border-width: 2.5px; }
+  .llevas__lista { list-style: none; margin: var(--s-3) 0 0; padding: 0; display: grid; gap: var(--s-3); font-size: var(--t-lead); }
+  .llevas__lista li { padding-left: 1.1em; position: relative; }
+  .llevas__lista li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 0.5em; height: 0.5em; border-radius: 50%; background: var(--pilar); outline: 1.5px solid var(--outline); }
+  .llevas__lista strong { font-family: var(--font-title); font-weight: 700; }
+</style>

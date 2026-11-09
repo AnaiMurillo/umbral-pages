@@ -1,7 +1,8 @@
 ---
 // Plantilla común de artículo (GUIA §3, TEXTOS_FINALES §5).
 //   Cabecera (primera parada) → escenas 1 a 4 (MDX) → escena 5 Qué hacer →
-//   cierre: Para llevarte · Compartir · Cómo se hizo · Fuentes · Sigue explorando →
+//   Lo que te llevas (antes de la escena 1) →
+//   cierre: Para llevarte · Si te sirvió · Cómo se hizo · Fuentes · Sigue explorando →
 //   remate "Fin del camino."
 import type { CollectionEntry } from 'astro:content';
 import { getCollection, getEntry } from 'astro:content';
@@ -10,7 +11,8 @@ import BarraProgreso from '../components/scroll/BarraProgreso.astro';
 import InterruptorEvidencia from '../components/evidencia/InterruptorEvidencia.astro';
 import TarjetaFuente from '../components/evidencia/TarjetaFuente.astro';
 import BotonEstatico from '../components/scroll/BotonEstatico.astro';
-import Compartir from '../components/editorial/Compartir.astro';
+import LoQueTeLlevas from '../components/articulo/LoQueTeLlevas.astro';
+import SiTeSirvio from '../components/articulo/SiTeSirvio.astro';
 import Camino from '../components/camino/Camino.astro';
 import Parada from '../components/camino/Parada.astro';
 import Remate from '../components/camino/Remate.astro';
@@ -64,6 +66,9 @@ const limpio = (t: string) => t.replace(/\*/g, '');
       </div>
     </Parada>
 
+    <!-- LO QUE TE LLEVAS: bajo la cabecera (y bajo "Cómo se llama esto", cuando exista), antes de la escena 1 -->
+    {d.teLlevas && <LoQueTeLlevas {...d.teLlevas} />}
+
     <!-- ESCENAS 1 A 4 (MDX) -->
     <slot />
 
@@ -83,9 +88,9 @@ const limpio = (t: string) => t.replace(/\*/g, '');
       <section class="tarjeta cierre__llevar" aria-labelledby="llevar-titulo">
         <h2 id="llevar-titulo" class="etiqueta etiqueta--banda">Para llevarte</h2>
         <p class="cierre__hallazgo">{d.hallazgoUnaFrase}</p>
-        <h3 class="cierre__sub">Compartir</h3>
-        <Compartir />
       </section>
+
+      <SiTeSirvio />
 
       <section class="tarjeta" aria-labelledby="como-titulo">
         <h2 id="como-titulo" class="cierre__titulo">Cómo se hizo</h2>
@@ -158,7 +163,6 @@ const limpio = (t: string) => t.replace(/\*/g, '');
   .cierre { position: relative; z-index: 1; display: grid; gap: var(--s-3); max-width: calc(46rem + 2 * var(--gutter)); margin-top: var(--s-6); }
   .cierre__llevar { border-width: 2.5px; }
   .cierre__hallazgo { font-family: var(--font-title); font-weight: 800; letter-spacing: var(--title-tracking); line-height: 1.1; font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); margin: var(--s-3) 0 var(--s-4); }
-  .cierre__sub { font-size: var(--t-body); margin-bottom: var(--s-2); }
   .cierre__titulo { font-size: var(--t-lead); }
   .fuentes ol { padding-left: 1.4em; font-size: var(--t-small); }
   .fuentes li { margin-bottom: var(--s-3); scroll-margin-top: 6rem; }

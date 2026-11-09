@@ -3,6 +3,10 @@
 import Base from '../layouts/Base.astro';
 import Cerebro from '../components/inicio/Cerebro.astro';
 import CaminoPilares from '../components/inicio/CaminoPilares.astro';
+import PruebaRapida from '../components/inicio/PruebaRapida.astro';
+import { proposito } from '../data/sitio';
+
+const t = proposito.inicio;
 
 // Titulares de Wix que se conservan como ganchos (decisión: tarjetas, sin rotación).
 const ganchos = [
@@ -14,6 +18,7 @@ const pasos = [
   ['Elige un mecanismo.', 'Cinco pilares, cada uno con una pregunta que organiza todo lo que se publica en él.'],
   ['Recorre el camino.', 'Cada artículo se baja con el scroll. Lo que ves moverse es lo que se está explicando.'],
   ['Compruébalo.', 'Todas las afirmaciones llevan fuente. Con el modo evidencia las ves una por una.'],
+  t.pasoCuatro,
 ];
 ---
 <Base>
@@ -22,6 +27,7 @@ const pasos = [
       <p class="etiqueta etiqueta--banda">Behavioral HCI · Human-Centered AI · LatAm</p>
       <h1 id="hero-titulo" class="hero__titulo">Por qué haces lo que haces frente a una <span class="resaltado-rosa">pantalla</span></h1>
       <p class="hero__bajada">Umbral explica, con evidencia y con el scroll, los mecanismos de comportamiento que se activan cuando usamos tecnología e inteligencia artificial. Cada artículo se recorre, se prueba y se comprueba en sus fuentes.</p>
+      <p class="hero__beneficio">{t.lineaBeneficio}</p>
       <div class="hero__botones">
         <a class="boton" href="#mapa-titulo">Recorrer los pilares</a>
         <a class="boton boton--claro" href="/investigacion#como-investigamos">Cómo investigamos</a>
@@ -37,6 +43,36 @@ const pasos = [
       {ganchos.map((g, i) => <li class={`gancho gancho--${i + 1}`} data-reveal><p>{g}</p></li>)}
     </ul>
   </section>
+
+  <!-- A. Lo que te llevas de cada artículo -->
+  <section class="contenedor llevas" aria-labelledby="llevas-titulo">
+    <h2 id="llevas-titulo">{t.teLlevas.titulo}</h2>
+    <ul class="llevas__lista">
+      {t.teLlevas.tarjetas.map(([titulo, texto], i) => (
+        <li class="tarjeta llevas__item" data-reveal>
+          <span class={`llevas__marca llevas__marca--${i + 1}`} aria-hidden="true"></span>
+          <h3>{titulo}</h3>
+          <p>{texto}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- B. Por qué existe Umbral -->
+  <section class="lectura existe" aria-labelledby="existe-titulo">
+    <h2 id="existe-titulo">{t.porQueExiste.titulo}</h2>
+    {t.porQueExiste.parrafos.map((p) => <p>{p}</p>)}
+    <a class="boton boton--claro" href={t.porQueExiste.enlace.href}>{t.porQueExiste.enlace.texto}</a>
+  </section>
+
+  <!-- C. Hecho para -->
+  <section class="contenedor hecho" aria-labelledby="hecho-titulo">
+    <h2 id="hecho-titulo" class="etiqueta">{t.hechoPara.titulo}</h2>
+    <ul class="hecho__lista">{t.hechoPara.etiquetas.map((e) => <li>{e}</li>)}</ul>
+  </section>
+
+  <!-- D. Pruébalo en 30 segundos (oculto hasta que el Artículo 01 esté publicado) -->
+  <PruebaRapida />
 
   <section class="contenedor como" aria-labelledby="como-titulo">
     <h2 id="como-titulo">Cómo funciona</h2>
@@ -58,6 +94,7 @@ const pasos = [
   .hero { display: grid; gap: var(--s-4); align-items: center; padding-block: var(--s-4) var(--s-5); }
   .hero__titulo { font-size: clamp(2.875rem, 1.5rem + 4vw, 5.5rem); margin-top: var(--s-3); }
   .hero__bajada { font-size: var(--t-lead); color: var(--muted); max-width: 36rem; }
+  .hero__beneficio { max-width: 36rem; border-left: 4px solid var(--rosa-v); padding-left: var(--s-3); }
   .hero__botones { display: flex; flex-wrap: wrap; gap: var(--s-2); }
   .hero__cerebro { order: -1; width: min(100%, 26rem); justify-self: center; }
   .resaltado-rosa {
@@ -85,7 +122,24 @@ const pasos = [
   .como { margin-top: var(--s-6); }
   .como h2 { font-size: var(--t-card); }
   .pasos { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-3); }
-  @media (min-width: 52rem) { .pasos { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 40rem) { .pasos { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 64rem) { .pasos { grid-template-columns: repeat(4, 1fr); } }
+
+  .llevas, .existe, .hecho { margin-top: var(--s-6); }
+  .llevas h2, .existe h2 { font-size: var(--t-card); }
+  .llevas__lista { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 52rem) { .llevas__lista { grid-template-columns: repeat(3, 1fr); } }
+  .llevas__item h3 { font-size: var(--t-lead); margin-top: var(--s-3); }
+  .llevas__item p { margin: 0; color: var(--muted); }
+  .llevas__marca { display: block; width: 2.6rem; height: 0.6rem; border-radius: var(--r-pill); }
+  .llevas__marca--1 { background: var(--celeste-v); }
+  .llevas__marca--2 { background: var(--rosa-v); }
+  .llevas__marca--3 { background: var(--mantequilla); }
+  .existe p { font-size: var(--t-lead); }
+  .existe p + p { color: var(--muted); font-size: var(--t-body); }
+  .hecho h2 { margin-bottom: var(--s-3); }
+  .hecho__lista { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .hecho__lista li { background: var(--band); color: var(--fg); border-radius: var(--r-pill); padding: 0.55em 1.1em; font-size: var(--t-small); line-height: 1.35; }
   .paso h3 { font-size: var(--t-lead); margin-top: var(--s-3); }
   .paso p { margin: 0; color: var(--muted); }
   .paso__n {

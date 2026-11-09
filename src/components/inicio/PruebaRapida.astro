@@ -1,0 +1,32 @@
+---
+// Bloque D del Inicio, "Pruébalo en 30 segundos" (FLUJO_PROPOSITO_Y_VALOR §4.1).
+// Oculto hasta que el Artículo 01 esté publicado: se activa en src/data/sitio.ts (banderas).
+// Reutiliza la primera interacción del Artículo 01 ("Tu predicción contra la realidad"):
+// cuando exista, se importa aquí y se coloca en el lugar marcado.
+// Si el artículo no existe o no está publicado, no se dibuja nada.
+import { getEntry } from 'astro:content';
+import { banderas, proposito } from '../../data/sitio';
+
+const { activa, articulo } = banderas.pruebaRapida;
+const entrada = activa && articulo ? await getEntry('articulos', articulo) : undefined;
+const listo = !!entrada && entrada.data.estado === 'publicado' && !entrada.data.ejemplo;
+const t = proposito.inicio.pruebaRapida;
+---
+{listo && (
+  <section class="contenedor prueba" aria-labelledby="prueba-titulo">
+    <div class="tarjeta">
+      <p class="etiqueta etiqueta--banda">Pruébalo en 30 segundos</p>
+      <h2 id="prueba-titulo" class="prueba__titulo">{t.titulo}</h2>
+      {/* AQUÍ va la primera interacción del Artículo 01 ("Tu predicción contra la realidad"). */}
+      <p class="prueba__aviso">{t.aviso}</p>
+      <p>{t.cierre}</p>
+      <a class="boton" href={`/articulos/${articulo}`}>{t.boton}</a>
+    </div>
+  </section>
+)}
+
+<style>
+  .prueba { margin-top: var(--s-6); }
+  .prueba__titulo { font-size: var(--t-card); margin-top: var(--s-3); }
+  .prueba__aviso { font-size: var(--t-small); color: var(--muted); }
+</style>

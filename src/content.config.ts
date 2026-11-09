@@ -16,8 +16,12 @@ const pilares = defineCollection({
     criatura: z.enum(['pregunta', 'sello', 'ojo', 'pila', 'saltarin', 'empujon', 'doble']),
     subtitulo: z.string(),
     frase: z.string(),
+    /** "Te pasa si…" bajo la frase destacada (FLUJO §4.2). */
+    tePasaSi: z.string().optional(),
     pregunta: z.string(),
     queExplora: z.string(),
+    /** "Para qué te sirve este pilar" (FLUJO §4.3). */
+    paraQueSirve: z.string().optional(),
     situaciones: z.array(z.string()).default([]),
     enElRadar: z.array(z.string()).default([]),
     glosario: z.array(z.object({
@@ -67,6 +71,13 @@ const articulos = defineCollection({
     ejemplo: z.boolean().default(false),
     /** Pregunta que responderá (tarjeta "En preparación"). */
     preguntaQueResponde: z.string().optional(),
+    /** "Lo que te llevas" (FLUJO §4.4): tres líneas fijas, sin revelar el hallazgo.
+     *  El verbo de "poder" coincide con la interacción de "Qué hacer con esto". */
+    teLlevas: z.object({
+      reconocer: z.string(),
+      entender: z.string(),
+      poder: z.string(),
+    }).optional(),
     recomendaciones: z.object({
       producto: z.string(),
       usuarios: z.string(),

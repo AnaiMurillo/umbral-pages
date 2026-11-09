@@ -3,7 +3,9 @@
 import Base from '../layouts/Base.astro';
 import Retrato from '../components/sobre-mi/Retrato.astro';
 import CopiarCorreo from '../components/comunes/CopiarCorreo.astro';
-import { sitio } from '../data/sitio';
+import { sitio, proposito } from '../data/sitio';
+
+const sm = proposito.sobreMi;
 
 const enfoque = [
   ['Primero el comportamiento.', 'Parto del mecanismo humano, no de la herramienta. La tecnología cambia; los mecanismos se repiten.'],
@@ -34,6 +36,26 @@ const enfoque = [
     <ol class="enfoque">
       {enfoque.map(([t, d], i) => (
         <li class={`enfoque__item enfoque__item--${i + 1}`} data-reveal>
+          <h3>{t}</h3>
+          <p>{d}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="lectura bloque" aria-labelledby="porque-titulo">
+    <div class="tarjeta">
+      <h2 id="porque-titulo">{sm.porQueCree.titulo}</h2>
+      <p>{sm.porQueCree.texto}</p>
+    </div>
+  </section>
+
+  <section class="contenedor bloque" aria-labelledby="promesas-titulo">
+    <h2 id="promesas-titulo">{sm.promesas.titulo}</h2>
+    <ol class="promesas">
+      {sm.promesas.lista.map(([t, d], i) => (
+        <li class="tarjeta promesa">
+          <span class="promesa__n" aria-hidden="true">0{i + 1}</span>
           <h3>{t}</h3>
           <p>{d}</p>
         </li>
@@ -77,6 +99,12 @@ const enfoque = [
   .enfoque__item--1 { background: var(--celeste-v); }
   .enfoque__item--2 { background: var(--rosa-v); }
   .enfoque__item--3 { background: var(--mantequilla); }
+  .promesas { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 40rem) { .promesas { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 64rem) { .promesas { grid-template-columns: repeat(4, 1fr); } }
+  .promesa h3 { font-size: var(--t-lead); margin-top: var(--s-2); }
+  .promesa p { margin: 0; color: var(--muted); }
+  .promesa__n { font-family: var(--font-title); font-weight: 800; font-size: 2rem; letter-spacing: -0.04em; }
   .encontrarme { display: grid; gap: var(--s-3); justify-items: start; }
   .encontrarme h2 { margin: 0; }
 </style>

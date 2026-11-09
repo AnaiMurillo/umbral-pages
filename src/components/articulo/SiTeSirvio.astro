@@ -1,0 +1,20 @@
+---
+// Cierre "Si te sirvió" (FLUJO_PROPOSITO_Y_VALOR §4.4): ocupa el lugar del antiguo
+// subbloque "Compartir". Copiar enlace no envía nada.
+import Compartir from '../editorial/Compartir.astro';
+import { proposito } from '../../data/sitio';
+const t = proposito.articulo.siTeSirvio;
+---
+<section class="tarjeta sirvio" aria-labelledby="sirvio-titulo">
+  <h2 id="sirvio-titulo" class="sirvio__titulo">{t.titulo}</h2>
+  <p>{t.texto}</p>
+  <div class="sirvio__acciones">
+    <Compartir />
+    <a class="boton boton--claro" href="/pilares">{t.explorar}</a>
+  </div>
+</section>
+
+<style>
+  .sirvio__titulo { font-size: var(--t-lead); }
+  .sirvio__acciones { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); }
+</style>

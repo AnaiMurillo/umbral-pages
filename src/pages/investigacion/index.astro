@@ -2,7 +2,9 @@
 // Investigación (TEXTOS_FINALES.md §6). Lectura sobria, sin camino.
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { formatoFecha } from '../../data/sitio';
+import { formatoFecha, proposito } from '../../data/sitio';
+
+const inv = proposito.investigacion;
 
 const briefs = (await getCollection('investigacion')).sort((a, b) => +b.data.fecha - +a.data.fecha);
 const conPilar = await Promise.all(briefs.map(async (b) => ({ b, pilar: await getEntry(b.data.pilar) })));
@@ -29,6 +31,22 @@ const principios = [
           <h3>{t}</h3>
           <p>{d}</p>
         </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="lectura bloque" aria-labelledby="metodo-titulo">
+    <div class="tarjeta">
+      <h2 id="metodo-titulo">{inv.porQueMetodo.titulo}</h2>
+      <p>{inv.porQueMetodo.texto}</p>
+    </div>
+  </section>
+
+  <section class="contenedor bloque" aria-labelledby="leer-titulo">
+    <h2 id="leer-titulo">{inv.comoLeer.titulo}</h2>
+    <ol class="leer">
+      {inv.comoLeer.pasos.map((paso, i) => (
+        <li class="tarjeta leer__paso"><span class="leer__n" aria-hidden="true">{i + 1}</span><p>{paso}</p></li>
       ))}
     </ol>
   </section>
@@ -82,6 +100,12 @@ const principios = [
   .principio p { margin: 0; color: var(--muted); }
   .principio__n { font-family: var(--font-title); font-weight: 800; font-size: 2rem; letter-spacing: -0.04em; }
   .principio:nth-child(1) .principio__n { color: var(--fg); }
+  .bloque > h2, .bloque .tarjeta > h2 { font-size: var(--t-card); }
+  .leer { list-style: none; padding: 0; margin: var(--s-4) 0 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 52rem) { .leer { grid-template-columns: repeat(3, 1fr); } }
+  .leer__paso { display: flex; gap: var(--s-3); align-items: flex-start; }
+  .leer__paso p { margin: 0; }
+  .leer__n { display: inline-grid; place-items: center; flex: none; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--band); font-family: var(--font-title); font-weight: 800; }
   .vacio { text-align: center; display: grid; justify-items: center; padding-block: var(--s-6); }
   .vacio h3 { font-size: var(--t-card); margin-top: var(--s-3); }
   .vacio p { max-width: 34rem; color: var(--muted); }

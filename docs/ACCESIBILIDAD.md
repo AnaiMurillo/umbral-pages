@@ -40,6 +40,12 @@ Orden en el Inicio: saltar al contenido → logo → menú → botón de tema �
 | Paradas | región con su título o nombre | `section` con `aria-labelledby` o `aria-label` |
 | Copiar correo / enlace | botón + estado "Copiado." / "Enlace copiado." | `role="status"` |
 
+### Revisión 2026-11-09: flujo de propósito y valor
+Bloques nuevos (FLUJO_PROPOSITO_Y_VALOR.md) en Inicio, `/pilares`, páginas de pilar, artículo, Investigación, Sobre mí, Colabora y pie. axe-core en 7 páginas × 5 modos (móvil claro, oscuro y con movimiento reducido; computador claro y oscuro).
+- **0 violaciones nuevas.** Todas las de contraste que aparecen con animación vienen de las paradas inactivas al 55 % (hallazgo 2, abierto por decisión); con movimiento reducido, en claro y oscuro, el resultado es 0.
+- Sin scroll horizontal a 390 px ni con zoom 200 %. Sin objetivos táctiles nuevos menores de 44 px (el enlace "fuente" dentro del texto del artículo ya existía y está exento por ser un enlace en línea).
+- Los encabezados nuevos siguen el orden h1 → h2 → h3; las listas son `ul`/`ol`; "Lo que te llevas" y "Si te sirvió" son `section` con `aria-labelledby`.
+
 ### Prioridades
 1. Decidir los dos hallazgos abiertos (pausa del cerebro y opacidad de paradas) antes del primer artículo real.
 2. Probar con VoiceOver (iPhone) y TalkBack (Android).

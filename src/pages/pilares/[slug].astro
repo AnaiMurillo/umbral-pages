@@ -55,6 +55,12 @@ const escenaDos = ladoHero === 'der' ? 'gancho' : 'jugable';
     <!-- Qué explora + Cómo lo notas en tu día -->
     <Parada escena={escenaDos} evitar={p.criatura} etiqueta="Qué explora" nombre="Qué explora">
       <p class="pilar__explora">{p.queExplora}</p>
+      {p.paraQueSirve && (
+        <>
+          <h2 class="pilar__h">Para qué te sirve este pilar</h2>
+          <p class="pilar__sirve">{p.paraQueSirve}</p>
+        </>
+      )}
       {p.situaciones.length > 0 && (
         <>
           <h2 class="pilar__h">Cómo lo notas en tu día</h2>

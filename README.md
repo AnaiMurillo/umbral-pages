@@ -51,3 +51,8 @@ Versión estática de cualquier página: agrega `?estatico=1` a la URL (`?estati
 ## Pendientes
 
 - LinkedIn configurado en `src/data/sitio.ts`.
+- **Por qué creé Umbral** (Sobre mí): BORRADOR por confirmar por Isabel. El texto está en `src/data/sitio.ts` → `proposito.sobreMi.porQueCree`.
+- **Bloque D del Inicio** ("Pruébalo en 30 segundos"): oculto. Para activarlo, en `src/data/sitio.ts` → `banderas.pruebaRapida` pon `activa: true` y el nombre del archivo del Artículo 01, y coloca su primera interacción en `src/components/inicio/PruebaRapida.astro`.
+- **"Lo que te llevas" del artículo de ejemplo**: son las líneas del Artículo 01 (marcadas "EJEMPLO – REVISAR"). Ajustarlas al texto v5 y moverlas al Artículo 01.
+- **Briefs**: "Cómo leer un brief" menciona "Qué encontramos" y "Qué no podemos afirmar"; cada brief debe tener esas dos secciones con esos nombres.
+- **Tarjeta "Cómo se llama esto"** del artículo: no existe aún (falta su texto). Cuando exista, va entre la cabecera y "Lo que te llevas".

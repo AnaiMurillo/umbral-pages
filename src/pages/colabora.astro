@@ -3,7 +3,7 @@
 import Base from '../layouts/Base.astro';
 import Acordeon from '../components/evidencia/Acordeon.astro';
 import CopiarCorreo from '../components/comunes/CopiarCorreo.astro';
-import { sitio } from '../data/sitio';
+import { sitio, proposito } from '../data/sitio';
 
 const formas = [
   {
@@ -55,6 +55,7 @@ const preguntas = [
             <div><dt>Busco</dt><dd>{f.busco}</dd></div>
             <div><dt>Qué hacemos</dt><dd>{f.hacemos}</dd></div>
             <div><dt>Cómo empezar</dt><dd>{f.empezar}</dd></div>
+            {proposito.colabora[f.titulo] && <div class="forma__llevas"><dt>Qué te llevas</dt><dd>{proposito.colabora[f.titulo]}</dd></div>}
           </dl>
         </li>
       ))}
@@ -93,6 +94,8 @@ const preguntas = [
   .forma dl { margin: 0; display: grid; gap: var(--s-3); }
   .forma dt { font-size: var(--t-label); text-transform: uppercase; letter-spacing: 0.12em; }
   .forma dd { margin: var(--s-1) 0 0; }
+  .forma__llevas { border-top: 1.5px solid var(--on-color); padding-top: var(--s-3); }
+  .forma__llevas dd { font-weight: 700; }
   .reglas { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-3); }
   @media (min-width: 52rem) { .reglas { grid-template-columns: repeat(3, 1fr); } }
   .reglas li { font-family: var(--font-title); font-weight: 700; font-size: var(--t-lead); display: flex; gap: var(--s-3); align-items: center; }
