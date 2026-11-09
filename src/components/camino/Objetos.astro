@@ -42,7 +42,7 @@ const color = (c: Objeto['color']) => (c === 'line' ? 'var(--line)' : `var(--${c
         <svg viewBox="0 0 260 80" fill="none">
           <defs>
             <mask id={mascara} maskUnits="userSpaceOnUse" x="-10" y="-10" width="280" height="100">
-              <path data-estela-mascara d="M4 60 C50 4 100 90 150 40 S230 6 256 44" stroke="#fff" stroke-width="12" stroke-linecap="round" pathLength="1" />
+              <path data-estela-mascara d="M4 60 C50 4 100 90 150 40 S230 6 256 44" stroke="#fff" stroke-width="12" stroke-linecap="round" />
             </mask>
           </defs>
           <path d="M4 60 C50 4 100 90 150 40 S230 6 256 44" stroke={color(o.color)} stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 11" mask={`url(#${mascara})`} />

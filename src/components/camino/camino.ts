@@ -99,6 +99,9 @@ function prepararModulo(modulo: HTMLElement) {
   if (!svg || !grupo) return;
   const NS = 'http://www.w3.org/2000/svg';
   let cintas: SVGPathElement[] = [];
+  // Longitud real de cada tramo. No se usa pathLength="1": Safari (iPhone) no siempre lo
+  // respeta en el trazo discontinuo y la cinta se veía completa, sin avanzar con el scroll.
+  let largos: number[] = [];
 
   // Scrollama: parada activa (siempre, también en modo quieto marca la actual sin atenuar).
   const paradas = Array.from(modulo.querySelectorAll<HTMLElement>('[data-parada]'));
@@ -133,7 +136,7 @@ function prepararModulo(modulo: HTMLElement) {
         svg.setAttribute('viewBox', `0 0 ${W.toFixed(0)} ${H.toFixed(0)}`);
         const tramos = trazado(puntosDePaso(modulo, comp, ancho), comp, W);
         grupo.replaceChildren();
-        cintas = []; alturas = [];
+        cintas = []; alturas = []; largos = [];
         for (const t of tramos) {
           const medida = document.createElementNS(NS, 'path');
           medida.setAttribute('d', t.d);
@@ -143,11 +146,11 @@ function prepararModulo(modulo: HTMLElement) {
           cinta.setAttribute('class', 'camino__cinta');
           cinta.setAttribute('data-cinta', '');
           if (t.pilar) cinta.setAttribute('data-pilar', t.pilar);
-          cinta.setAttribute('pathLength', '1');
           cinta.style.strokeWidth = `${ancho}px`;
           grupo.append(medida, cinta);
           cintas.push(cinta);
           alturas.push(tablaAlturas(medida));
+          largos.push(medida.getTotalLength());
         }
         // Los tramos se dibujan en orden inverso para que el que llega quede encima en las uniones.
         cintas.slice().reverse().forEach((c) => grupo.append(c));
@@ -156,7 +159,7 @@ function prepararModulo(modulo: HTMLElement) {
       // La punta del camino sigue una altura fija de la pantalla.
       const avanzar = () => {
         const yPunta = scrollY + innerHeight * comp.punta - (modulo.getBoundingClientRect().top + scrollY);
-        cintas.forEach((c, i) => { c.style.strokeDashoffset = String(1 - alturas[i](yPunta)); });
+        cintas.forEach((c, i) => { c.style.strokeDashoffset = String(largos[i] * (1 - alturas[i](yPunta))); });
       };
 
       dibujarTrazado();
@@ -171,7 +174,7 @@ function prepararModulo(modulo: HTMLElement) {
       }
 
       modulo.setAttribute('data-animado', '');
-      const preparar = () => cintas.forEach((c) => { c.style.strokeDasharray = '1 1'; });
+      const preparar = () => cintas.forEach((c, i) => { c.style.strokeDasharray = `${largos[i]} ${largos[i] + 2}`; });
       preparar();
 
       // 1. Camino ligado al scroll
@@ -209,8 +212,9 @@ function prepararModulo(modulo: HTMLElement) {
 
         // 3. Estelas que se dibujan
         ancla.querySelectorAll<SVGPathElement>('[data-estela-mascara]').forEach((m) => {
-          m.style.strokeDasharray = '1 1';
-          const t = gsap.fromTo(m, { strokeDashoffset: 1 }, {
+          const L = m.getTotalLength();
+          m.style.strokeDasharray = `${L} ${L + 2}`;
+          const t = gsap.fromTo(m, { strokeDashoffset: L }, {
             strokeDashoffset: 0, ease: 'none',
             scrollTrigger: { ...inicio, ...fin, scrub: 0.3 },
           });
