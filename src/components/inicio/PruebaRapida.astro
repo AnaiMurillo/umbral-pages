@@ -1,11 +1,11 @@
 ---
 // Bloque D del Inicio, "Pruébalo en 30 segundos" (FLUJO_PROPOSITO_Y_VALOR §4.1).
 // Oculto hasta que el Artículo 01 esté publicado: se activa en src/data/sitio.ts (banderas).
-// Reutiliza la primera interacción del Artículo 01 ("Tu predicción contra la realidad"):
-// cuando exista, se importa aquí y se coloca en el lugar marcado.
+// Reutiliza la primera interacción del Artículo 01 ("Tu predicción contra la realidad").
 // Si el artículo no existe o no está publicado, no se dibuja nada.
 import { getEntry } from 'astro:content';
 import { banderas, proposito } from '../../data/sitio';
+import Prediccion from '../articulo/interacciones/Prediccion.svelte';
 
 const { activa, articulo } = banderas.pruebaRapida;
 const entrada = activa && articulo ? await getEntry('articulos', articulo) : undefined;
@@ -17,7 +17,7 @@ const t = proposito.inicio.pruebaRapida;
     <div class="tarjeta">
       <p class="etiqueta etiqueta--banda">Pruébalo en 30 segundos</p>
       <h2 id="prueba-titulo" class="prueba__titulo">{t.titulo}</h2>
-      {/* AQUÍ va la primera interacción del Artículo 01 ("Tu predicción contra la realidad"). */}
+      <Prediccion client:visible />
       <p class="prueba__aviso">{t.aviso}</p>
       <p>{t.cierre}</p>
       <a class="boton" href={`/articulos/${articulo}`}>{t.boton}</a>

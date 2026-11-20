@@ -43,6 +43,8 @@ const fuente = z.object({
   anio: z.union([z.number(), z.string()]).optional(),
   tipo: z.enum(['dato', 'paper', 'caso', 'comunicado', 'prensa']).default('paper'),
   latam: z.boolean().default(false),
+  /** Nivel de evidencia (GUIA_ARTICULOS §7). Si está, el texto de la fuente ya lo nombra. */
+  nivel: z.string().optional(),
 });
 
 // ----------------------------------------------------------
@@ -55,15 +57,40 @@ const articulos = defineCollection({
     titulo: z.string(),
     bajada: z.string(),
     pilar: reference('pilares'),
-    mecanismo: z.string(),
-    tipoInteraccion: z.enum(['decision-forzada', 'antes-y-despues', 'explorar-datos', 'simular-interfaz', 'predecir-antes-de-ver']),
+    /** Formato anterior (artículo de ejemplo). Los artículos nuevos usan familiaDeMecanismos. */
+    mecanismo: z.string().optional(),
+    /** GUIA_ARTICULOS §7: migas y chip del hero ("Pilar · Familia"). */
+    familiaDeMecanismos: z.string().optional(),
+    /** Un tipo (formato anterior) o la lista de interacciones del artículo. */
+    tipoInteraccion: z.union([z.string(), z.array(z.string())]),
     fecha: z.coerce.date(),
     actualizado: z.coerce.date(),
     tiempoLectura: z.number(),
-    estado: z.enum(['publicado', 'en-preparacion']).default('publicado'),
+    /** borrador y en-revision: solo se construyen en las vistas previas, nunca en producción. */
+    estado: z.enum(['publicado', 'en-preparacion', 'borrador', 'en-revision']).default('publicado'),
+    /** Texto de "Para llevarte". */
     hallazgoUnaFrase: z.string(),
-    casoLocal: z.object({ titulo: z.string(), fuente: z.string() }),
-    matiz: z.object({ titulo: z.string(), fuente: z.string() }),
+    casoLocal: z.object({ titulo: z.string(), fuente: z.string() }).optional(),
+    matiz: z.object({ titulo: z.string(), fuente: z.string() }).optional(),
+    /** Solo informativo: los titulares probados (no se muestra). */
+    tituloAlternativas: z.array(z.string()).optional(),
+    /** "Cómo se llama esto" (GUIA_ARTICULOS §3 y §4): tarjeta celeste bajo la bajada. */
+    comoSeLlama: z.object({
+      termino: z.string(),
+      ingles: z.string().optional(),
+      definicion: z.string(),
+      /** Frase que cita la fuente de la definición (se marca para el modo evidencia). */
+      citaFuente: z.string().optional(),
+      fuente: z.string().optional(),
+    }).optional(),
+    /** Capa "Cómo lo cuentan por aquí" (registro; no se muestra como cifra ni como tendencia). */
+    escuchaSocial: z.record(z.string(), z.any()).optional(),
+    /** Nivel de evidencia de cada fuente, por id (copiado del doc del artículo). */
+    nivelPorFuente: z.record(z.string(), z.string()).optional(),
+    /** Texto propio de "Cómo se hizo" (si falta, se usa el texto fijo). */
+    comoSeHizo: z.string().optional(),
+    /** Pregunta del llamado a la acción del remate (botón "Escríbeme →" a Colabora). */
+    llamado: z.string().optional(),
     briefSlug: z.string().optional(),
     fuentes: z.array(fuente).default([]),
     // Opcionales
@@ -71,9 +98,10 @@ const articulos = defineCollection({
     ejemplo: z.boolean().default(false),
     /** Pregunta que responderá (tarjeta "En preparación"). */
     preguntaQueResponde: z.string().optional(),
-    /** "Lo que te llevas" (FLUJO §4.4): tres líneas fijas, sin revelar el hallazgo.
+    /** "Lo que te llevas" (FLUJO §4.4, GUIA_ARTICULOS §4): tres líneas fijas, sin revelar el hallazgo.
+     *  Pueden empezar con "Vas a reconocer / entender / poder" o traer solo el resto.
      *  El verbo de "poder" coincide con la interacción de "Qué hacer con esto". */
-    teLlevas: z.object({
+    llevas: z.object({
       reconocer: z.string(),
       entender: z.string(),
       poder: z.string(),

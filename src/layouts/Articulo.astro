@@ -1,9 +1,9 @@
 ---
-// Plantilla común de artículo (GUIA §3, TEXTOS_FINALES §5).
-//   Cabecera (primera parada) → escenas 1 a 4 (MDX) → escena 5 Qué hacer →
-//   Lo que te llevas (antes de la escena 1) →
+// Plantilla común de artículo (GUIA_ARTICULOS §3, TEXTOS_FINALES §5).
+//   Cabecera (migas, chip del pilar, titular, bajada, ficha, interruptores) →
+//   Cómo se llama esto → Lo que te llevas → escenas (MDX) →
 //   cierre: Para llevarte · Si te sirvió · Cómo se hizo · Fuentes · Sigue explorando →
-//   remate "Fin del camino."
+//   remate "Fin del camino." y llamado a la acción.
 import type { CollectionEntry } from 'astro:content';
 import { getCollection, getEntry } from 'astro:content';
 import Base from './Base.astro';
@@ -12,11 +12,14 @@ import InterruptorEvidencia from '../components/evidencia/InterruptorEvidencia.a
 import TarjetaFuente from '../components/evidencia/TarjetaFuente.astro';
 import BotonEstatico from '../components/scroll/BotonEstatico.astro';
 import LoQueTeLlevas from '../components/articulo/LoQueTeLlevas.astro';
+import ComoSeLlama from '../components/articulo/ComoSeLlama.astro';
+import Acordeon from '../components/evidencia/Acordeon.astro';
 import SiTeSirvio from '../components/articulo/SiTeSirvio.astro';
 import Camino from '../components/camino/Camino.astro';
 import Parada from '../components/camino/Parada.astro';
 import Remate from '../components/camino/Remate.astro';
-import { textos, tiposInteraccion, formatoFecha } from '../data/sitio';
+import { textos, formatoFecha } from '../data/sitio';
+import { familia, tipos as tiposDe, textoInteracciones, esBorrador } from '../data/articulos';
 
 interface Props { articulo: CollectionEntry<'articulos'> }
 const { articulo } = Astro.props;
@@ -31,13 +34,27 @@ const delPilar = publicados.find((a) => a.data.pilar.id === pilar.id);
 const deOtro = publicados.find((a) => a.data.pilar.id !== pilar.id);
 const sigue = [delPilar, deOtro].filter(Boolean) as CollectionEntry<'articulos'>[];
 
+// El brief solo se enlaza si existe (evita enlaces rotos).
+const brief = d.briefSlug ? await getEntry('investigacion', d.briefSlug) : undefined;
+const borrador = esBorrador(articulo);
+const nInteracciones = tiposDe(d).length;
+const textoComoSeHizo = d.comoSeHizo ?? 'Este artículo se basa en fuentes secundarias abiertas: estudios académicos y cobertura de medios. No hay encuestas ni entrevistas propias. La metodología completa está en el brief.';
+
+// Fuentes: las que comparten el mismo texto (p. ej. "OCDE, SIC…: ver el brief") van en una sola línea.
+const grupos: { ids: string[]; f: (typeof d.fuentes)[number] }[] = [];
+for (const f of d.fuentes) {
+  const g = grupos.find((x) => x.f.titulo === f.titulo);
+  if (g) g.ids.push(f.id); else grupos.push({ ids: [f.id], f });
+}
+
 const tipos: Record<string, string> = { dato: 'Dato', paper: 'Estudio', caso: 'Caso', comunicado: 'Comunicado oficial', prensa: 'Prensa' };
 const escapar = (t: string) => t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const titular = escapar(d.titulo).replace(/\*(.+?)\*/g, '<span class="resaltado-titular">$1</span>');
 const tituloPlano = d.titulo.replace(/\*/g, '');
 const limpio = (t: string) => t.replace(/\*/g, '');
+const conCursiva = (t: string) => escapar(t).replace(/\*(.+?)\*/g, '<em>$1</em>');
 ---
-<Base titulo={tituloPlano} descripcion={d.bajada} noindex={d.ejemplo} pilar={pilar.id}>
+<Base titulo={tituloPlano} descripcion={d.bajada} noindex={d.ejemplo || d.estado !== 'publicado'} pilar={pilar.id}>
   <BarraProgreso />
 
   <article class="articulo" data-modulo-camino>
@@ -47,15 +64,17 @@ const limpio = (t: string) => t.replace(/\*/g, '');
     <Parada escena="cabecera" criatura={pilar.data.criatura} titulo={titular} nivel="h1" nombre="Cabecera del artículo">
       <nav slot="antes" class="ruta" aria-label="Ruta">
         <ol>
-          <li><a href="/pilares">Pilares</a></li>
+          <li><a href="/">Inicio</a></li>
           <li><a href={`/pilares/${pilar.id}`}>{pilar.data.nombre}</a></li>
-          <li aria-current="page">{d.mecanismo}</li>
+          <li aria-current="page">{familia(d)}</li>
         </ol>
       </nav>
       {d.ejemplo && <p class="aviso-ejemplo">Artículo de ejemplo con datos inventados</p>}
+      {borrador && <p class="aviso-ejemplo">Borrador · no publicado</p>}
+      <p slot="antes" class="chip-pilar">{pilar.data.nombre} · {familia(d)}</p>
       <p class="articulo__bajada">{d.bajada}</p>
       <p class="ficha">
-        {d.tiempoLectura} min · {formatoFecha(d.fecha)} · {d.fuentes.length} fuentes · {tiposInteraccion[d.tipoInteraccion]}
+        {d.tiempoLectura} min · {formatoFecha(d.fecha)} · Actualizado el {formatoFecha(d.actualizado)} · {textoInteracciones(nInteracciones)}
       </p>
       <div class="articulo__controles">
         <div class="articulo__evidencia">
@@ -66,8 +85,9 @@ const limpio = (t: string) => t.replace(/\*/g, '');
       </div>
     </Parada>
 
-    <!-- LO QUE TE LLEVAS: bajo la cabecera (y bajo "Cómo se llama esto", cuando exista), antes de la escena 1 -->
-    {d.teLlevas && <LoQueTeLlevas {...d.teLlevas} />}
+    <!-- CÓMO SE LLAMA ESTO y LO QUE TE LLEVAS: antes de la escena 1 -->
+    {d.comoSeLlama && <ComoSeLlama {...d.comoSeLlama} />}
+    {d.llevas && <LoQueTeLlevas {...d.llevas} />}
 
     <!-- ESCENAS 1 A 4 (MDX) -->
     <slot />
@@ -87,24 +107,27 @@ const limpio = (t: string) => t.replace(/\*/g, '');
     <div class="cierre contenedor">
       <section class="tarjeta cierre__llevar" aria-labelledby="llevar-titulo">
         <h2 id="llevar-titulo" class="etiqueta etiqueta--banda">Para llevarte</h2>
-        <p class="cierre__hallazgo">{d.hallazgoUnaFrase}</p>
+        <p class:list={['cierre__hallazgo', { 'cierre__hallazgo--largo': d.hallazgoUnaFrase.length > 140 }]}>{d.hallazgoUnaFrase}</p>
       </section>
 
       <SiTeSirvio />
 
-      <section class="tarjeta" aria-labelledby="como-titulo">
-        <h2 id="como-titulo" class="cierre__titulo">Cómo se hizo</h2>
-        <p>Este artículo se basa en fuentes secundarias abiertas: estudios académicos y cobertura de medios. No hay encuestas ni entrevistas propias. La metodología completa está en el brief.</p>
+      <section class="cierre__como" aria-label="Cómo se hizo">
+        <Acordeon titulo="Cómo se hizo">
+          <p>{textoComoSeHizo}</p>
+          {brief && <p><a href={`/investigacion/${brief.id}`}>Leer el brief completo</a></p>}
+        </Acordeon>
       </section>
 
       {d.fuentes.length > 0 && (
         <section id="fuentes" class="tarjeta fuentes" aria-labelledby="fuentes-titulo">
           <h2 id="fuentes-titulo" class="cierre__titulo">Fuentes</h2>
           <ol>
-            {d.fuentes.map((f) => (
-              <li id={`fuente-${f.id}`}>
-                <span class="etiqueta">{tipos[f.tipo]}{f.latam && ' · Colombia / LatAm'}</span><br />
-                {f.titulo}{(f.autor || f.anio) && <span class="fuentes__meta">. {[f.autor, f.anio].filter(Boolean).join(', ')}</span>}
+            {grupos.map(({ ids, f }) => (
+              <li id={`fuente-${ids[0]}`}>
+                {ids.slice(1).map((id) => <span id={`fuente-${id}`} class="fuentes__ancla"></span>)}
+                {!f.nivel && <><span class="etiqueta">{tipos[f.tipo]}{f.latam && ' · Colombia / LatAm'}</span><br /></>}
+                <Fragment set:html={conCursiva(f.titulo)} />{(f.autor || f.anio) && <span class="fuentes__meta">. {[f.autor, f.anio].filter(Boolean).join(', ')}</span>}
                 {f.url && <> · <a href={f.url} target="_blank" rel="noopener">{textos.abrirFuente}</a></>}
               </li>
             ))}
@@ -126,14 +149,24 @@ const limpio = (t: string) => t.replace(/\*/g, '');
 
     <Remate>
       <p class="fin">Fin del camino.</p>
-      <div class="acciones">
-        {d.briefSlug && <a class="boton" href={`/investigacion/${d.briefSlug}`}>Leer el brief completo</a>}
-        <a class:list={['boton', { 'boton--claro': !!d.briefSlug }]} href="/pilares">Explorar los pilares</a>
-      </div>
+      {d.llamado ? (
+        <>
+          <p class="llamado">{d.llamado}</p>
+          <div class="acciones">
+            <a class="boton" href="/colabora">Escríbeme →</a>
+            {brief && <a class="boton boton--claro" href={`/investigacion/${brief.id}`}>Leer el brief completo</a>}
+          </div>
+        </>
+      ) : (
+        <div class="acciones">
+          {brief && <a class="boton" href={`/investigacion/${brief.id}`}>Leer el brief completo</a>}
+          <a class:list={['boton', { 'boton--claro': !!brief }]} href="/pilares">Explorar los pilares</a>
+        </div>
+      )}
     </Remate>
   </article>
 
-  <TarjetaFuente fuentes={d.fuentes} />
+  <TarjetaFuente fuentes={d.fuentes.map((f) => ({ ...f, titulo: limpio(f.titulo) }))} />
 </Base>
 
 <style>
@@ -162,6 +195,16 @@ const limpio = (t: string) => t.replace(/\*/g, '');
 
   .cierre { position: relative; z-index: 1; display: grid; gap: var(--s-3); max-width: calc(46rem + 2 * var(--gutter)); margin-top: var(--s-6); }
   .cierre__llevar { border-width: 2.5px; }
+  .cierre__hallazgo--largo { font-size: clamp(1.3rem, 1.1rem + 0.9vw, 1.75rem) !important; line-height: 1.2 !important; }
+  .cierre__como :global(.acordeon) { margin: 0; border-radius: var(--r-card); }
+  .cierre__como :global(.acordeon__titulo) { font-family: var(--font-title); font-size: var(--t-lead); }
+  .fuentes__ancla { display: block; scroll-margin-top: 6rem; }
+  .chip-pilar {
+    display: inline-block; margin: 0 0 var(--s-3);
+    background: var(--pilar); color: var(--on-color); border-radius: var(--r-pill);
+    padding: 0.35em 0.9em; font-size: var(--t-label); text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .llamado { font-size: var(--t-lead); max-width: 30rem; margin-inline: auto; text-align: center; }
   .cierre__hallazgo { font-family: var(--font-title); font-weight: 800; letter-spacing: var(--title-tracking); line-height: 1.1; font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); margin: var(--s-3) 0 var(--s-4); }
   .cierre__titulo { font-size: var(--t-lead); }
   .fuentes ol { padding-left: 1.4em; font-size: var(--t-small); }

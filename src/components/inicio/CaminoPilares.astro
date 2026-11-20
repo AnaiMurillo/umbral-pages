@@ -7,6 +7,7 @@ import Camino from '../camino/Camino.astro';
 import Parada from '../camino/Parada.astro';
 import Remate from '../camino/Remate.astro';
 import type { Pilar } from '../camino/composiciones';
+import { seLista } from '../../data/articulos';
 
 interface Props {
   titulo?: string;
@@ -20,8 +21,8 @@ const Titulo = nivel;
 const NivelParada = nivel === 'h1' ? 'h2' : 'h3';
 
 const pilares = (await getCollection('pilares')).sort((a, b) => a.data.orden - b.data.orden);
-// Solo artículos publicados y que no sean de ejemplo (TEXTOS_FINALES §5.3).
-const articulos = (await getCollection('articulos')).filter((a) => !a.data.ejemplo && a.data.estado === 'publicado');
+// Solo artículos publicados (y borradores en vista previa), nunca el de ejemplo (TEXTOS_FINALES §5.3).
+const articulos = (await getCollection('articulos')).filter(seLista);
 const limpio = (t: string) => t.replace(/\*/g, '');
 ---
 <div class="pilares" data-modulo-camino data-inicio-x="0.94">

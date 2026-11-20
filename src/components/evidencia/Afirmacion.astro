@@ -1,15 +1,16 @@
 ---
 // Afirmación con respaldo: <Afirmacion fuente="id">texto</Afirmacion>
-// Siempre se abre con clic o teclado; el modo evidencia además la resalta.
+// Es un enlace a su fuente (funciona sin JavaScript y fluye con el texto, aunque sea larga).
+// Con JavaScript abre la tarjeta de la fuente; el modo evidencia además la resalta.
 interface Props { fuente: string }
 const { fuente } = Astro.props;
 ---
-<button type="button" class="afirmacion" data-afirmacion={fuente} aria-haspopup="dialog"><slot /><span class="afirmacion__marca" aria-hidden="true"></span><span class="visualmente-oculto"> (ver fuente)</span></button>
+<a href={`#fuente-${fuente}`} class="afirmacion" data-afirmacion={fuente} aria-haspopup="dialog"><slot /><span class="afirmacion__marca" aria-hidden="true"></span><span class="visualmente-oculto"> (ver fuente)</span></a>
 
 <style>
   .afirmacion {
-    all: unset;
     display: inline;
+    color: inherit;
     cursor: pointer;
     text-decoration: underline dotted 2px;
     text-decoration-color: var(--muted);

@@ -3,7 +3,8 @@
 // "En preparación": título de trabajo, la pregunta que responderá y silueta sin colorear; sin enlace.
 import type { CollectionEntry } from 'astro:content';
 import Criatura from '../criaturas/Criatura.astro';
-import { tiposInteraccion, formatoFecha } from '../../data/sitio';
+import { formatoFecha } from '../../data/sitio';
+import { familia, tipos, nombreTipo, textoInteracciones, esBorrador } from '../../data/articulos';
 
 interface Props {
   articulo: CollectionEntry<'articulos'>;
@@ -14,26 +15,28 @@ interface Props {
 const { articulo, criatura, destacada = false, nivel = 'h3' } = Astro.props;
 const d = articulo.data;
 const preparando = d.estado === 'en-preparacion';
+const borrador = esBorrador(articulo);
+const lista = tipos(d);
 const Titulo = nivel;
 const limpio = (t: string) => t.replace(/\*/g, '');
 ---
 <article
   class:list={['tarjeta-art', { 'tarjeta-art--destacada': destacada, 'tarjeta-art--preparando': preparando }]}
-  data-mecanismo={d.mecanismo}
-  data-tipo={d.tipoInteraccion}
+  data-mecanismo={familia(d)}
+  data-tipo={lista.join(' ')}
   data-fecha={+d.fecha}
   data-titulo={limpio(d.titulo)}
 >
   <div class="tarjeta-art__mini" aria-hidden="true"><Criatura nombre={criatura} /></div>
   <div class="tarjeta-art__texto">
-    <p class="tarjeta-art__estado etiqueta">{preparando ? 'En preparación' : 'Publicado'}</p>
+    <p class="tarjeta-art__estado etiqueta">{preparando ? 'En preparación' : borrador ? 'Borrador · no publicado' : 'Publicado'}</p>
     <Titulo class="tarjeta-art__titulo">
       {preparando ? limpio(d.titulo) : <a href={`/articulos/${articulo.id}`}>{limpio(d.titulo)}</a>}
     </Titulo>
     <p class="tarjeta-art__bajada">{preparando && d.preguntaQueResponde ? d.preguntaQueResponde : d.bajada}</p>
     <p class="tarjeta-art__chips">
-      <span class="chip chip--pilar">{d.mecanismo}</span>
-      <span class="chip">{tiposInteraccion[d.tipoInteraccion]}</span>
+      <span class="chip chip--pilar">{familia(d)}</span>
+      <span class="chip">{lista.length > 1 ? textoInteracciones(lista.length) : nombreTipo(lista[0])}</span>
     </p>
     {!preparando && <p class="tarjeta-art__meta">{d.tiempoLectura} min · {formatoFecha(d.fecha)}</p>}
   </div>

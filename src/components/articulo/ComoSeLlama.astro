@@ -1,0 +1,26 @@
+---
+// "Cómo se llama esto" (GUIA_ARTICULOS §3 y §4): tarjeta celeste bajo la bajada.
+// Nombre del fenómeno (con el término en inglés) y definición simple, con su fuente.
+import Afirmacion from '../evidencia/Afirmacion.astro';
+
+interface Props { termino: string; ingles?: string; definicion: string; citaFuente?: string; fuente?: string }
+const { termino, ingles, definicion, citaFuente, fuente } = Astro.props;
+---
+<section class="llama contenedor" aria-labelledby="llama-titulo">
+  <div class="llama__caja">
+    <h2 id="llama-titulo" class="etiqueta llama__etiqueta">Cómo se llama esto</h2>
+    <p class="llama__texto">
+      <strong><em>{termino}</em></strong>{ingles && <> (en inglés, <em>{ingles}</em>)</>}. {definicion}
+      {citaFuente && ' '}{citaFuente && (fuente ? <Afirmacion fuente={fuente}>{citaFuente}</Afirmacion> : citaFuente)}
+    </p>
+  </div>
+</section>
+
+<style>
+  .llama { position: relative; z-index: 1; max-width: calc(46rem + 2 * var(--gutter)); margin-top: var(--s-5); }
+  .llama__caja { background: var(--celeste); color: var(--on-color); border-radius: var(--r-card); padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem); }
+  .llama__etiqueta { color: var(--on-color); margin-bottom: var(--s-2); }
+  .llama__texto { font-size: var(--t-lead); margin: 0; }
+  .llama__texto :global(.afirmacion) { text-decoration-color: var(--on-color); }
+  .llama__texto :global(.afirmacion__marca) { color: var(--on-color); }
+</style>

@@ -1,0 +1,53 @@
+---
+// Barras horizontales para comparar pocas cifras (p. ej. 11,3 / 25,8 / 41,9 %).
+// Cada barra lleva su etiqueta y su valor en texto, así que se leen sin ver el gráfico.
+// Crecen al entrar en pantalla (ligado al scroll). Con movimiento reducido o
+// "Ver sin animación" aparecen completas y quietas.
+interface Barra { etiqueta: string; valor: number }
+interface Props { titulo?: string; barras: Barra[]; max?: number; unidad?: string; fuente?: string }
+const { titulo, barras, max = 50, unidad = '%', fuente } = Astro.props;
+const num = (v: number) => v.toLocaleString('es-CO', { maximumFractionDigits: 1 });
+---
+<figure class="barras">
+  {titulo && <figcaption class="barras__titulo">{titulo}{fuente && <> · <a href={`#fuente-${fuente}`}>fuente</a></>}</figcaption>}
+  <ul class="barras__lista">
+    {barras.map((b, i) => (
+      <li class="barras__fila">
+        <span class="barras__etiqueta">{b.etiqueta}</span>
+        <span class="barras__pista" aria-hidden="true">
+          <span class={`barras__barra barras__barra--${i + 1}`} style={`--ancho: ${(b.valor / max) * 100}%`}></span>
+        </span>
+        <span class="barras__valor">{num(b.valor)}{unidad}</span>
+      </li>
+    ))}
+  </ul>
+</figure>
+
+<style>
+  .barras { margin: var(--s-4) 0; padding: var(--s-4); border: 1.5px solid var(--outline); border-radius: calc(var(--r-card) * 0.7); background: var(--surface); }
+  .barras__titulo { font-size: var(--t-small); color: var(--muted); margin-bottom: var(--s-3); }
+  .barras__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+  .barras__fila { display: grid; grid-template-columns: minmax(7.5rem, auto) 1fr auto; align-items: center; gap: var(--s-2) var(--s-3); }
+  @media (max-width: 30rem) {
+    .barras__fila { grid-template-columns: 1fr auto; }
+    .barras__pista { grid-column: 1 / -1; grid-row: 2; }
+  }
+  .barras__etiqueta { font-weight: 700; }
+  .barras__valor { font-family: var(--font-title); font-weight: 800; font-size: var(--t-lead); letter-spacing: -0.02em; }
+  .barras__pista { display: block; height: 1.4rem; border-radius: var(--r-pill); background: var(--band); overflow: hidden; }
+  .barras__barra { display: block; height: 100%; width: var(--ancho); border-radius: var(--r-pill); transform-origin: left center; outline: 1.5px solid var(--outline); outline-offset: -1.5px; }
+  .barras__barra--1 { background: var(--menta); }
+  .barras__barra--2 { background: var(--mantequilla); }
+  .barras__barra--3 { background: var(--pilar); }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html:not([data-estatico])) .barras__barra {
+        animation: barras-crece linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 40%;
+      }
+    }
+  }
+  @keyframes barras-crece { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+</style>

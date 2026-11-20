@@ -43,7 +43,7 @@ const { fuentes } = Astro.props;
 </style>
 
 <script>
-  type Fuente = { id: string; titulo: string; autor?: string; anio?: string | number; tipo: string; url?: string; latam: boolean };
+  type Fuente = { id: string; titulo: string; autor?: string; anio?: string | number; tipo: string; url?: string; latam: boolean; nivel?: string };
   const datos = document.getElementById('datos-fuentes');
   const fuentes: Fuente[] = datos ? JSON.parse(datos.textContent || '[]') : [];
   const indice = new Map(fuentes.map((f, i) => [f.id, { ...f, n: i + 1 }]));
@@ -67,10 +67,12 @@ const { fuentes } = Astro.props;
     const f = indice.get(el.dataset.afirmacion || '');
     if (!f) return;
 
-    if (!soportaPopover) { location.hash = `fuente-${f.id}`; return; }
+    if (!soportaPopover) return; // sin popover, el enlace lleva a la lista de fuentes
+    e.preventDefault();
 
     const q = <T extends HTMLElement>(s: string) => tarjeta.querySelector<T>(s)!;
-    q('[data-t-tipo]').textContent = `Fuente ${f.n} · ${tipos[f.tipo] ?? f.tipo}${f.latam ? ' · Colombia / LatAm' : ''}`;
+    // Si la fuente trae su nivel de evidencia, el título ya lo nombra: no se repite el tipo.
+    q('[data-t-tipo]').textContent = `Fuente ${f.n}${f.nivel ? '' : ` · ${tipos[f.tipo] ?? f.tipo}`}${f.latam ? ' · Colombia / LatAm' : ''}`;
     q('[data-t-titulo]').textContent = f.titulo;
     q('[data-t-meta]').textContent = [f.autor, f.anio].filter(Boolean).join(', ');
     const enlace = q<HTMLAnchorElement>('[data-t-url]');

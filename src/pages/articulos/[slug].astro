@@ -2,9 +2,11 @@
 import { getCollection, getEntry, render } from 'astro:content';
 import Articulo from '../../layouts/Articulo.astro';
 import { componentesMdx } from '../../components/mdx';
+import { seConstruye } from '../../data/articulos';
 
 export async function getStaticPaths() {
-  const articulos = await getCollection('articulos');
+  // Los borradores solo se construyen en local y en vistas previas (src/data/articulos.ts).
+  const articulos = (await getCollection('articulos')).filter(seConstruye);
   return articulos.map((articulo) => ({ params: { slug: articulo.id }, props: { articulo } }));
 }
 const { articulo } = Astro.props;

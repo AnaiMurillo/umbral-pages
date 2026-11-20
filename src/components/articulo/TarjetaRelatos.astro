@@ -1,0 +1,36 @@
+---
+// Tarjeta de relatos de la región (escena 4). Celeste, visible (no en acordeón).
+// Casos, no tendencia: sin cifras, sin enlaces, sin nombres de usuario, sin capturas,
+// sin citas textuales y sin fechas de las publicaciones.
+// Slots: default = párrafo introductorio · "nota" = nota de paráfrasis en letra pequeña.
+interface Props { etiqueta: string; relatos: { titulo: string; texto: string }[] }
+const { etiqueta, relatos } = Astro.props;
+---
+<section class="relatos" aria-labelledby="relatos-titulo">
+  <h3 id="relatos-titulo" class="etiqueta relatos__etiqueta">{etiqueta}</h3>
+  <div class="relatos__intro"><slot /></div>
+  <ul class="relatos__lista">
+    {relatos.map((r) => (
+      <li class="relatos__item">
+        <p class="relatos__titulo">{r.titulo}</p>
+        <p class="relatos__texto">{r.texto}</p>
+      </li>
+    ))}
+  </ul>
+  <div class="relatos__nota"><slot name="nota" /></div>
+</section>
+
+<style>
+  .relatos { background: var(--celeste); color: var(--on-color); border-radius: var(--r-card); padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem); margin: var(--s-4) 0; }
+  .relatos__etiqueta { color: var(--on-color); font-weight: 700; margin-bottom: var(--s-3); }
+  .relatos__intro :global(p:last-child) { margin-bottom: 0; }
+  .relatos__intro :global(.afirmacion) { text-decoration-color: var(--on-color); }
+  .relatos__intro :global(.afirmacion__marca) { color: var(--on-color); }
+  .relatos__lista { list-style: none; margin: var(--s-4) 0; padding: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 40rem) { .relatos__lista { grid-template-columns: 1fr 1fr; } }
+  .relatos__item { background: #FFFFFF; color: var(--tinta); border: 1.5px solid var(--tinta); border-radius: calc(var(--r-card) * 0.6); padding: var(--s-3) var(--s-4); }
+  .relatos__titulo { font-family: var(--font-title); font-weight: 700; margin-bottom: var(--s-1); }
+  .relatos__texto { margin: 0; font-size: var(--t-small); }
+  .relatos__nota { font-size: var(--t-small); }
+  .relatos__nota :global(p) { margin: 0; }
+</style>

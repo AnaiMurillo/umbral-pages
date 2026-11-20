@@ -1,6 +1,11 @@
 ---
-// Acordeón fijo junto a la escena jugable: qué representa fielmente la prueba
-// y qué es simplificación (GUIA §3.2).
-import Acordeon from '../evidencia/Acordeon.astro';
+// "Lo que esta prueba simula, y lo que no" (GUIA_ARTICULOS §4): va junto a cada interacción
+// y se ve sin abrir nada. Dos o tres líneas: qué representa fielmente y qué simplifica.
+// En el MDX se puede usar como <BloqueSimula> o <QueSimula> (mismo componente).
 ---
-<Acordeon titulo="Lo que esta prueba simula, y lo que no"><slot /></Acordeon>
+<p class="simula"><strong>Lo que esta prueba simula, y lo que no.</strong> <slot /></p>
+
+<style>
+  .simula { font-size: var(--t-small); border-top: 1.5px solid var(--outline); padding-top: var(--s-3); margin-top: var(--s-4); }
+  .simula :global(p) { display: inline; margin: 0; }
+</style>

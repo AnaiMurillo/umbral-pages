@@ -1,0 +1,57 @@
+---
+// Tarjetas que se voltean con el scroll (Artículo 01, escena 3).
+// Cara de color con el nombre → cara blanca con el nombre y la explicación.
+// El giro está ligado al scroll (sin scrolljacking) y no oculta nada: la cara final
+// tiene todo el texto. Con movimiento reducido, "Ver sin animación" o sin soporte,
+// se ven directamente en su cara final, quietas.
+interface Props { tarjetas: { titulo: string; texto: string }[] }
+const { tarjetas } = Astro.props;
+---
+<ul class="volteo">
+  {tarjetas.map((t, i) => (
+    <li class={`volteo__tarjeta volteo__tarjeta--${i + 1}`}>
+      <div class="volteo__giro">
+        <div class="volteo__cara volteo__dorso" aria-hidden="true"><span>{t.titulo}</span></div>
+        <div class="volteo__cara volteo__frente">
+          <p class="volteo__titulo">{t.titulo}</p>
+          <p class="volteo__texto">{t.texto}</p>
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .volteo { list-style: none; margin: var(--s-4) 0; padding: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 40rem) { .volteo { grid-template-columns: 1fr 1fr; } }
+  .volteo__tarjeta { perspective: 1200px; }
+  .volteo__giro { position: relative; height: 100%; transform-style: preserve-3d; }
+  .volteo__cara { border-radius: calc(var(--r-card) * 0.7); padding: var(--s-4); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .volteo__frente { position: relative; height: 100%; background: var(--surface); border: 1.5px solid var(--outline); }
+  .volteo__dorso {
+    position: absolute; inset: 0; display: grid; place-items: center; text-align: center;
+    color: var(--on-color); transform: rotateY(180deg);
+    font-family: var(--font-title); font-weight: 800; font-size: var(--t-card); letter-spacing: var(--title-tracking); line-height: 1.05;
+  }
+  .volteo__tarjeta--1 .volteo__dorso { background: var(--pilar); }
+  .volteo__tarjeta--2 .volteo__dorso { background: var(--mantequilla); }
+  .volteo__tarjeta--3 .volteo__dorso { background: var(--menta); }
+  .volteo__tarjeta--4 .volteo__dorso { background: var(--celeste-v); }
+  .volteo__titulo { font-family: var(--font-title); font-weight: 700; font-size: var(--t-lead); margin-bottom: var(--s-2); }
+  .volteo__texto { margin: 0; font-size: var(--t-small); }
+
+  /* Sin giro (movimiento reducido, "Ver sin animación", navegadores sin scroll-driven animations):
+     el dorso no se dibuja y queda la cara con el texto. */
+  .volteo__dorso { display: none; }
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html:not([data-estatico])) .volteo__dorso { display: grid; }
+      :global(html:not([data-estatico])) .volteo__giro {
+        animation: volteo-gira linear both;
+        animation-timeline: view();
+        animation-range: entry 30% cover 45%;
+      }
+    }
+  }
+  @keyframes volteo-gira { from { transform: rotateY(180deg); } to { transform: rotateY(0deg); } }
+</style>

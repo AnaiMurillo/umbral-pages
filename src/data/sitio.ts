@@ -22,7 +22,7 @@ export const sitio = {
  * publicado, el bloque no aparece aunque la bandera esté activa.
  */
 export const banderas = {
-  pruebaRapida: { activa: false, articulo: '' },
+  pruebaRapida: { activa: false, articulo: 'sigues-pagando-lo-que-no-usas' },
 };
 
 // ==========================================================
@@ -144,6 +144,11 @@ export const tiposInteraccion: Record<string, string> = {
   'explorar-datos': 'Explorar datos',
   'simular-interfaz': 'Simular una interfaz',
   'predecir-antes-de-ver': 'Predecir antes de ver',
+  'lista-de-accion': 'Lista de acción',
+  // Interacciones del Artículo 01 (nombres del doc v6)
+  'predecir-vs-realidad': 'Tu predicción contra la realidad',
+  'encuentra-el-boton': 'Encuentra el botón',
+  'plan-de-salida': 'Mi plan de salida',
 };
 
 export const formatoFecha = (d: Date) =>

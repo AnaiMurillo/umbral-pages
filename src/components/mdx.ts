@@ -9,7 +9,13 @@ import PullQuote from './editorial/PullQuote.astro';
 import Llamada from './editorial/Llamada.astro';
 import LecturaRapida from './editorial/LecturaRapida.astro';
 import PublicacionX from './editorial/PublicacionX.astro';
+import BandaCita from './articulo/BandaCita.astro';
+import Barras from './articulo/Barras.astro';
+import TarjetasVolteo from './articulo/TarjetasVolteo.astro';
+import TarjetaRelatos from './articulo/TarjetaRelatos.astro';
+import TarjetaDestacada from './articulo/TarjetaDestacada.astro';
 
 export const componentesMdx = {
-  Escena, QueSimula, Afirmacion, Acordeon, PullQuote, Llamada, LecturaRapida, PublicacionX,
+  Escena, QueSimula, BloqueSimula: QueSimula, Afirmacion, Acordeon, PullQuote, Llamada, LecturaRapida, PublicacionX,
+  BandaCita, Barras, TarjetasVolteo, TarjetaRelatos, TarjetaDestacada,
 };

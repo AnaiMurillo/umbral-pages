@@ -1,0 +1,268 @@
+---
+# ─────────────────────────────────────────────────────────────
+# ARTÍCULO 01 · Texto: "Umbral · Artículo 01 v6 · Texto final por capas"
+# (copia en docs/ARTICULO_01_v6.md). El texto se copia tal cual del doc.
+# Estado: BORRADOR. No cambiar a "publicado" hasta cerrar los pendientes
+# de contenido (instrucción §9). Mientras sea borrador, la página solo se
+# construye en local y en las vistas previas, nunca en producción.
+# ─────────────────────────────────────────────────────────────
+
+# titulo: elegido por Isabel el 19 de noviembre (opción 1 de tituloAlternativas).
+titulo: "¿Descuido tuyo o diseño? Por qué sigues pagando lo que no usas"
+tituloAlternativas:
+  - "¿Descuido tuyo o diseño? Por qué sigues pagando lo que no usas"            # 12 palabras. Recomendada
+  - "¿Por qué sigues pagando lo que ya no usas?"                                # 9 palabras
+  - "¿Por qué cancelar una suscripción cuesta más que contratarla?"             # 9 palabras
+slug: sigues-pagando-lo-que-no-usas
+bajada: "Se te olvida que estás pagando, el botón de cancelar no se ve y, cuando por fin lo encuentras, te ofrecen todo menos irte. Revisé qué dice la psicología sobre por qué nos pasa, qué midieron los estudios que existen y cómo lo cuentan algunas personas de Colombia y la región."
+pilar: persuasion
+familiaDeMecanismos: "Trampas de suscripción"
+tipoInteraccion: [predecir-vs-realidad, encuentra-el-boton, plan-de-salida]
+fecha: 2026-11-09
+actualizado: 2026-11-09
+tiempoLectura: 7
+estado: borrador
+briefSlug: trampas-de-suscripcion
+
+# "Cómo se llama esto" (tarjeta celeste bajo la bajada)
+comoSeLlama:
+  termino: "Patrones oscuros"
+  ingles: "dark patterns"
+  definicion: "Son decisiones de diseño en una app o una página web que empujan a las personas a hacer algo que quizá no harían si el camino fuera neutro."
+  citaFuente: "La OCDE los describe como prácticas que subvierten o dañan la autonomía y la capacidad de decisión de las personas consumidoras."
+  fuente: ocde
+
+llevas:
+  reconocer: "Vas a reconocer por qué se te olvida lo que pagas y por qué el botón de cancelar parece esconderse."
+  entender: "Vas a entender qué es un patrón oscuro y qué midió la investigación sobre el olvido y sobre la fricción para salir."
+  poder: "Vas a poder revisar tus suscripciones con una lista de cinco pasos y decidir hoy cuáles conservas."
+
+# Registro de la capa de escucha. No se muestra como cifra ni como tendencia.
+escuchaSocial:
+  estado: muestra-insuficiente-leida-como-casos
+  protocolo: 2026-11-09
+  pregunta: "¿Cómo se nombra y se vive el cobro de suscripciones que no se usan, y la dificultad para cancelar, en Colombia y Latinoamérica?"
+  ventana: "2024-11 a 2026-11"
+  publicacionesIncluidas: 4        # mínimo del protocolo: 30
+  tiposDeFuente: [foro-de-comunidad-de-un-proveedor, foro-publico]
+  mesesDistintos: no-se-publica
+  vocesContrarias: 3
+  paises: [Chile, México, Colombia]
+  limites: "No se pudo consultar X, TikTok, Facebook ni Instagram; Reddit lo leyó Isabel a mano. Muestra por debajo del mínimo del protocolo (30): se presenta como casos, no como tendencia."
+
+# Slugs de nivel del doc v6 (provisionales: GUIA_ARTICULOS §7 aún no fija la lista).
+nivelPorFuente:
+  dellavigna-malmendier: estudio-experimental   # observacional con datos de registros; ver nota en Pendientes
+  sunstein-sludge: marco-conceptual
+  icpen: dato-institucional
+  ftc-2022: dato-institucional                    # los casos son acusaciones
+  luguri: estudio-experimental
+  cr-research: dato-de-industria
+  ocde: dato-institucional
+  sic-sancion: caso-documental
+  sernac: dato-institucional
+  crc-oficio: dato-institucional
+  mexico-dof: dato-institucional
+  escucha-publica: discurso-publico-observado
+
+# Cierre
+hallazgoUnaFrase: "Seguimos pagando lo que no usamos porque creemos que lo usaremos más de lo que lo usamos, y porque el diseño de las suscripciones juega con el olvido y con la duda justo cuando intentamos irnos. Lo que falta es saber, con datos, cómo nos pasa a nosotros."
+comoSeHizo: "Este artículo se basa en estudios académicos, informes oficiales y cobertura de medios, y en la lectura de 4 publicaciones públicas de foros de Colombia, México y Chile entre noviembre de 2024 y noviembre de 2026. Son pocas, así que las leo como casos y no como tendencia. No hay encuestas ni entrevistas propias. La metodología completa está en el brief. Trabajé la revisión de fuentes entre el 4 y el 19 de noviembre de 2026. No nombro empresas. Las observaciones personales de este artículo son mías, no datos."
+llamado: "¿Quieres ayudar a medir cómo nos pasa esto en Latinoamérica?"
+
+# Fuentes (en el orden del doc). Las cuatro últimas comparten la línea "ver el brief".
+fuentes:
+  - id: dellavigna-malmendier
+    titulo: "DellaVigna y Malmendier (2006), *Paying Not to Go to the Gym*, American Economic Review 96(3). Nivel: estudio observacional. Copia de la versión de la AER 2006 alojada por la autora."
+    url: "https://eml.berkeley.edu/~ulrike/Papers/gym.pdf"
+    nivel: estudio-experimental
+  - id: sunstein-sludge
+    titulo: "Sunstein (2022), *Sludge Audits*, Behavioural Public Policy 6(4). Nivel: marco conceptual. Solo el resumen."
+    nivel: marco-conceptual
+  - id: icpen
+    titulo: "ICPEN (2024), informe público y comunicado del barrido de suscripciones. Nivel: dato institucional."
+    url: "https://icpen.org/news/1360"
+    nivel: dato-institucional
+  - id: ftc-2022
+    titulo: "FTC (2022), informe *Bringing Dark Patterns to Light*. Nivel: dato institucional; los casos son acusaciones."
+    url: "https://www.ftc.gov/node/79647"
+    nivel: dato-institucional
+  - id: cr-research
+    titulo: "Encuesta de una firma de investigación de mercado (2022), citada por CNBC. Nivel: dato de industria."
+    url: "https://www.cnbc.com/2022/09/06/consumers-underestimate-monthly-subscription-costs-by-at-least-100.html"
+    nivel: dato-de-industria
+  - id: luguri
+    titulo: "Luguri y Strahilevitz (2021), *Shining a Light on Dark Patterns*, Journal of Legal Analysis. Nivel: estudio experimental. Aceptación contrastada con el resumen publicado; el resto, del borrador de 2019."
+    nivel: estudio-experimental
+  - id: mexico-dof
+    titulo: "Decreto de México publicado en el DOF el 12 de diciembre de 2025 (art. 76 Bis de la ley federal de protección al consumidor). Nivel: dato institucional."
+    nivel: dato-institucional
+    latam: true
+  - id: escucha-publica
+    titulo: "Revisión de publicaciones públicas (2024-2026), ver hoja de registro. Nivel: discurso público observado. Sin enlaces por regla del protocolo."
+    nivel: discurso-publico-observado
+    latam: true
+  - { id: ocde, titulo: "OCDE, SIC, sentencia de 2023, Sernac, CRC: ver el brief.", nivel: dato-institucional }
+  - { id: sic-sancion, titulo: "OCDE, SIC, sentencia de 2023, Sernac, CRC: ver el brief.", nivel: caso-documental, latam: true }
+  - { id: sernac, titulo: "OCDE, SIC, sentencia de 2023, Sernac, CRC: ver el brief.", nivel: dato-institucional, latam: true }
+  - { id: crc-oficio, titulo: "OCDE, SIC, sentencia de 2023, Sernac, CRC: ver el brief.", nivel: dato-institucional, latam: true }
+---
+import Prediccion from '../../components/articulo/interacciones/Prediccion.svelte';
+import EncuentraBoton from '../../components/articulo/interacciones/EncuentraBoton.svelte';
+import PlanSalida from '../../components/articulo/interacciones/PlanSalida.svelte';
+
+<Escena n={1} titulo="Para empezar">
+
+A mí me pasa con una app de música. El cobro automático entra de madrugada, cuando no estoy pendiente, y durante el día la notificación del pago se pierde entre todas las demás que llegan. Cuando por fin me acuerdo de que tengo una suscripción activa, el cobro ya ocurrió.
+
+Con otras apps me ha pasado algo distinto, y es que cuando quiero cancelar el botón está al fondo de la pantalla, en un color que se confunde con el resto, mientras que la opción de "suspender la cuenta" aparece grande y llamativa. Y no siempre hay dinero de por medio: a veces es solo una cuenta que quiero cerrar.
+
+Me pregunté si era descuido mío, mala suerte o algo con nombre propio. Quise saber, además, si les pasa a otras personas por aquí, así que, junto con los estudios, busqué cómo lo cuentan en Colombia y en la región. Lo que encontré es que se trata de todo un conjunto de trampas y que empieza mucho antes de que intentes salir.
+
+</Escena>
+
+<Escena n={2} titulo="Primero, se te olvida">
+
+Una parte de esto no es culpa del diseño, sino de cómo funciona la cabeza. Dos economistas, Stefano DellaVigna y Ulrike Malmendier, revisaron los registros de pagos y asistencia de 7.752 socios de tres gimnasios de EE. UU. y compararon lo que cada persona pagaba con lo que habría pagado comprando entradas sueltas. <Afirmacion fuente="dellavigna-malmendier">Los socios con cuota mensual pagaban en promedio más de 17 dólares por visita, cuando el pase de diez entradas costaba 10 dólares por visita</Afirmacion>. <Afirmacion fuente="dellavigna-malmendier">Para el 80% habría salido más barato pagar entrada por entrada</Afirmacion>. Esto significa que pagar de más no era un accidente de unos pocos: era lo normal en ese grupo.
+
+Antes de contarte qué pasó cuando esas personas dejaban de ir, te pido que hagas algo.
+
+<Prediccion client:visible />
+
+<BloqueSimula>Simula el momento de predecir tu uso y compararlo con lo que recuerdas haber hecho. No mide tu sesgo ni te compara con otras personas, y lo que escribes no se guarda ni se envía. El 9,5 viene de una encuesta pequeña de 48 personas en un centro comercial y el 4,2, de los registros de asistencia de los gimnasios, así que sirven para ilustrar una brecha, no para decir cuánto se equivoca la gente en general.</BloqueSimula>
+
+En esa encuesta, <Afirmacion fuente="dellavigna-malmendier">las personas esperaban ir 9,5 veces al mes, mientras que en los registros de los gimnasios la asistencia real promedio era de 4,2</Afirmacion>. La brecha significa que calculábamos el futuro con más optimismo del que después cumplíamos.
+
+Lo más revelador fue lo que pasaba al final. <Afirmacion fuente="dellavigna-malmendier">Cuando alguien dejaba de ir, tardaba en promedio 2,3 meses en cancelar y, mientras tanto, pagaba unos 187 dólares sin asistir</Afirmacion>. Los autores estiman que cancelar les costaba menos de 15 dólares, así que no era el trámite lo que los frenaba. Su explicación más plausible es otra: sobreestimamos cuánto vamos a usar un servicio y cuánto nos vamos a ocupar de cancelarlo.
+
+Ese estudio es de EE. UU. y de gimnasios. En Colombia y en la región no encontré mediciones equivalentes sobre suscripciones. Eso no significa que aquí no pase; significa que, por ahora, lo que tenemos son relatos de personas, y los reviso más adelante.
+
+<Acordeon titulo="Y la cantidad de suscripciones">
+
+Una encuesta encargada por una firma de investigación de mercado a 1.000 consumidores en EE. UU. encontró que <Afirmacion fuente="cr-research">el 54% subestimaba en al menos 100 dólares lo que gastaba al mes en suscripciones y que, en promedio, gastaban unos 133 dólares más de lo que calculaban</Afirmacion>. Es una encuesta comercial y de autorreporte, así que la leo como una señal y no como una medición firme.
+
+</Acordeon>
+
+<Acordeon titulo="Los cobros de madrugada">
+
+No encontré ningún estudio que mida si la hora del cobro o la acumulación de notificaciones influyen en que lo olvidemos. Lo que cuento en la primera escena es mi experiencia y lo dejo como una pregunta abierta: ¿cuántas personas pierden de vista un cobro porque su aviso llega mezclado con el resto?
+
+</Acordeon>
+
+</Escena>
+
+<BandaCita>No encontraron gente a la que cancelar le costara mucho. Encontraron gente que creía que iba a usarlo <mark>más de lo que lo usaba</mark>.</BandaCita>
+
+<Escena n={3} titulo="Después, el diseño lo aprovecha">
+
+Cuando por fin te decides a salir, entran en juego otras cosas. <Afirmacion fuente="sunstein-sludge">El economista Cass Sunstein llama *sludge* (algo así como "lodo") a las fricciones innecesarias: pasos, esperas o papeleo que cuestan tiempo, frustran y a veces humillan</Afirmacion>. Según él, hacen más daño del que se supone, porque nuestros sesgos y nuestra atención limitada los agravan.
+
+Las autoridades de consumo llevan años catalogando cómo se ve eso. <Afirmacion fuente="icpen">En 2024, 27 autoridades de 26 países revisaron 642 comercios que venden suscripciones. El 75,7% usó al menos un patrón oscuro y el 66,8% usó dos o más</Afirmacion>. Según el informe, dos tipos fueron especialmente frecuentes: ocultar cosas (por ejemplo, no poder desactivar la renovación automática) e interferir con la interfaz (por ejemplo, destacar más visualmente la opción que le conviene al comercio). Esto significa que lo que describí en la primera escena no es una rareza de una sola app.
+
+También hay una señal de la región: <Afirmacion fuente="sernac">en 2021 el Sernac, la autoridad de consumo de Chile, revisó 107 sitios de comercio electrónico y encontró algún patrón oscuro en 69</Afirmacion>. Es un conteo de sitios, no de cómo lo vive quien los usa, pero muestra que lo que se mide afuera también aparece en sitios que se usan aquí.
+
+En el día a día, esas trampas se ven así:
+
+<TarjetasVolteo tarjetas={[
+  { titulo: 'El cobro silencioso', texto: 'La renovación es automática y no hay una forma clara de desactivarla. El informe completo del barrido de 2024 registró que el 81% de los comercios con renovación automática no permitía desactivarla al comprar y que el 70% no informaba cómo cancelar al inscribirse.' },
+  { titulo: 'El botón que no se ve', texto: 'El botón de cancelar queda abajo, pequeño o de un color que se confunde, mientras otras opciones se destacan. Es la "interferencia de interfaz" del barrido. Que lo que se destaque sea "suspender" es mi observación, no un dato medido.' },
+  { titulo: 'El desvío', texto: 'Antes de dejarte salir te llevan por pasos y pantallas que no son cancelar. La FTC, la autoridad de consumo de EE. UU., acusó a una empresa de prometer "cancelación fácil" mientras exigía entre seis y nueve pantallas para cancelar. Es una acusación de la autoridad, no un hecho probado en este texto.' },
+  { titulo: 'Los pasos de más', texto: 'Cada pantalla extra es otra oportunidad de arrepentirse. Es lo que midió el experimento que sigue.' },
+]} />
+
+Creo que es la evidencia más directa de lo que provoca esto. Luguri y Strahilevitz reclutaron a cerca de 1.760 adultos en EE. UU. y les dijeron que ya estaban inscritos en un plan ficticio de protección de datos. Lo único que cambiaba entre grupos era qué tan difícil era decir que no. <Afirmacion fuente="luguri">Cuando bastaba con decir sí o no, aceptó el plan el 11,3%. Con trucos suaves, como un botón de "aceptar (recomendado)" ya marcado y razones para declinar que avergonzaban, subió a 25,8%. Con trucos agresivos, como pantallas con cuenta regresiva y una pregunta confusa de confirmación, llegó a 41,9%</Afirmacion>. En ese último grupo también hubo más malestar declarado (3,94 en una escala de 1 a 7, frente a 2,96 en el grupo de control), más expresiones de enojo en los comentarios abiertos y más abandono: la presión funciona, pero la mente también la nota y se rebela.
+
+<Barras barras={[
+  { etiqueta: 'Sin trucos', valor: 11.3 },
+  { etiqueta: 'Trucos suaves', valor: 25.8 },
+  { etiqueta: 'Trucos agresivos', valor: 41.9 },
+]} />
+
+<PullQuote>
+
+Con solo hacer más difícil decir que no, la aceptación pasó de 11% a 26%.
+
+</PullQuote>
+
+Y no todo es dinero. Ese experimento trataba de un plan de datos personales, y <Afirmacion fuente="ftc-2022">la FTC incluye entre sus categorías de patrones oscuros el engañar a las personas para que compartan datos</Afirmacion>. Cancelar una cuenta, borrar una app o cerrar un perfil puede esconder el mismo laberinto sin que haya un cobro de por medio.
+
+<EncuentraBoton client:visible />
+
+<BloqueSimula>Simula la sensación de buscar una salida escondida entre opciones más llamativas, y te muestra tu tiempo y tus toques solo en pantalla. No mide cuánto te pasaría en una app real ni con qué frecuencia ocurre: es una sola pantalla ficticia, y tu tiempo no se guarda ni se compara con el de nadie.</BloqueSimula>
+
+<Acordeon titulo="Cómo se hizo el experimento y qué no dice">
+
+Es una muestra representativa de adultos de EE. UU. reclutada por una empresa de encuestas; la muestra final fue de 1.963 personas y 1.762 entran en el análisis de aceptación. El plan era ficticio y las personas fueron informadas al final. Triplicar el precio mensual anunciado (de 2,99 a 8,99 dólares) no cambió la aceptación. En el grupo suave, el 75,5% de las aceptaciones ocurrió en la primera pantalla. Abandonaron el experimento 65 personas en el grupo agresivo frente a 9 en el suave; en el de control no había cómo abandonar. Las cifras de aceptación, la muestra, la primera pantalla, el precio y los abandonos coinciden con la versión publicada. No sé si el efecto se repite en Latinoamérica.
+
+</Acordeon>
+
+<Acordeon titulo="Otras voces">
+
+Un estudio con personas en línea (Sin et al.) encontró efectos pequeños para otros patrones (escasez, prueba social), así que no todos los trucos pesan igual. Y qué cuenta como patrón oscuro se discute: según comentaristas citados por la OCDE, hacer difícil cancelar no siempre es engañoso en sentido estricto.
+
+</Acordeon>
+
+</Escena>
+
+<Escena n={4} titulo="¿Y aquí?">
+
+Todo lo anterior se midió afuera. Mi pregunta fue cómo se vive aquí y, como no encontré mediciones, hice otra cosa: leí cómo lo cuentan las personas cuando lo cuentan por su cuenta, en espacios públicos. No es una encuesta ni representa a nadie; es una forma de escuchar con qué palabras y con qué emociones se cuenta.
+
+<TarjetaRelatos etiqueta="Cuatro relatos de la región · casos, no tendencia" relatos={[
+  { titulo: 'Qué sienten', texto: 'En los cuatro relatos aparece frustración, sospecha o indignación. Una persona sospecha que la empresa esconde el botón de cancelar; otra se indigna por un cobro anual que no esperaba.' },
+  { titulo: 'A quién se lo atribuyen', texto: 'Sobre todo a la empresa, pero en dos relatos la persona deja abierta la duda de si fue un descuido propio: una dice que terminó con la membresía "sin darse cuenta" y otra reconoce que quizá debía leer los términos, aunque se pregunta quién lo hace. Es justo la pregunta con la que empecé este artículo.' },
+  { titulo: 'Qué hacen', texto: 'Buscan el botón, escriben a un soporte, llaman al banco o cancelan la tarjeta, y piden ayuda en un foro público. En tres de los cuatro, el soporte no resuelve: es un asistente automático, un correo lento o no hay forma de contactarlo.' },
+  { titulo: 'Voces que matizan', texto: 'En uno de los relatos, la propia persona reconoce que a otros usuarios sí les aparece el botón; en otro, alguien de la comunidad no encontró ninguna suscripción activa asociada a la cuenta. No toda queja se explica por una trampa de diseño.' },
+]}>
+
+Busqué cómo lo cuentan personas de Colombia y la región en espacios públicos entre noviembre de 2024 y noviembre de 2026, pero <Afirmacion fuente="escucha-publica">solo encontré cuatro publicaciones que cumplieran todos mis criterios: una de Chile, una de México y dos de Colombia</Afirmacion>. Cuatro no alcanzan para decir qué se repite ni cuánta gente lo vive, así que las leo como casos que ilustran, no como una tendencia.
+
+<p slot="nota"><em>Paráfrasis de cuatro publicaciones públicas de Chile, México y Colombia:</em> todo lo anterior es mi resumen. No cito textualmente, no identifico a nadie y no enlazo las publicaciones.</p>
+
+</TarjetaRelatos>
+
+Lo que sí puedo decir con evidencia publicada es lo que le pasa a la mente cuando salir se vuelve difícil. En el experimento de Luguri y Strahilevitz, el grupo con trucos agresivos aceptó más y también expresó más enojo. En los cuatro relatos de por aquí aparece algo parecido: frustración, sospecha o indignación. Cuatro casos no prueban que sea lo habitual, pero muestran cómo se cuenta cuando pasa.
+
+Varios países de la región ya escriben reglas sobre el camino para cancelar, y eso muestra que el problema se reconoce; el detalle está en el acordeón de abajo.
+
+<TarjetaDestacada titulo="Lo que nadie ha medido">Cuánto tardamos aquí en cancelar, qué proporción de personas lo vive y a quién le pasa más. Mi revisión son cuatro relatos: muestra cómo lo cuentan algunas personas que deciden contarlo, no cuántas lo viven ni qué trampas pesan más.</TarjetaDestacada>
+
+<Acordeon titulo="El marco legal en la región">
+
+En Colombia, <Afirmacion fuente="sic-sancion">la Superintendencia de Industria y Comercio (SIC) sancionó en 2020 a un operador móvil por dificultar solicitudes de sus usuarios, entre ellas cancelar, con base en quince quejas</Afirmacion>: les pedían ir a una oficina, firmar o llevar documentos. Un juzgado administrativo de Bogotá negó anular esa sanción en primera instancia, el 19 de diciembre de 2023, y señaló que exigirle a quien pide terminar un contrato que pruebe su titularidad es desproporcionado. Ojo: la SIC no lo calificó como patrón oscuro, y se rige por el régimen de telecomunicaciones. <Afirmacion fuente="crc-oficio">Desde el 1 de octubre de 2026, los operadores móviles deben ofrecer un canal digital para cancelar, según la CRC</Afirmacion> (detalle práctico en la escena 5). Argentina tiene un botón de baja desde 2018 y, desde septiembre de 2025, una disposición que lo hace obligatorio, con alta visibilidad en el primer acceso a la web y confirmación en 24 horas, y <Afirmacion fuente="mexico-dof">México reformó su ley de protección al consumidor con un decreto publicado el 12 de diciembre de 2025</Afirmacion> (el decreto no fija multas). Que se legisle sobre un botón indica que se reconoce que el diseño de salir importa.
+
+</Acordeon>
+
+<Acordeon titulo="Cómo se hizo la lectura de relatos y qué no dice">
+
+Solo contenido público, sin nombres de usuario, enlaces ni capturas. Leí a mano hilos de foros públicos y de la comunidad de una tienda de apps; no pude consultar X, TikTok, Facebook ni Instagram. Mi protocolo pedía al menos 30 publicaciones, de dos tipos de fuente y tres meses distintos; no las encontré. Quedó un conjunto de cuatro con país confirmado. Dejé fuera otras tres publicaciones en español cuyo país no pude determinar, y una que parecía un intento de estafa más que una suscripción difícil de cancelar. Por eso los cuatro relatos ilustran y no prueban: no son un porcentaje de nadie.
+
+</Acordeon>
+
+<Acordeon titulo="Lo que complica la historia">
+
+El estudio de los gimnasios es de EE. UU., de hace más de veinte años y con gimnasios, no con suscripciones digitales. La encuesta de la firma de mercado es comercial. El barrido de 2024 cuenta cuántos comercios usan patrones, no cuánto cambian las decisiones. Los casos de la FTC son acusaciones. Las cifras de cuánto hay van del 11% al 97% según el método. La hora de los cobros y la pérdida de notificaciones son observaciones mías, no mediciones. Y una publicación no basta para generalizar.
+
+</Acordeon>
+
+</Escena>
+
+<Escena n={5} titulo="Qué hacer con esto">
+
+No tengo una receta probada, pero sí algunas ideas que salen de lo que encontré (son ideas prácticas, no resultados de un estudio).
+
+Primero, desconfía de tu predicción y mira cuánto usas de verdad cada servicio. Segundo, cancela en el momento en que lo decides: en el estudio de los gimnasios, la espera entre dejar de ir y cancelar costaba en promedio 187 dólares, y esa espera es justo donde caímos. Tercero, abre de vez en cuando tu extracto o los ajustes de suscripciones de tu tienda de apps, porque el aviso del cobro no siempre llega a tu atención. Y cuarto, si te enojas o te sientes culpable mientras cancelas, recuerda que ese malestar no siempre es tuyo: en el experimento, la presión agresiva produjo enojo.
+
+Si eres quien diseña estos flujos, cuenta los pasos para entrar y para salir, y comprueba que el botón de cancelar no pierda en visibilidad frente a las alternativas. Si la diferencia es grande, no es un detalle de diseño: es una decisión.
+
+<PlanSalida client:visible />
+
+<BloqueSimula>Simula una lista de cinco pasos para revisar tus suscripciones y decidir hoy. No sabe cuáles tienes, no se conecta con tu banco ni con tus apps y no verifica que hagas nada; la lista se copia a tu portapapeles y no se guarda en ningún lado.</BloqueSimula>
+
+<Acordeon titulo="Si estás en Colombia">
+
+<Afirmacion fuente="crc-oficio">En servicios móviles, desde el 1 de octubre de 2026 el operador debe tener un canal digital para pedir la cancelación</Afirmacion>. Según la CRC, la solicitud con al menos tres días hábiles de anticipación al corte aplica en ese corte, y las quejas por incumplimiento van a la SIC. Para operadores que prestan solo servicios fijos (internet, TV y telefonía fija) rige desde el 1 de diciembre de 2026. El canal debe limitarse a tramitar la solicitud: la resolución prohíbe usarlo para ofertas de retención. No es asesoría legal.
+
+</Acordeon>
+
+</Escena>

@@ -12,6 +12,7 @@ import Acordeon from '../../components/evidencia/Acordeon.astro';
 import TarjetaArticulo from '../../components/comunes/TarjetaArticulo.astro';
 import { paradas, type Pilar } from '../../components/camino/composiciones';
 import { tiposInteraccion } from '../../data/sitio';
+import { seLista, familia, tipos as tiposDe } from '../../data/articulos';
 
 export async function getStaticPaths() {
   const pilares = (await getCollection('pilares')).sort((a, b) => a.data.orden - b.data.orden);
@@ -25,16 +26,19 @@ const p = pilar.data;
 
 // Catálogo: publicados y en preparación del pilar (nunca el de ejemplo). Más reciente primero.
 const articulos = (await getCollection('articulos'))
-  .filter((a) => a.data.pilar.id === pilar.id && !a.data.ejemplo)
-  // Primero los publicados (el más reciente queda destacado), luego los que están en preparación.
-  .sort((a, b) => (a.data.estado === b.data.estado ? +b.data.fecha - +a.data.fecha : a.data.estado === 'publicado' ? -1 : 1));
-const publicados = articulos.filter((a) => a.data.estado === 'publicado');
+  .filter((a) => a.data.pilar.id === pilar.id && (seLista(a) || (!a.data.ejemplo && a.data.estado === 'en-preparacion')))
+  // Primero los legibles (el más reciente queda destacado), luego los que están en preparación.
+  .sort((a, b) => {
+    const pa = a.data.estado === 'en-preparacion' ? 1 : 0, pb = b.data.estado === 'en-preparacion' ? 1 : 0;
+    return pa === pb ? +b.data.fecha - +a.data.fecha : pa - pb;
+  });
+const publicados = articulos.filter((a) => a.data.estado !== 'en-preparacion');
 const conFiltros = articulos.length >= 4;
-const mecanismos = [...new Set(articulos.map((a) => a.data.mecanismo))];
-const tipos = [...new Set(articulos.map((a) => a.data.tipoInteraccion))];
+const mecanismos = [...new Set(articulos.map((a) => familia(a.data)))];
+const tipos = [...new Set(articulos.flatMap((a) => tiposDe(a.data)))];
 
 // "En el radar" no repite lo que ya está publicado (se compara con el mecanismo de cada artículo).
-const publicadosMec = publicados.map((a) => a.data.mecanismo.toLowerCase());
+const publicadosMec = publicados.map((a) => familia(a.data).toLowerCase());
 const radar = p.enElRadar.filter((r) => !publicadosMec.some((m) => r.toLowerCase().includes(m)));
 
 // La segunda parada va al lado contrario de la primera.
@@ -96,7 +100,7 @@ const escenaDos = ladoHero === 'der' ? 'gancho' : 'jugable';
               </form>
             )}
             <div class="catalogo" data-catalogo>
-              {articulos.map((a, i) => <TarjetaArticulo articulo={a} criatura={p.criatura} destacada={i === 0 && a.data.estado === 'publicado'} />)}
+              {articulos.map((a, i) => <TarjetaArticulo articulo={a} criatura={p.criatura} destacada={i === 0 && a.data.estado !== 'en-preparacion'} />)}
             </div>
             {publicados.length === 1 && <p class="siguiente-prep">Siguiente artículo en preparación.</p>}
           </>
@@ -199,7 +203,7 @@ const escenaDos = ladoHero === 'der' ? 'gancho' : 'jugable';
       const fd = new FormData(f);
       const mec = String(fd.get('mecanismo') || ''), tipo = String(fd.get('tipo') || ''), orden = String(fd.get('orden'));
       const visibles = tarjetas.filter((t) => {
-        const ok = (!mec || t.dataset.mecanismo === mec) && (!tipo || t.dataset.tipo === tipo);
+        const ok = (!mec || t.dataset.mecanismo === mec) && (!tipo || (t.dataset.tipo ?? '').split(' ').includes(tipo));
         t.hidden = !ok;
         return ok;
       });

@@ -1,0 +1,15 @@
+---
+// Tarjeta destacada mantequilla (p. ej. "Lo que nadie ha medido", escena 4).
+interface Props { titulo: string }
+const { titulo } = Astro.props;
+---
+<aside class="destacada" aria-label={titulo}>
+  <h3 class="destacada__titulo">{titulo}</h3>
+  <div class="destacada__texto"><slot /></div>
+</aside>
+
+<style>
+  .destacada { background: var(--mantequilla); color: var(--on-color); border-radius: var(--r-card); padding: clamp(1.25rem, 1rem + 1.5vw, 2.25rem); margin: var(--s-4) 0; }
+  .destacada__titulo { font-size: var(--t-lead); margin-bottom: var(--s-2); }
+  .destacada__texto :global(p:last-child) { margin-bottom: 0; }
+</style>

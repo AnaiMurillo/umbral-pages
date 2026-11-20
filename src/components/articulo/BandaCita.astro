@@ -1,0 +1,25 @@
+---
+// Pull quote en banda celeste de lado a lado (Artículo 01: tras la escena 2).
+// <mark> resalta la parte clave en mantequilla.
+interface Props { etiqueta?: string }
+const { etiqueta } = Astro.props;
+---
+<aside class="banda-cita" aria-label={etiqueta ?? 'Cita destacada'}>
+  <div class="banda-cita__dentro">
+    <p class="banda-cita__texto"><slot /></p>
+  </div>
+</aside>
+
+<style>
+  .banda-cita { position: relative; z-index: 2; background: var(--celeste); color: var(--on-color); margin-block: var(--s-6); }
+  .banda-cita__dentro { max-width: calc(52rem + 2 * var(--gutter)); margin-inline: auto; padding: var(--s-6) var(--gutter); }
+  .banda-cita__texto {
+    margin: 0; font-family: var(--font-title); font-weight: 800; letter-spacing: var(--title-tracking);
+    font-size: clamp(1.6rem, 1.2rem + 2vw, 2.9rem); line-height: 1.1; text-wrap: balance;
+  }
+  .banda-cita__texto :global(p) { display: inline; margin: 0; }
+  .banda-cita__texto :global(mark) {
+    background: var(--mantequilla); color: var(--on-color); padding: 0 0.12em; border-radius: 0.15em;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+</style>
