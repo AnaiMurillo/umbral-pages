@@ -9,6 +9,6 @@ export default defineConfig({
   trailingSlash: 'ignore',
   // La ruta del piloto pasa a /articulos (TEXTOS_FINALES §5.3).
   redirects: {
-    '/modulos/plantilla-ejemplo': '/articulos/ejemplo',
+    '/modulos/plantilla-ejemplo': '/articulos/sigues-pagando-lo-que-no-usas',
   },
 });

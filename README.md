@@ -15,7 +15,7 @@ Documentos de referencia en `docs/`: `DESIGN.md` (diseño, manda), `GUIA_INTERFA
 | Artículos (un `.mdx` por artículo; el nombre del archivo es la URL `/articulos/nombre`) | `src/content/articulos/` |
 | Briefs (un `.md` por brief) | `src/content/investigacion/` |
 
-**Crear un artículo:** copia `src/content/articulos/ejemplo.mdx`, cámbiale el nombre, pon `ejemplo: false` y reemplaza los campos del frontmatter (guía §3.4) y las escenas:
+**Crear un artículo:** copia `src/content/articulos/sigues-pagando-lo-que-no-usas.mdx` (el artículo de ejemplo se eliminó al publicar el Artículo 01, según TEXTOS_FINALES §5.3), cámbiale el nombre, pon `estado: borrador` y reemplaza los campos del frontmatter (guía §3.4) y las escenas:
 
 ```mdx
 <Escena n={1}>Para empezar (máx. 60 palabras)</Escena>
@@ -56,7 +56,7 @@ Versión estática de cualquier página: agrega `?estatico=1` a la URL (`?estati
 - **"Lo que te llevas"**: ya está en el Artículo 01 (doc v6). El artículo de ejemplo no la usa.
 - **Briefs**: "Cómo leer un brief" menciona "Qué encontramos" y "Qué no podemos afirmar"; cada brief debe tener esas dos secciones con esos nombres.
 - **Tarjeta "Cómo se llama esto"** del artículo: no existe aún (falta su texto). Cuando exista, va entre la cabecera y "Lo que te llevas".
-- **Artículo 01** (`src/content/articulos/sigues-pagando-lo-que-no-usas.mdx`, texto del doc v6 en `docs/ARTICULO_01_v6.md`): `estado: borrador`. Los borradores solo se construyen en local y en las vistas previas de Cloudflare; en producción (rama `main`) no existen ni se enlazan (`src/data/articulos.ts`). Para publicarlo: cerrar los pendientes de contenido y cambiar a `estado: publicado`.
+- **Artículo 01** (`src/content/articulos/sigues-pagando-lo-que-no-usas.mdx`, texto del doc v6 en `docs/ARTICULO_01_v6.md`): publicado el 20 de noviembre de 2026. Quedan abiertos por decisión de Isabel: Boletín Oficial de Argentina, página oficial del Sernac, "tres días hábiles" de la CRC y revisión externa. Los borradores futuros (`estado: borrador`) solo se construyen en local y en vistas previas (`src/data/articulos.ts`).
 - **Brief** `trampas-de-suscripcion`: no está en el repositorio. Mientras no exista, el botón "Leer el brief completo" no aparece (el texto "La metodología completa está en el brief" sí).
 - **Bloque D del Inicio**: ya usa la interacción 1 del Artículo 01. Se activa con `banderas.pruebaRapida.activa: true` en `src/data/sitio.ts`; solo aparece si el artículo está publicado.
 - **Enlaces de fuentes del Artículo 01**: los cuatro funcionan (Berkeley verificado aquí; ICPEN, FTC y CNBC bloquean visitas automáticas y los revisó Isabel en su navegador el 20 de noviembre de 2026).
